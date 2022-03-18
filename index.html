@@ -1,0 +1,278 @@
+<html>
+
+<head>
+    <title>Ouija Online - A horror experience</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 50px #d35400;
+            }
+
+            100% {
+                box-shadow: 0 0 50px 20px #d35400;
+            }
+        }
+
+        #boardContainer {
+            position: absolute;
+            width: 50%;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        #board {
+            width: 100%;
+            border-radius: 10%;
+            z-index: 10;
+            animation-name: glow;
+            animation-iteration-count: infinite;
+            animation-duration: 2s;
+            animation-timing-function: ease-in-out;
+            animation-direction: alternate;
+        }
+
+        #planchette,
+        #planchetteHelper {
+            position: absolute;
+            top: 46%;
+            left: 41.5%;
+            width: 16%;
+            transform: rotate(130deg);
+        }
+
+        #planchette {
+            z-index: 15;
+            -webkit-filter: drop-shadow(5px 5px 5px #222);
+            filter: drop-shadow(5px 5px 5px #222);
+        }
+
+        #planchetteHelper {
+            z-index: 16;
+            opacity: 0;
+            /* Can't use visibility:hidden because need mouse movements to trigger events */
+        }
+
+        #cursor {
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            height: 32px;
+            /* height must be evenly divisible from 128px */
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        body {
+            overflow-y: hidden;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            background: black;
+            cursor: none;
+        }
+
+        .unselectable {
+            user-select: none;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-select: none;
+            -ms-user-select: none;
+
+            user-drag: none;
+            -webkit-user-drag: none;
+        }
+
+        @media only screen and (max-width: 760px) {
+            .button {
+                display: none;
+            }
+
+            .mobile-warning {
+                display: block;
+            }
+        }
+    </style>
+
+    <script>
+        let draggingBlanchette = false
+        let planchetteTransformX = 0 // In % relative to planchette's own width (to support browser resizing)
+        let planchetteTransformY = 0 // In % relative to planchette's own width (to support browser resizing)
+        let prevX = undefined
+        let prevY = undefined
+        let offsetX = 0 // In % relative to window innerWidth (to support browser resizing)
+        let offsetY = 0 // In % relative to window innerHeight (to support browser resizing)
+        let userMoveCount = 0
+
+        const ON_PLANCHETTE = 'onPlanchette'
+
+        let paintCursorWithOffset = function (cursor, realX, realY) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const planchette = document.getElementById('planchette')
+            let x = realX + offsetX * planchette.clientWidth / 100
+            let y = realY + offsetY * planchette.clientHeight / 100
+
+            // Never paint cursor outside partially outside viewport
+            if (x > w - 24) {
+                x = Math.max(realX, w - 24)
+            }
+            if (y > h - 24) {
+                y = Math.max(realY, h - 24)
+            }
+            if (x < 0) {
+                x = 0
+            }
+            if (y < 0) {
+                y = 0
+            }
+
+            const boardBounds = document.getElementById('boardContainer').getBoundingClientRect()
+            cursor.style.top = (y - boardBounds.top) + "px";
+            cursor.style.left = (x - boardBounds.left) + "px";
+        }
+        let mouseMoved = function (event, onPlanchette) {
+            const x = event.clientX
+            const y = event.clientY
+            const diffX = x - prevX
+            const diffY = y - prevY
+            prevX = x
+            prevY = y
+            userMoveCount += 1
+
+            if (draggingBlanchette) {
+                const planchette = document.getElementById('planchette')
+                const planchetteHelper = document.getElementById('planchetteHelper')
+                planchetteTransformX += diffX * 100.0 / planchette.clientWidth
+                planchetteTransformY += diffY * 100.0 / planchette.clientHeight
+
+                const goalX = 70 - 50
+                const goalY = 70 - 50
+                const STOCHASTIC_STR = 1
+                const EFFECT_STR = 0.5
+                if (Math.random() > (1 - STOCHASTIC_STR)) {
+                    if (Math.sign(goalX - ((planchetteTransformX + offsetX) * planchette.clientWidth / window.innerWidth)) == Math.sign(diffX)) {
+                        offsetX += diffX * EFFECT_STR * 100.0 / planchette.clientWidth
+                    } else {
+                        offsetX -= diffX * EFFECT_STR * 100.0 / planchette.clientWidth
+                    }
+                    if (Math.sign(goalY - ((planchetteTransformY + offsetY) * planchette.clientHeight / window.innerHeight)) == Math.sign(diffY)) {
+                        offsetY += diffY * EFFECT_STR * 100.0 / planchette.clientHeight
+                    } else {
+                        offsetY -= diffY * EFFECT_STR * 100.0 / planchette.clientHeight
+                    }
+                }
+
+                // Move planchette (with cursor offset)
+                const xMoveWithOffset = planchetteTransformX + offsetX
+                const yMoveWithOffset = planchetteTransformY + offsetY
+                planchette.style.transform = `translateX(${xMoveWithOffset}%) translateY(${yMoveWithOffset}%) rotate(130deg)`;
+
+                // Move planchettehelper (without cursor offset)
+                planchetteHelper.style.transform = `translateX(${planchetteTransformX}%) translateY(${planchetteTransformY}%) rotate(130deg)`;
+            }
+
+            const cursor = document.getElementById("cursor")
+            const newCursorSrc = (draggingBlanchette ? 'grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'grab.cur' : 'aero_arrow.cur'))
+            if (cursor.src !== newCursorSrc) cursor.src = newCursorSrc
+            cursor.style.visibility = "visible";
+            paintCursorWithOffset(cursor, prevX, prevY)
+        }
+
+        const startDraggingPlanchette = function (event) {
+            draggingBlanchette = true
+            cursor.src = "grabbing.cur"
+        }
+        const stopDraggingPlanchette = function (event, source) {
+            draggingBlanchette = false
+            const newCursor = (source === 'onPlanchette' ? 'grab.cur' : 'aero_arrow.cur')
+            cursor.src = newCursor
+            event.stopPropagation()
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <div id="bg" style="position: absolute; width: 100%; height: 100%"></div>
+
+    <div id="boardContainer" class="unselectable">
+        <!-- Warning: dont move elements outside boardContainer, otherwise windows resizing will cause inconsistencies in positioning! -->
+        <img id="board" class="unselectable" src="ouija_bg.jpg"></img>
+
+        <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
+        <img id="planchette" class="unselectable" src="planchette2.png"></img>
+        <img id="planchetteHelper" class="unselectable" src="planchette2.png"></img>
+
+        <!-- Preload cursor icons like this -->
+        <img src="aero_arrow.cur" style="visibility: hidden; position: absolute;" />
+        <img src="aero_link.cur" style="visibility: hidden; position: absolute;" />
+        <img src="grab.cur" style="visibility: hidden; position: absolute;" />
+        <img src="grabbing.cur" style="visibility: hidden; position: absolute;" />
+
+        <!-- Displayed cursor whose src is altered as needed -->
+        <img src="aero_arrow.cur" id="cursor" />
+    </div>
+
+    <noscript>
+        <h1>This website requires JavaScript in order to do a trick. Please enable JavaScript and refresh.</h1>
+    </noscript>
+
+    <h1 class="mobile-warning" style="display: none;">
+        This website requires a laptop/desktop device with a mouse, and a sufficiently large screen. Try with another
+        device?
+    </h1>
+
+    <script>
+
+        // Mouse move events
+        document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('board').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('planchetteHelper').addEventListener('mousemove', e => { mouseMoved(e, ON_PLANCHETTE) })
+
+        // Activating planchetteDragging
+        document.getElementById('planchetteHelper').addEventListener('mousedown', e => { startDraggingPlanchette(e) })
+
+        // Deactivating planchetteDragging
+        document.getElementById('planchetteHelper').addEventListener('mouseup', e => { stopDraggingPlanchette(e, ON_PLANCHETTE) })
+        document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
+        document.body.addEventListener('mouseleave', e => {
+            stopDraggingPlanchette(e)
+            document.getElementById("cursor").style.visibility = "hidden"
+            // TODO varmistus et offsetit on nollassa, jos ei oo ni pitää asettaa nollaan JA hyppäyttää planchette uuteen positioon
+        })
+
+        // Window resize
+        window.addEventListener('resize', function (event) {
+
+        });
+
+        // TEMP
+        document.body.addEventListener('keydown', e => {
+            if (e.key != "d") {
+                return
+            }
+            if (document.body.style.cursor != 'none') {
+                document.getElementById('planchetteHelper').style.opacity = 0
+                document.body.style.cursor = 'none'
+            } else {
+                document.getElementById('planchetteHelper').style.opacity = 0.5
+                document.body.style.cursor = 'auto';
+            }
+        })
+
+    </script>
+
+    <script async data-domain="attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script>
+
+</body>
+
+</html>
