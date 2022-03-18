@@ -107,8 +107,8 @@
         let planchetteTransformY = 0 // In % relative to planchette's own width (to support browser resizing)
         let prevX = undefined
         let prevY = undefined
-        let offsetX = 0 // In % relative to window innerWidth (to support browser resizing)
-        let offsetY = 0 // In % relative to window innerHeight (to support browser resizing)
+        let offsetX = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
+        let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
 
         const ON_PLANCHETTE = 'onPlanchette'
@@ -180,7 +180,7 @@
             }
 
             const cursor = document.getElementById("cursor")
-            const newCursorSrc = (draggingBlanchette ? 'grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'grab.cur' : 'aero_arrow.cur'))
+            const newCursorSrc = (draggingBlanchette ? 'assets/grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'assets/grab.cur' : 'assets/aero_arrow.cur'))
             if (cursor.src !== newCursorSrc) cursor.src = newCursorSrc
             cursor.style.visibility = "visible";
             paintCursorWithOffset(cursor, prevX, prevY)
@@ -188,11 +188,11 @@
 
         const startDraggingPlanchette = function (event) {
             draggingBlanchette = true
-            cursor.src = "grabbing.cur"
+            cursor.src = "assets/grabbing.cur"
         }
         const stopDraggingPlanchette = function (event, source) {
             draggingBlanchette = false
-            const newCursor = (source === 'onPlanchette' ? 'grab.cur' : 'aero_arrow.cur')
+            const newCursor = (source === 'onPlanchette' ? 'assets/grab.cur' : 'assets/aero_arrow.cur')
             cursor.src = newCursor
             event.stopPropagation()
         }
@@ -206,20 +206,20 @@
 
     <div id="boardContainer" class="unselectable">
         <!-- Warning: dont move elements outside boardContainer, otherwise windows resizing will cause inconsistencies in positioning! -->
-        <img id="board" class="unselectable" src="ouija_bg.jpg"></img>
+        <img id="board" class="unselectable" src="assets/ouija_bg.jpg"></img>
 
         <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
-        <img id="planchette" class="unselectable" src="planchette2.png"></img>
-        <img id="planchetteHelper" class="unselectable" src="planchette2.png"></img>
+        <img id="planchette" class="unselectable" src="assets/planchette2.png"></img>
+        <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
 
         <!-- Preload cursor icons like this -->
-        <img src="aero_arrow.cur" style="visibility: hidden; position: absolute;" />
-        <img src="aero_link.cur" style="visibility: hidden; position: absolute;" />
-        <img src="grab.cur" style="visibility: hidden; position: absolute;" />
-        <img src="grabbing.cur" style="visibility: hidden; position: absolute;" />
+        <img src="assets/aero_arrow.cur" style="visibility: hidden; position: absolute;" />
+        <img src="assets/aero_link.cur" style="visibility: hidden; position: absolute;" />
+        <img src="assets/grab.cur" style="visibility: hidden; position: absolute;" />
+        <img src="assets/grabbing.cur" style="visibility: hidden; position: absolute;" />
 
         <!-- Displayed cursor whose src is altered as needed -->
-        <img src="aero_arrow.cur" id="cursor" />
+        <img src="assets/aero_arrow.cur" id="cursor" />
     </div>
 
     <noscript>
