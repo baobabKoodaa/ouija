@@ -111,21 +111,36 @@
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
 
+        // Update these values upon initial render and after window resizing events. These are memoized to prevent reflows (performance).
+        let boardTop = 0
+        let boardLeft = 0
+        let planchetteWidth = 0
+        let planchetteHeight = 0
+        let windowWidth = 0
+        let windowHeight = 0
+        const updateMemoizedStuff = function () {
+            const boardBounds = document.getElementById('boardContainer').getBoundingClientRect()
+            boardTop = boardBounds.top
+            boardLeft = boardBounds.left
+            const planchette = document.getElementById('planchette')
+            planchetteWidth = planchette.clientWidth
+            planchetteHeight = planchette.clientHeight
+            windowWidth = window.innerWidth
+            windowHeight = window.innerHeight
+        }
+
         const ON_PLANCHETTE = 'onPlanchette'
 
         let paintCursorWithOffset = function (cursor, realX, realY) {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const planchette = document.getElementById('planchette')
-            let x = realX + offsetX * planchette.clientWidth / 100
-            let y = realY + offsetY * planchette.clientHeight / 100
+            let x = realX + offsetX * planchetteWidth / 100
+            let y = realY + offsetY * planchetteHeight / 100
 
             // Never paint cursor outside partially outside viewport
-            if (x > w - 24) {
-                x = Math.max(realX, w - 24)
+            if (x > windowWidth - 24) {
+                x = Math.max(realX, windowWidth - 24)
             }
-            if (y > h - 24) {
-                y = Math.max(realY, h - 24)
+            if (y > windowHeight - 24) {
+                y = Math.max(realY, windowHeight - 24)
             }
             if (x < 0) {
                 x = 0
@@ -134,9 +149,8 @@
                 y = 0
             }
 
-            const boardBounds = document.getElementById('boardContainer').getBoundingClientRect()
-            cursor.style.top = (y - boardBounds.top) + "px";
-            cursor.style.left = (x - boardBounds.left) + "px";
+            cursor.style.top = (y - boardTop) + "px";
+            cursor.style.left = (x - boardLeft) + "px";
         }
         let mouseMoved = function (event, onPlanchette) {
             const x = event.clientX
@@ -150,23 +164,23 @@
             if (draggingBlanchette) {
                 const planchette = document.getElementById('planchette')
                 const planchetteHelper = document.getElementById('planchetteHelper')
-                planchetteTransformX += diffX * 100.0 / planchette.clientWidth
-                planchetteTransformY += diffY * 100.0 / planchette.clientHeight
+                planchetteTransformX += diffX * 100.0 / planchetteWidth
+                planchetteTransformY += diffY * 100.0 / planchetteHeight
 
                 const goalX = 70 - 50
                 const goalY = 70 - 50
                 const STOCHASTIC_STR = 1
-                const EFFECT_STR = 0.5
+                const EFFECT_STR = 0.05
                 if (Math.random() > (1 - STOCHASTIC_STR)) {
-                    if (Math.sign(goalX - ((planchetteTransformX + offsetX) * planchette.clientWidth / window.innerWidth)) == Math.sign(diffX)) {
-                        offsetX += diffX * EFFECT_STR * 100.0 / planchette.clientWidth
+                    if (Math.sign(goalX - ((planchetteTransformX + offsetX) * planchetteWidth / windowWidth)) == Math.sign(diffX)) {
+                        offsetX += diffX * EFFECT_STR * 100.0 / planchetteWidth
                     } else {
-                        offsetX -= diffX * EFFECT_STR * 100.0 / planchette.clientWidth
+                        offsetX -= diffX * EFFECT_STR * 100.0 / planchetteWidth
                     }
-                    if (Math.sign(goalY - ((planchetteTransformY + offsetY) * planchette.clientHeight / window.innerHeight)) == Math.sign(diffY)) {
-                        offsetY += diffY * EFFECT_STR * 100.0 / planchette.clientHeight
+                    if (Math.sign(goalY - ((planchetteTransformY + offsetY) * planchetteHeight / windowHeight)) == Math.sign(diffY)) {
+                        offsetY += diffY * EFFECT_STR * 100.0 / planchetteHeight
                     } else {
-                        offsetY -= diffY * EFFECT_STR * 100.0 / planchette.clientHeight
+                        offsetY -= diffY * EFFECT_STR * 100.0 / planchetteHeight
                     }
                 }
 
@@ -233,6 +247,14 @@
 
     <script>
 
+        // Update memoized stuff after the first complete render and upon each resize
+        window.addEventListener('load', function (event) {
+            updateMemoizedStuff()
+        });
+        window.addEventListener('resize', function (event) {
+            updateMemoizedStuff()
+        });
+
         // Mouse move events
         document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('board').addEventListener('mousemove', e => { mouseMoved(e) })
@@ -249,11 +271,6 @@
             document.getElementById("cursor").style.visibility = "hidden"
             // TODO varmistus et offsetit on nollassa, jos ei oo ni pitää asettaa nollaan JA hyppäyttää planchette uuteen positioon
         })
-
-        // Window resize
-        window.addEventListener('resize', function (event) {
-
-        });
 
         // TEMP
         document.body.addEventListener('keydown', e => {
