@@ -238,15 +238,23 @@
             userMoveCount += 1
 
             if (draggingPlanchette) {
+                // Prevent planchette from being moved outside board
+                const wouldBeX = planchetteTransformX + offsetX + diffX * 100.0 / planchetteWidth
+                const wouldBeY = planchetteTransformY + offsetY + diffY * 100.0 / planchetteHeight
+                if (wouldBeY > 80 || wouldBeY < -160 || wouldBeX > 270 || wouldBeX < -255) {
+                    stopDraggingPlanchette(event)
+                    return
+                }
 
-                // TODO prevent planchette from being moved outside board
-
+                // Move is legitimate so save move to planchetteTransform
                 planchetteTransformX += diffX * 100.0 / planchetteWidth
                 planchetteTransformY += diffY * 100.0 / planchetteHeight
 
+                console.log(planchetteTransformX, planchetteTransformY)
+
                 const goalX = 70 - 50
                 const goalY = 70 - 50
-                const STOCHASTIC_STR = 0.7
+                const STOCHASTIC_STR = 0
                 const EFFECT_STR = 0.05
                 if (Math.random() > (1 - STOCHASTIC_STR)) {
                     if (Math.sign(goalX - ((planchetteTransformX + offsetX) * planchetteWidth / windowWidth)) == Math.sign(diffX)) {
