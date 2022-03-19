@@ -130,10 +130,30 @@
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
 
-        // Constants
+        // String literals
+        const ON_PLANCHETTE = 'onPlanchette'
+
+        // Magnifier constants
         const MAG_ZOOM = 1.2
         const MAG_LEFT = 0.465
         const MAG_TOP = 0.58
+
+        // Offset constants
+        const SPIRIT_MAX_DIST = 40.0
+        const SPIRIT_STOCHASTIC_STR = 0.7
+        const SPIRIT_ACCEL_STR = 0.9
+        const OFFSET_CANCELLATION_STR = 0.3
+        const OFFSET_CANCELLATION_LOW_URGENCY = 0.3
+
+        // Planchette drag limitations (board area)
+        const HARD_Y_MAX = 80
+        const HARD_Y_MIN = -160
+        const HARD_X_MAX = 270
+        const HARD_X_MIN = -255
+        const SOFT_Y_MAX = HARD_Y_MAX - 10
+        const SOFT_Y_MIN = HARD_Y_MIN - 10
+        const SOFT_X_MAX = HARD_X_MAX - 10
+        const SOFT_X_MIN = HARD_X_MIN - 10
 
         // Memoize some values to reduce reflows (improve performance).
         let boardWidth = 0
@@ -169,7 +189,7 @@
                 backgroundSize: (MAG_ZOOM * 100 * boardWidth / magSize) + '% ' + (MAG_ZOOM * 100 * boardHeight / magSize) + '%',
                 visibility: 'visible'
             })
-            moveMagnifyingGlass()
+            updateMagnifyingGlassPosition()
         }
         // Call resizeUpdates after the first complete render and after each resize
         window.addEventListener('load', function (event) {
@@ -178,8 +198,6 @@
         window.addEventListener('resize', function (event) {
             resizeUpdates()
         });
-
-        const ON_PLANCHETTE = 'onPlanchette'
 
         const paintCursorWithOffset = function (cursor, realX, realY) {
             let x = realX + offsetX * planchetteWidth / 100
@@ -203,7 +221,7 @@
             cursor.style.left = (x - boardLeft) + "px";
         }
 
-        const moveMagnifyingGlass = function () {
+        const updateMagnifyingGlassPosition = function () {
             const mag = document.getElementById('magnifying-glass')
             const xMoveWithOffset = planchetteTransformX + offsetX
             const yMoveWithOffset = planchetteTransformY + offsetY
@@ -219,34 +237,73 @@
             mag.style.backgroundPosition = `${xBgPosPx}px ${yBgPosPx}px`
         }
 
-        const movePlanchette = function () {
+        const updatePlanchettePosition = function () {
             const planchette = document.getElementById('planchette')
             const planchetteHelper = document.getElementById('planchetteHelper')
 
             planchette.style.transform = `translateX(${planchetteTransformX + offsetX}%) translateY(${planchetteTransformY + offsetY}%) rotate(130deg)`;
             planchetteHelper.style.transform = `translateX(${planchetteTransformX}%) translateY(${planchetteTransformY}%) rotate(130deg)`;
-            moveMagnifyingGlass()
+            updateMagnifyingGlassPosition()
+        }
+
+        const spiritGuidanceToOffset = function (x, y, diffX, diffY, goalX, goalY, dist) {
+            const accelDistanceMultiplier = (SPIRIT_MAX_DIST - dist) / SPIRIT_MAX_DIST
+            if (Math.random() > SPIRIT_STOCHASTIC_STR) {
+                return
+            }
+            if (diffX != 0 && Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
+                if (dist > 5) { // reduce jittery accels on top of goal
+                    offsetX += diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // accelerate
+                }
+            } else if (diffX != 0) { // X axis move is in undesired direction, decelerate
+                offsetX -= diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // decelerate
+            }
+            if (diffY != 0 && Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction, accelerate
+                if (dist > 5) { // reduce jittery accels on top of goal
+                    offsetY += diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // accelerate
+                }
+            } else if (diffY != 0) { // Y axis move is in undesired direction, decelerate
+                offsetY -= diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // decelerate
+            }
+        }
+
+        const cancelSomeOffset = function (diffX, diffY, urgency) {
+            // Will accelerate or decelerate latest mouse move in an effort to reduce offset
+            const e = OFFSET_CANCELLATION_STR * urgency
+            if (Math.abs(offsetX) > 1) {
+                const sign = (Math.sign(offsetX) == Math.sign(diffX) ? -1 : 1) // Decelerate or accelerate depending on sign
+                offsetX += sign * diffX * e
+                if (!draggingPlanchette) {
+                    // When planchette is not being dragged, we need to do this to "negate" the effect on planchette position
+                    planchetteTransformX -= sign * diffX * e
+                }
+            }
+            if (Math.abs(offsetY) > 1) {
+                const sign = (Math.sign(offsetY) == Math.sign(diffY) ? -1 : 1)
+                offsetY += sign * diffY * e
+                if (!draggingPlanchette) {
+                    planchetteTransformY -= sign * diffY * e
+                }
+            }
         }
 
         const mouseMoved = function (event, onPlanchette) {
-            const x = event.clientX
-            const y = event.clientY
-            const diffX = x - prevX
-            const diffY = y - prevY
-            prevX = x
-            prevY = y
+            const currX = event.clientX
+            const currY = event.clientY
+            const diffX = (userMoveCount > 0 ? currX - prevX : 0)
+            const diffY = (userMoveCount > 0 ? currY - prevY : 0)
+            prevX = currX
+            prevY = currY
             userMoveCount += 1
 
             if (draggingPlanchette) {
-                // Prevent planchette from being moved outside board
                 const x = planchetteTransformX + offsetX + diffX * 100.0 / planchetteWidth
                 const y = planchetteTransformY + offsetY + diffY * 100.0 / planchetteHeight
-                if (y > 80 || y < -160 || x > 270 || x < -255) {
+                if (y > HARD_Y_MAX || y < HARD_Y_MIN || x > HARD_X_MAX || x < HARD_X_MIN) {
+                    // Prevent planchette from being moved outside board
                     stopDraggingPlanchette(event)
                     return
                 }
-
-                // Move is legitimate so modify planchetteTransform
                 planchetteTransformX += diffX * 100.0 / planchetteWidth
                 planchetteTransformY += diffY * 100.0 / planchetteHeight
 
@@ -254,38 +311,28 @@
                 const goalY = -117
 
                 // Possibly accelerate/decelerate move by modifying cursor offset
-                const SPIRIT_MAX_DIST = 40.0
-                const SPIRIT_STOCHASTIC_STR = 0.7
-                const SPIRIT_ACCEL_STR = 0.8
                 const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
-                console.log(dist)
                 if (dist < SPIRIT_MAX_DIST) {
                     // Modify cursor offset to guide the user towards goal
                     // TODO Even if we are dragging we sometimes have to reduce offset to prevent the real cursor from escaping window.
-                    const accelDistanceMultiplier = (SPIRIT_MAX_DIST - dist) / SPIRIT_MAX_DIST
-                    if (Math.random() > (1 - SPIRIT_STOCHASTIC_STR)) {
-                        if (Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
-                            if (dist > 5) { // reduce jittery accels on top of goal
-                                offsetX += diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // accelerate
-                            }
-                        } else {
-                            // X axis move is in undesired direction, decelerate
-                            offsetX -= diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // decelerate
-                        }
-                        if (Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction, accelerate
-                            if (dist > 5) {
-                                offsetY += diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // accelerate
-                            }
-                        } else { // Y axis move is in undesired direction, decelerate
-                            offsetY -= diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // decelerate
-                        }
-                    }
+                    spiritGuidanceToOffset(x, y, diffX, diffY, goalX, goalY, dist)
                 } else {
-                    // User is not near goal, user opportunity to reduce cursor offset to prevent the real cursor from escaping window.
-
+                    // User is not near goal, use this opportunity to reduce cursor offset to prevent the real cursor from escaping window.
+                    if (y < SOFT_Y_MAX && y > SOFT_Y_MIN && x < SOFT_X_MAX && x > SOFT_X_MIN) {
+                        // Soft limits are used to prevent us from accelerating the user beyond hard limits where planchette would be trapped
+                        cancelSomeOffset(diffX, diffY, OFFSET_CANCELLATION_LOW_URGENCY)
+                    }
                 }
-                movePlanchette()
+            } else {
+                // User is not dragging planchette, use this opportunity to reduce cursor offset to prevent the real cursor from escaping window.
+                const x = (currX + offsetX) / windowWidth
+                const y = (currY + offsetY) / windowHeight
+                const minimumEscapeDistance = Math.min(Math.abs(x - 0), Math.abs(x - 1), Math.abs(y - 1), Math.abs(y - 0))
+                // TODO instead of linear we need to have exponential urgency towards the edges of window
+                const urgency = Math.max(1 - minimumEscapeDistance / 0.30, OFFSET_CANCELLATION_LOW_URGENCY)
+                cancelSomeOffset(diffX, diffY, urgency)
             }
+            updatePlanchettePosition()
 
             const cursor = document.getElementById("cursor")
             const newCursorSrc = (draggingPlanchette ? 'assets/grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'assets/grab.cur' : 'assets/aero_arrow.cur'))
