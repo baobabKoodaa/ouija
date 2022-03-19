@@ -239,41 +239,52 @@
 
             if (draggingPlanchette) {
                 // Prevent planchette from being moved outside board
-                const wouldBeX = planchetteTransformX + offsetX + diffX * 100.0 / planchetteWidth
-                const wouldBeY = planchetteTransformY + offsetY + diffY * 100.0 / planchetteHeight
-                if (wouldBeY > 80 || wouldBeY < -160 || wouldBeX > 270 || wouldBeX < -255) {
+                const x = planchetteTransformX + offsetX + diffX * 100.0 / planchetteWidth
+                const y = planchetteTransformY + offsetY + diffY * 100.0 / planchetteHeight
+                if (y > 80 || y < -160 || x > 270 || x < -255) {
                     stopDraggingPlanchette(event)
                     return
                 }
 
-                // Move is legitimate so save move to planchetteTransform
+                // Move is legitimate so modify planchetteTransform
                 planchetteTransformX += diffX * 100.0 / planchetteWidth
                 planchetteTransformY += diffY * 100.0 / planchetteHeight
 
-                console.log(planchetteTransformX, planchetteTransformY)
+                const goalX = -7
+                const goalY = -117
 
-                const goalX = 70 - 50
-                const goalY = 70 - 50
-                const STOCHASTIC_STR = 0
-                const EFFECT_STR = 0.05
-                if (Math.random() > (1 - STOCHASTIC_STR)) {
-                    if (Math.sign(goalX - ((planchetteTransformX + offsetX) * planchetteWidth / windowWidth)) == Math.sign(diffX)) {
-                        offsetX += diffX * EFFECT_STR * 100.0 / planchetteWidth
-                    } else {
-                        offsetX -= diffX * EFFECT_STR * 100.0 / planchetteWidth
+                // Possibly accelerate/decelerate move by modifying cursor offset
+                const SPIRIT_MAX_DIST = 40.0
+                const SPIRIT_STOCHASTIC_STR = 0.7
+                const SPIRIT_ACCEL_STR = 0.8
+                const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
+                console.log(dist)
+                if (dist < SPIRIT_MAX_DIST) {
+                    // Modify cursor offset to guide the user towards goal
+                    // TODO Even if we are dragging we sometimes have to reduce offset to prevent the real cursor from escaping window.
+                    const accelDistanceMultiplier = (SPIRIT_MAX_DIST - dist) / SPIRIT_MAX_DIST
+                    if (Math.random() > (1 - SPIRIT_STOCHASTIC_STR)) {
+                        if (Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
+                            if (dist > 5) { // reduce jittery accels on top of goal
+                                offsetX += diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // accelerate
+                            }
+                        } else {
+                            // X axis move is in undesired direction, decelerate
+                            offsetX -= diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // decelerate
+                        }
+                        if (Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction, accelerate
+                            if (dist > 5) {
+                                offsetY += diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // accelerate
+                            }
+                        } else { // Y axis move is in undesired direction, decelerate
+                            offsetY -= diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // decelerate
+                        }
                     }
-                    if (Math.sign(goalY - ((planchetteTransformY + offsetY) * planchetteHeight / windowHeight)) == Math.sign(diffY)) {
-                        offsetY += diffY * EFFECT_STR * 100.0 / planchetteHeight
-                    } else {
-                        offsetY -= diffY * EFFECT_STR * 100.0 / planchetteHeight
-                    }
+                } else {
+                    // User is not near goal, user opportunity to reduce cursor offset to prevent the real cursor from escaping window.
+
                 }
-
                 movePlanchette()
-            } else if (offsetX != 0 || offsetY != 0) {
-                // TODO We are not dragging and we have some offset; let's reduce offset.
-            } else {
-                // TODO Even if we are dragging we sometimes have to reduce offset to prevent the real cursor from escaping window.
             }
 
             const cursor = document.getElementById("cursor")
@@ -301,7 +312,7 @@
 
     <div id="bg" style="position: absolute; width: 100%; height: 100%"></div>
 
-    <!-- Warning: dont move elements outside boardContainer, otherwise windows resizing will cause inconsistencies in positioning! -->
+    <!-- Warning: dont move elements outside boardContainer, otherwise browser resizing will cause inconsistencies in positioning! -->
     <div id="boardContainer" class="unselectable">
         <img id="board" class="unselectable" src="assets/ouija_bg.jpg"></img>
 
