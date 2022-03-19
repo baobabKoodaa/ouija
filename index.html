@@ -68,6 +68,13 @@
             z-index: 14;
         }
 
+        #magnifying-glass-surface {
+            background-color: #563e23;
+            opacity: 0.4;
+            width: 100%;
+            height: 100%;
+        }
+
         #cursor {
             position: absolute;
             top: 30%;
@@ -295,7 +302,9 @@
         <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
 
         <!-- Magnifying glass -->
-        <div id="magnifying-glass" class="unselectable"></div>
+        <div id="magnifying-glass" class="unselectable">
+            <div id="magnifying-glass-surface"></div>
+        </div>
 
         <!-- Preload cursor icons like this -->
         <img src="assets/aero_arrow.cur" style="visibility: hidden; position: absolute;" />
