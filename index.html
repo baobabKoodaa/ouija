@@ -40,9 +40,9 @@
         #planchette,
         #planchetteHelper {
             position: absolute;
-            top: 46%;
-            left: 41.5%;
-            width: 16%;
+            top: 44%;
+            left: 40.5%;
+            width: 18%;
             transform: rotate(130deg);
         }
 
@@ -56,6 +56,16 @@
             z-index: 16;
             opacity: 0;
             /* Can't use visibility:hidden because need mouse movements to trigger events */
+        }
+
+        #magnifying-glass {
+            background-image: url('assets/ouija_bg.jpg');
+            background-repeat: no-repeat;
+            position: absolute;
+            border-radius: 50%;
+            cursor: none;
+            visibility: hidden;
+            z-index: 14;
         }
 
         #cursor {
@@ -102,7 +112,9 @@
     </style>
 
     <script>
-        let draggingBlanchette = false
+
+        // Global state
+        let draggingPlanchette = false
         let planchetteTransformX = 0 // In % relative to planchette's own width (to support browser resizing)
         let planchetteTransformY = 0 // In % relative to planchette's own width (to support browser resizing)
         let prevX = undefined
@@ -111,27 +123,58 @@
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
 
-        // Update these values upon initial render and after window resizing events. These are memoized to prevent reflows (performance).
+        // Constants
+        const MAG_ZOOM = 1.2
+        const MAG_LEFT = 0.465
+        const MAG_TOP = 0.58
+
+        // Memoize some values to reduce reflows (improve performance).
+        let boardWidth = 0
+        let boardHeight = 0
         let boardTop = 0
         let boardLeft = 0
         let planchetteWidth = 0
         let planchetteHeight = 0
+        let magSize = 0
         let windowWidth = 0
         let windowHeight = 0
-        const updateMemoizedStuff = function () {
+        const resizeUpdates = function () {
+            // Update memoized values
             const boardBounds = document.getElementById('boardContainer').getBoundingClientRect()
             boardTop = boardBounds.top
             boardLeft = boardBounds.left
+            boardWidth = boardBounds.width
+            boardHeight = boardBounds.height
             const planchette = document.getElementById('planchette')
             planchetteWidth = planchette.clientWidth
             planchetteHeight = planchette.clientHeight
             windowWidth = window.innerWidth
             windowHeight = window.innerHeight
+
+            // Update magnifying glass
+            const mag = document.getElementById('magnifying-glass')
+            magSize = planchetteWidth * 0.40
+            Object.assign(mag.style, {
+                left: (100 * MAG_LEFT) + "%",
+                top: (100 * MAG_TOP) + "%",
+                width: magSize + 'px', // TODO %
+                height: magSize + 'px', // TODO %
+                backgroundSize: (MAG_ZOOM * 100 * boardWidth / magSize) + '% ' + (MAG_ZOOM * 100 * boardHeight / magSize) + '%',
+                visibility: 'visible'
+            })
+            moveMagnifyingGlass()
         }
+        // Call resizeUpdates after the first complete render and after each resize
+        window.addEventListener('load', function (event) {
+            resizeUpdates()
+        });
+        window.addEventListener('resize', function (event) {
+            resizeUpdates()
+        });
 
         const ON_PLANCHETTE = 'onPlanchette'
 
-        let paintCursorWithOffset = function (cursor, realX, realY) {
+        const paintCursorWithOffset = function (cursor, realX, realY) {
             let x = realX + offsetX * planchetteWidth / 100
             let y = realY + offsetY * planchetteHeight / 100
 
@@ -152,7 +195,33 @@
             cursor.style.top = (y - boardTop) + "px";
             cursor.style.left = (x - boardLeft) + "px";
         }
-        let mouseMoved = function (event, onPlanchette) {
+
+        const moveMagnifyingGlass = function () {
+            const mag = document.getElementById('magnifying-glass')
+            const xMoveWithOffset = planchetteTransformX + offsetX
+            const yMoveWithOffset = planchetteTransformY + offsetY
+
+            // Move location of the magnifying glass
+            const xMag = xMoveWithOffset * planchetteWidth / magSize
+            const yMag = yMoveWithOffset * planchetteHeight / magSize
+            mag.style.transform = `translateX(${xMag}%) translateY(${yMag}%)`;
+
+            // Move background image inside magnifying glass (using pixels because couldn't get % to work, this is why we have to call this method inside resizeUpdates)
+            const xBgPosPx = -(xMoveWithOffset * planchetteWidth + MAG_LEFT * 100 * boardWidth) / 100 * MAG_ZOOM - magSize * MAG_ZOOM * (1 - 1 / MAG_ZOOM) / 2
+            const yBgPosPx = -(yMoveWithOffset * planchetteHeight + MAG_TOP * 100 * boardHeight) / 100 * MAG_ZOOM - magSize * MAG_ZOOM * (1 - 1 / MAG_ZOOM) / 2
+            mag.style.backgroundPosition = `${xBgPosPx}px ${yBgPosPx}px`
+        }
+
+        const movePlanchette = function () {
+            const planchette = document.getElementById('planchette')
+            const planchetteHelper = document.getElementById('planchetteHelper')
+
+            planchette.style.transform = `translateX(${planchetteTransformX + offsetX}%) translateY(${planchetteTransformY + offsetY}%) rotate(130deg)`;
+            planchetteHelper.style.transform = `translateX(${planchetteTransformX}%) translateY(${planchetteTransformY}%) rotate(130deg)`;
+            moveMagnifyingGlass()
+        }
+
+        const mouseMoved = function (event, onPlanchette) {
             const x = event.clientX
             const y = event.clientY
             const diffX = x - prevX
@@ -161,15 +230,16 @@
             prevY = y
             userMoveCount += 1
 
-            if (draggingBlanchette) {
-                const planchette = document.getElementById('planchette')
-                const planchetteHelper = document.getElementById('planchetteHelper')
+            if (draggingPlanchette) {
+
+                // TODO prevent planchette from being moved outside board
+
                 planchetteTransformX += diffX * 100.0 / planchetteWidth
                 planchetteTransformY += diffY * 100.0 / planchetteHeight
 
                 const goalX = 70 - 50
                 const goalY = 70 - 50
-                const STOCHASTIC_STR = 1
+                const STOCHASTIC_STR = 0.7
                 const EFFECT_STR = 0.05
                 if (Math.random() > (1 - STOCHASTIC_STR)) {
                     if (Math.sign(goalX - ((planchetteTransformX + offsetX) * planchetteWidth / windowWidth)) == Math.sign(diffX)) {
@@ -184,28 +254,26 @@
                     }
                 }
 
-                // Move planchette (with cursor offset)
-                const xMoveWithOffset = planchetteTransformX + offsetX
-                const yMoveWithOffset = planchetteTransformY + offsetY
-                planchette.style.transform = `translateX(${xMoveWithOffset}%) translateY(${yMoveWithOffset}%) rotate(130deg)`;
-
-                // Move planchettehelper (without cursor offset)
-                planchetteHelper.style.transform = `translateX(${planchetteTransformX}%) translateY(${planchetteTransformY}%) rotate(130deg)`;
+                movePlanchette()
+            } else if (offsetX != 0 || offsetY != 0) {
+                // TODO We are not dragging and we have some offset; let's reduce offset.
+            } else {
+                // TODO Even if we are dragging we sometimes have to reduce offset to prevent the real cursor from escaping window.
             }
 
             const cursor = document.getElementById("cursor")
-            const newCursorSrc = (draggingBlanchette ? 'assets/grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'assets/grab.cur' : 'assets/aero_arrow.cur'))
+            const newCursorSrc = (draggingPlanchette ? 'assets/grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'assets/grab.cur' : 'assets/aero_arrow.cur'))
             if (cursor.src !== newCursorSrc) cursor.src = newCursorSrc
             cursor.style.visibility = "visible";
             paintCursorWithOffset(cursor, prevX, prevY)
         }
 
         const startDraggingPlanchette = function (event) {
-            draggingBlanchette = true
+            draggingPlanchette = true
             cursor.src = "assets/grabbing.cur"
         }
         const stopDraggingPlanchette = function (event, source) {
-            draggingBlanchette = false
+            draggingPlanchette = false
             const newCursor = (source === 'onPlanchette' ? 'assets/grab.cur' : 'assets/aero_arrow.cur')
             cursor.src = newCursor
             event.stopPropagation()
@@ -218,13 +286,16 @@
 
     <div id="bg" style="position: absolute; width: 100%; height: 100%"></div>
 
+    <!-- Warning: dont move elements outside boardContainer, otherwise windows resizing will cause inconsistencies in positioning! -->
     <div id="boardContainer" class="unselectable">
-        <!-- Warning: dont move elements outside boardContainer, otherwise windows resizing will cause inconsistencies in positioning! -->
         <img id="board" class="unselectable" src="assets/ouija_bg.jpg"></img>
 
         <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
         <img id="planchette" class="unselectable" src="assets/planchette2.png"></img>
         <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
+
+        <!-- Magnifying glass -->
+        <div id="magnifying-glass" class="unselectable"></div>
 
         <!-- Preload cursor icons like this -->
         <img src="assets/aero_arrow.cur" style="visibility: hidden; position: absolute;" />
@@ -247,17 +318,10 @@
 
     <script>
 
-        // Update memoized stuff after the first complete render and upon each resize
-        window.addEventListener('load', function (event) {
-            updateMemoizedStuff()
-        });
-        window.addEventListener('resize', function (event) {
-            updateMemoizedStuff()
-        });
-
         // Mouse move events
         document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('board').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('planchetteHelper').addEventListener('mousemove', e => { mouseMoved(e, ON_PLANCHETTE) })
 
         // Activating planchetteDragging
