@@ -8,7 +8,8 @@
             box-sizing: border-box;
         }
 
-        p {
+        p,
+        pre {
             margin: 0;
             padding: 0;
         }
@@ -204,12 +205,24 @@
 
         #userMessageContainer {
             position: absolute;
-            margin-top: 5%;
+            left: -50%;
+            bottom: -13%;
+            display: flex;
+            justify-content: center;
+            width: 100vw;
+            height: 3vh;
+        }
+
+        #userMessagePre {
+            position: absolute;
             pointer-events: none;
-            min-height: 40px;
-            /* TODO ??? */
-            white-space: nowrap;
-            letter-spacing: 0.5vw;
+            height: 3vh;
+            line-height: 3vh;
+            font-size: 2vw;
+            letter-spacing: 0.8vw;
+            color: #fff;
+            text-transform: uppercase;
+            font-family: 'Courier New', Courier, monospace;
         }
 
         .blinking-caret {
@@ -582,8 +595,8 @@
                             remainingGoals = remainingGoals.substring(1)
                             if (remainingGoals.length === 0) {
                                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
-                                document.getElementById('userMessageContainer').classList = ['unselectable blinking-caret']
-                                document.getElementById('userMessageContainer').innerText = ''
+                                document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
+                                document.getElementById('userMessagePre').innerText = ''
                                 turn = TURN_USER
                                 currentExchangeNumber++
                             }
@@ -612,7 +625,7 @@
             container.setAttribute('data-text', '')
 
             // Stop blinking caret
-            document.getElementById('userMessageContainer').classList = ['unselectable']
+            document.getElementById('userMessagePre').classList = ['unselectable']
         }
 
     </script>
@@ -653,7 +666,9 @@
         <div id="spiritMessageContainer" class="unselectable" data-text=""></div>
 
         <!-- User message -->
-        <div id="userMessageContainer" class="unselectable blinking-caret"></div>
+        <div id="userMessageContainer" class="unselectable">
+            <pre id="userMessagePre" class="unselectable blinking-caret"></pre>
+        </div>
     </div>
 
     <noscript>
@@ -699,15 +714,20 @@
         document.body.addEventListener('keydown', e => {
             const lowerCasedChar = e.key.toLocaleLowerCase()
             if (turn === TURN_USER) {
-                const m = document.getElementById('userMessageContainer')
+                const m = document.getElementById('userMessagePre')
                 if (ALLOWED_CHARS.includes(lowerCasedChar)) {
                     m.innerText += lowerCasedChar.toUpperCase()
+                } else if (e.key == ' ') {
+                    m.innerText += ' '
                 } else if (e.key == 'Enter') {
                     if (m.innerText.length >= 2) {
                         turn = TURN_SPIRIT
                         spiritIsReadyToCommunicate('') // Will fetch message later
-
                     }
+                } else if (e.key == 'Backspace' && m.innerText.length > 0) {
+                    m.innerText = m.innerText.substring(0, m.innerText.length - 1)
+                } else {
+                    console.log(e.key)
                 }
             }
 
