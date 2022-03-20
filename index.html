@@ -133,6 +133,7 @@
 
         // String literals
         const ON_PLANCHETTE = 'onPlanchette'
+        const RECORDING = 'recording'
 
         // Magnifier constants
         const MAG_ZOOM = 1.2
@@ -155,6 +156,46 @@
         const SOFT_Y_MIN = HARD_Y_MIN - 10
         const SOFT_X_MAX = HARD_X_MAX - 10
         const SOFT_X_MIN = HARD_X_MIN - 10
+
+        // Coordinates for goals (in % relative to planchette transform)
+        const goalCoords = {
+            "0": { "x": 96.57, "y": -0.67 },
+            "1": { "x": -110.95, "y": -1.07 },
+            "2": { "x": -92.67, "y": -0.27 },
+            "3": { "x": -69.56, "y": -0.27 },
+            "4": { "x": -45.9, "y": -0.27 },
+            "5": { "x": -23.86, "y": -0.27 },
+            "6": { "x": -1.28, "y": -0.67 },
+            "7": { "x": 20.23, "y": -0.67 },
+            "8": { "x": 42.27, "y": -0.27 },
+            "9": { "x": 67.54, "y": -0.67 },
+            "a": { "x": -159.6, "y": -58.17 },
+            "b": { "x": -139.2, "y": -77.69 },
+            "c": { "x": -115.5, "y": -91.63 },
+            "d": { "x": -91.94, "y": -101.99 },
+            "e": { "x": -64.52, "y": -110.36 },
+            "f": { "x": -35.48, "y": -115.5 },
+            "g": { "x": -6.57, "y": -116.62 },
+            "h": { "x": 24.94, "y": -115.17 },
+            "i": { "x": 52.9, "y": -111.67 },
+            "j": { "x": 74.94, "y": -105.69 },
+            "k": { "x": 105.05, "y": -94.14 },
+            "l": { "x": 130.32, "y": -79.4 },
+            "m": { "x": 152.9, "y": -63.06 },
+            "n": { "x": -152.8, "y": -7.68 },
+            "o": { "x": -136.2, "y": -22.82 },
+            "p": { "x": -117.9, "y": -36.37 },
+            "q": { "x": -94.81, "y": -47.92 },
+            "r": { "x": -65.24, "y": -57.48 },
+            "s": { "x": -36.75, "y": -63.46 },
+            "t": { "x": -6.75, "y": -67.17 },
+            "u": { "x": 24.53, "y": -65.21 },
+            "v": { "x": 55.17, "y": -60.83 },
+            "w": { "x": 86.36, "y": -51.67 },
+            "x": { "x": 111.63, "y": -37.72 },
+            "y": { "x": 134.21, "y": -24.18 },
+            "z": { "x": 147.65, "y": -9.44 }
+        }
 
         // Memoize some values to reduce reflows (improve performance).
         let boardWidth = 0
@@ -325,7 +366,8 @@
                     // TODO Even if we are dragging we sometimes have to reduce offset to prevent the real cursor from escaping window.
                     spiritGuidanceToOffset(x, y, diffX, diffY, goalX, goalY, dist)
                 } else {
-                    // User is not near goal, use this opportunity to reduce cursor offset to prevent the real cursor from escaping window.
+                    // User dragging planchette but is not near goal, use this opportunity to
+                    // reduce cursor offset to prevent the real cursor from escaping window.
                     if (y < SOFT_Y_MAX && y > SOFT_Y_MIN && x < SOFT_X_MAX && x > SOFT_X_MIN) {
                         // Soft limits are used to prevent us from accelerating the user beyond hard limits where planchette would be trapped
                         cancelSomeOffset(diffX, diffY, OFFSET_CANCELLATION_LOW_URGENCY)
@@ -355,8 +397,20 @@
         }
         const stopDraggingPlanchette = function (event, source) {
             draggingPlanchette = false
-            const newCursor = (source === 'onPlanchette' ? 'assets/grab.cur' : 'assets/aero_arrow.cur')
+            const newCursor = (source === ON_PLANCHETTE ? 'assets/grab.cur' : 'assets/aero_arrow.cur')
             cursor.src = newCursor
+            const x = planchetteTransformX + offsetX
+            const y = planchetteTransformY + offsetY
+            if (source === ON_PLANCHETTE && debug[RECORDING]) {
+                const chars = 'abcdefghijklmnopqrstuvwxyz1234567890-'
+                let i = 0
+                while (debug[RECORDING][chars[i]]) i++
+                debug[RECORDING][chars[i]] = {
+                    x: Math.round(100 * x) / 100,
+                    y: Math.round(100 * y) / 100,
+                }
+                console.log(debug[RECORDING])
+            }
             event.stopPropagation()
         }
 
@@ -415,7 +469,6 @@
         document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
         document.body.addEventListener('mouseleave', e => {
             stopDraggingPlanchette(e)
-            console.log('mouseLeave event')
             document.getElementById("cursor").style.visibility = "hidden"
 
             // Hopefully we dont have offsets when escaping window, but if we do, clear offsets
@@ -445,7 +498,7 @@
                 }
             }
             if (e.key == "r") {
-                debug['recording'] = {}
+                debug[RECORDING] = {}
                 console.log('Recording')
             }
         })
