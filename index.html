@@ -22,7 +22,7 @@
             font-display: swap;
         }
 
-        @keyframes glow {
+        @keyframes board-glow {
             0% {
                 box-shadow: 0 0 50px #d35400;
             }
@@ -45,7 +45,7 @@
             width: 100%;
             border-radius: 10%;
             z-index: 10;
-            animation-name: glow;
+            animation-name: board-glow;
             animation-iteration-count: infinite;
             animation-duration: 2s;
             animation-timing-function: ease-in-out;
@@ -63,8 +63,16 @@
 
         #planchette {
             z-index: 15;
-            -webkit-filter: drop-shadow(5px 5px 5px #222);
+            transition: filter 1.5s ease-in;
+        }
+
+        .planchette-no-glow {
             filter: drop-shadow(5px 5px 5px #222);
+        }
+
+        .planchette-active-glow {
+            filter: drop-shadow(5px 5px 5px rgb(255, 198, 198));
+            /** filter: drop-shadow(5px 5px 5px '#fce'); */
         }
 
         #planchetteHelper {
@@ -123,12 +131,12 @@
         }
 
         #spiritMessageContainer::before {
-            color: #ff00c1;
+            color: #f3ba39;
             animation: glitch-effect 6s infinite;
         }
 
         #spiritMessageContainer::after {
-            color: #3498db;
+            color: #f3ba39;
             animation: glitch-effect 4s infinite;
         }
 
@@ -155,7 +163,7 @@
             }
 
             100% {
-                left: -2px;
+                left: 0px;
                 top: -4px;
             }
         }
@@ -214,7 +222,7 @@
         let offsetX = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
-        let remainingGoals = 'killme'
+        let remainingGoals = ''
         let spiritMessage = ''
         let userMessage = ''
         let debug = {}
@@ -446,8 +454,8 @@
                 planchetteTransformX += diffX * 100.0 / planchetteWidth
                 planchetteTransformY += diffY * 100.0 / planchetteHeight
 
-                const goalX = goalCoords[remainingGoals[0]].x
-                const goalY = goalCoords[remainingGoals[0]].y
+                const goalX = remainingGoals.length > 0 ? goalCoords[remainingGoals[0]].x : -10000
+                const goalY = remainingGoals.length > 0 ? goalCoords[remainingGoals[0]].y : -10000
 
                 // Possibly accelerate/decelerate move by modifying cursor offset
                 const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
@@ -516,10 +524,13 @@
                     }
                     if (closestDist < CHAR_SELECT_MAX_DIST) {
                         // Close enough, interpret that user intends to select this character
-                        addCharToSpiritMessage(closestChar)
                         if (remainingGoals.length > 0 && closestChar === remainingGoals[0]) {
                             // Selected character was goal, move onto the next goal.
+                            addCharToSpiritMessage(closestChar)
                             remainingGoals = remainingGoals.substring(1)
+                            if (remainingGoals.length === 0) {
+                                document.getElementById('planchette').classList = ['planchette-no-glow']
+                            }
                         }
                     }
                 }
@@ -534,6 +545,12 @@
             container.setAttribute('data-text', spiritMessage)
         }
 
+        const spiritIsReadyToCommunicate = function (message) {
+            spiritMessage = '' // Clear previous message
+            remainingGoals = message // Set incoming message as new goals
+            document.getElementById('planchette').classList = ['planchette-active-glow'] // Visual indicator to user
+        }
+
     </script>
 </head>
 
@@ -546,7 +563,7 @@
         <img id="board" class="unselectable" src="assets/ouija_bg.jpg"></img>
 
         <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
-        <img id="planchette" class="unselectable" src="assets/planchette2.png"></img>
+        <img id="planchette" class="unselectable planchette-no-glow" src="assets/planchette2.png"></img>
         <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
 
         <!-- Magnifying glass -->
