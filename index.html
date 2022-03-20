@@ -214,6 +214,7 @@
         let offsetX = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
+        let remainingGoals = 'killme'
         let spiritMessage = ''
         let userMessage = ''
         let debug = {}
@@ -244,7 +245,9 @@
         const SOFT_X_MAX = HARD_X_MAX - 10
         const SOFT_X_MIN = HARD_X_MIN - 10
 
-        // Coordinates for goals (in % relative to planchette transform)
+        // Goal constants. Coordinates are in % relative to planchette transform.
+        const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz1234567890'
+        const CHAR_SELECT_MAX_DIST = 10
         const goalCoords = {
             "0": { "x": 96.57, "y": -0.67 },
             "1": { "x": -110.95, "y": -1.07 },
@@ -443,8 +446,8 @@
                 planchetteTransformX += diffX * 100.0 / planchetteWidth
                 planchetteTransformY += diffY * 100.0 / planchetteHeight
 
-                const goalX = -7
-                const goalY = -117
+                const goalX = goalCoords[remainingGoals[0]].x
+                const goalY = goalCoords[remainingGoals[0]].y
 
                 // Possibly accelerate/decelerate move by modifying cursor offset
                 const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
@@ -490,7 +493,7 @@
             const y = planchetteTransformY + offsetY
             if (source === ON_PLANCHETTE) {
                 if (debug[RECORDING]) {
-                    const chars = 'abcdefghijklmnopqrstuvwxyz1234567890'
+                    const chars = ALLOWED_CHARS
                     let i = 0
                     while (debug[RECORDING][chars[i]]) i++
                     debug[RECORDING][chars[i]] = {
@@ -499,10 +502,36 @@
                     }
                     console.log(debug[RECORDING])
                 } else {
-                    // TODO get distance to closest goal, if distance is below threshold then consider the letter marked
+                    // What is the closest character to planchette
+                    let closestDist = 99999999
+                    let closestChar = 'a'
+                    for (let i = 0; i < ALLOWED_CHARS.length; i++) {
+                        const char = ALLOWED_CHARS[i]
+                        const c = goalCoords[char]
+                        const dist = Math.sqrt((x - c.x) * (x - c.x) + (y - c.y) * (y - c.y))
+                        if (dist < closestDist) {
+                            closestDist = dist
+                            closestChar = char
+                        }
+                    }
+                    if (closestDist < CHAR_SELECT_MAX_DIST) {
+                        // Close enough, interpret that user intends to select this character
+                        addCharToSpiritMessage(closestChar)
+                        if (remainingGoals.length > 0 && closestChar === remainingGoals[0]) {
+                            // Selected character was goal, move onto the next goal.
+                            remainingGoals = remainingGoals.substring(1)
+                        }
+                    }
                 }
             }
             event.stopPropagation()
+        }
+
+        const addCharToSpiritMessage = function (char) {
+            spiritMessage += char
+            const container = document.getElementById('spiritMessageContainer')
+            container.innerText = spiritMessage
+            container.setAttribute('data-text', spiritMessage)
         }
 
     </script>
@@ -535,9 +564,7 @@
         <img src="assets/aero_arrow.cur" id="cursor" />
 
         <!-- Spirit message -->
-        <div id="spiritMessageContainer" class="unselectable" data-text="YOUWILLDIE">
-            YOUWILLDIE
-        </div>
+        <div id="spiritMessageContainer" class="unselectable" data-text=""></div>
     </div>
 
     <noscript>
