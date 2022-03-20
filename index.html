@@ -99,6 +99,7 @@
         #planchette {
             z-index: 15;
             transition: filter 1.5s ease-in;
+            /* TODO ease-in-out? */
         }
 
         .planchette-no-glow {
@@ -211,18 +212,19 @@
             justify-content: center;
             width: 100vw;
             height: 3vh;
+            pointer-events: none;
         }
 
         #userMessagePre {
             position: absolute;
-            pointer-events: none;
             height: 3vh;
             line-height: 3vh;
             font-size: 2vw;
             letter-spacing: 0.8vw;
-            color: #fff;
             text-transform: uppercase;
             font-family: 'Courier New', Courier, monospace;
+            color: #fff;
+            transition: color 1.0s ease-out;
         }
 
         .blinking-caret {
@@ -240,6 +242,10 @@
             50% {
                 border-color: #ffb476;
             }
+        }
+
+        .orangey-text {
+            color: #563e23 !important;
         }
 
         #cursor {
@@ -303,8 +309,8 @@
 
         // Offset constants
         const SPIRIT_MAX_DIST = 50.0
-        const SPIRIT_STOCHASTIC_STR = 0.7
-        const SPIRIT_ACCEL_STR = 1.1
+        const SPIRIT_STOCHASTIC_STR = 0.6
+        const SPIRIT_ACCEL_STR = 1.2
         const OFFSET_CANCELLATION_STR = 0.3
         const OFFSET_CANCELLATION_LOW_URGENCY = 0.3
 
@@ -459,9 +465,10 @@
             if (Math.random() > SPIRIT_STOCHASTIC_STR) {
                 return
             }
+            // TODO kokeile vaihtoehtosta kiihdytysta missa on vaan 1 paatos et kiihdytetaanko/hidastetaanko MAALIN SUUNTAISESTI (seka x etta y akseleilla) 
             if (diffX != 0 && Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
                 if (dist > 5) { // reduce jittery accels on top of goal
-                    offsetX += diffX * SPIRIT_ACCEL_STR * 1 * 100.0 / planchetteWidth // accelerate
+                    offsetX += diffX * SPIRIT_ACCEL_STR * 1.1 * 100.0 / planchetteWidth // accelerate
                 }
             } else if (diffX != 0) { // X axis move is in undesired direction
                 if (dist < 10) { // sharp cutoff for deceleration to reinforce feeling of "magnetic force" and to reduce unnecessary offsetting
@@ -470,7 +477,7 @@
             }
             if (diffY != 0 && Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction
                 if (dist > 5) {
-                    offsetY += diffY * SPIRIT_ACCEL_STR * 1 * 100.0 / planchetteHeight // accelerate
+                    offsetY += diffY * SPIRIT_ACCEL_STR * 1.1 * 100.0 / planchetteHeight // accelerate
                 }
             } else if (diffY != 0) {
                 if (dist < 10) {
@@ -625,7 +632,7 @@
             container.setAttribute('data-text', '')
 
             // Stop blinking caret
-            document.getElementById('userMessagePre').classList = ['unselectable']
+            document.getElementById('userMessagePre').classList = ['unselectable orangey-text']
         }
 
     </script>
@@ -785,7 +792,11 @@
 
     </script>
 
-    <script async data-domain="attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script>
+    <!--     <audio autoplay controls>
+        <source src="assets/dk-atmosphere.mp3" type="audio/mpeg">
+    </audio> -->
+
+    <!-- <script async data-domain="attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script> -->
 
 </body>
 
