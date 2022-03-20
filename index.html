@@ -191,6 +191,9 @@
                 visibility: 'visible'
             })
             updateMagnifyingGlassPosition()
+
+            // Fix edge case where user sees 2 cursors when using keyboard shortcut to resize browser
+            cursor.style.visibility = "hidden";
         }
         // Call resizeUpdates after the first complete render and after each resize
         window.addEventListener('load', function (event) {
@@ -412,10 +415,10 @@
         document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
         document.body.addEventListener('mouseleave', e => {
             stopDraggingPlanchette(e)
+            console.log('mouseLeave event')
             document.getElementById("cursor").style.visibility = "hidden"
 
             // Hopefully we dont have offsets when escaping window, but if we do, clear offsets
-            console.log(offsetX, planchetteTransformX)
             if (offsetX != 0) {
                 planchetteTransformX += offsetX // This negates any effect on planchette positioning
                 offsetX = 0
@@ -425,7 +428,6 @@
                 offsetY = 0
             }
             updatePlanchettePosition()
-            console.log(offsetX, planchetteTransformX)
         })
 
         // Helpers for debugging
