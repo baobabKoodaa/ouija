@@ -129,6 +129,7 @@
         let offsetX = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
+        let debug = {}
 
         // String literals
         const ON_PLANCHETTE = 'onPlanchette'
@@ -251,7 +252,6 @@
             if (Math.random() > SPIRIT_STOCHASTIC_STR) {
                 return
             }
-            console.log(dist)
             if (diffX != 0 && Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
                 if (dist > 5) { // reduce jittery accels on top of goal
                     offsetX += diffX * SPIRIT_ACCEL_STR * 1 * 100.0 / planchetteWidth // accelerate
@@ -413,20 +413,38 @@
         document.body.addEventListener('mouseleave', e => {
             stopDraggingPlanchette(e)
             document.getElementById("cursor").style.visibility = "hidden"
-            // TODO varmistus et offsetit on nollassa, jos ei oo ni pitää asettaa nollaan JA hyppäyttää planchette uuteen positioon
+
+            // Hopefully we dont have offsets when escaping window, but if we do, clear offsets
+            console.log(offsetX, planchetteTransformX)
+            if (offsetX != 0) {
+                planchetteTransformX += offsetX // This negates any effect on planchette positioning
+                offsetX = 0
+            }
+            if (offsetY != 0) {
+                planchetteTransformY += offsetY
+                offsetY = 0
+            }
+            updatePlanchettePosition()
+            console.log(offsetX, planchetteTransformX)
         })
 
-        // TEMP
+        // Helpers for debugging
         document.body.addEventListener('keydown', e => {
-            if (e.key != "d") {
+            if (!window.location.href.endsWith("#debug")) {
                 return
             }
-            if (document.body.style.cursor != 'none') {
-                document.getElementById('planchetteHelper').style.opacity = 0
-                document.body.style.cursor = 'none'
-            } else {
-                document.getElementById('planchetteHelper').style.opacity = 0.5
-                document.body.style.cursor = 'auto';
+            if (e.key == "d") {
+                if (document.body.style.cursor != 'none') {
+                    document.getElementById('planchetteHelper').style.opacity = 0
+                    document.body.style.cursor = 'none'
+                } else {
+                    document.getElementById('planchetteHelper').style.opacity = 0.5
+                    document.body.style.cursor = 'auto';
+                }
+            }
+            if (e.key == "r") {
+                debug['recording'] = {}
+                console.log('Recording')
             }
         })
 
