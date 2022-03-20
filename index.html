@@ -139,9 +139,9 @@
         const MAG_TOP = 0.58
 
         // Offset constants
-        const SPIRIT_MAX_DIST = 40.0
+        const SPIRIT_MAX_DIST = 50.0
         const SPIRIT_STOCHASTIC_STR = 0.7
-        const SPIRIT_ACCEL_STR = 0.9
+        const SPIRIT_ACCEL_STR = 1.1
         const OFFSET_CANCELLATION_STR = 0.3
         const OFFSET_CANCELLATION_LOW_URGENCY = 0.3
 
@@ -251,19 +251,24 @@
             if (Math.random() > SPIRIT_STOCHASTIC_STR) {
                 return
             }
+            console.log(dist)
             if (diffX != 0 && Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
                 if (dist > 5) { // reduce jittery accels on top of goal
-                    offsetX += diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // accelerate
+                    offsetX += diffX * SPIRIT_ACCEL_STR * 1 * 100.0 / planchetteWidth // accelerate
                 }
-            } else if (diffX != 0) { // X axis move is in undesired direction, decelerate
-                offsetX -= diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // decelerate
+            } else if (diffX != 0) { // X axis move is in undesired direction
+                if (dist < 10) { // sharp cutoff for deceleration to reinforce feeling of "magnetic force" and to reduce unnecessary offsetting
+                    offsetX -= diffX * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteWidth // decelerate
+                }
             }
-            if (diffY != 0 && Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction, accelerate
-                if (dist > 5) { // reduce jittery accels on top of goal
-                    offsetY += diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // accelerate
+            if (diffY != 0 && Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction
+                if (dist > 5) {
+                    offsetY += diffY * SPIRIT_ACCEL_STR * 1 * 100.0 / planchetteHeight // accelerate
                 }
-            } else if (diffY != 0) { // Y axis move is in undesired direction, decelerate
-                offsetY -= diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // decelerate
+            } else if (diffY != 0) {
+                if (dist < 10) {
+                    offsetY -= diffY * SPIRIT_ACCEL_STR * accelDistanceMultiplier * 100.0 / planchetteHeight // decelerate
+                }
             }
         }
 
