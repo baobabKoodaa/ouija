@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -5,6 +6,20 @@
     <style>
         * {
             box-sizing: border-box;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        @font-face {
+            font-family: 'Feral';
+            src: url('assets/Feral-Regular.woff2') format('woff2'),
+                url('assets/Feral-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
         }
 
         @keyframes glow {
@@ -75,6 +90,76 @@
             height: 100%;
         }
 
+        #spiritMessageContainer {
+            position: absolute;
+            top: -13%;
+            pointer-events: none;
+
+            /* Centering */
+            left: -50%;
+            width: 100vw;
+            text-align: center;
+            letter-spacing: 3vw;
+            text-indent: 3vw;
+
+            /* Styling */
+            font-size: 2vw;
+            color: #fff;
+            text-shadow: 0 0 5px #d35400;
+            text-transform: uppercase;
+            font-family: 'Feral';
+
+        }
+
+        #spiritMessageContainer::before,
+        #spiritMessageContainer::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #spiritMessageContainer::before {
+            color: #ff00c1;
+            animation: glitch-effect 6s infinite;
+        }
+
+        #spiritMessageContainer::after {
+            color: #3498db;
+            animation: glitch-effect 4s infinite;
+        }
+
+        /* Glitch effect popularized by Tiktok, code from https://amazingcss.com/glitch-text-effect-like-tiktok/ */
+        @keyframes glitch-effect {
+            0% {
+                left: -4px;
+                top: -4px;
+            }
+
+            25% {
+                left: 4px;
+                top: 0px;
+            }
+
+            50% {
+                left: -2px;
+                top: 4px;
+            }
+
+            75% {
+                left: 2px;
+                top: -2px;
+            }
+
+            100% {
+                left: -2px;
+                top: -4px;
+            }
+        }
+
         #cursor {
             position: absolute;
             top: 30%;
@@ -129,6 +214,8 @@
         let offsetX = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let offsetY = 0 // In % relative to window planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
+        let spiritMessage = ''
+        let userMessage = ''
         let debug = {}
 
         // String literals
@@ -401,15 +488,19 @@
             cursor.src = newCursor
             const x = planchetteTransformX + offsetX
             const y = planchetteTransformY + offsetY
-            if (source === ON_PLANCHETTE && debug[RECORDING]) {
-                const chars = 'abcdefghijklmnopqrstuvwxyz1234567890-'
-                let i = 0
-                while (debug[RECORDING][chars[i]]) i++
-                debug[RECORDING][chars[i]] = {
-                    x: Math.round(100 * x) / 100,
-                    y: Math.round(100 * y) / 100,
+            if (source === ON_PLANCHETTE) {
+                if (debug[RECORDING]) {
+                    const chars = 'abcdefghijklmnopqrstuvwxyz1234567890'
+                    let i = 0
+                    while (debug[RECORDING][chars[i]]) i++
+                    debug[RECORDING][chars[i]] = {
+                        x: Math.round(100 * x) / 100,
+                        y: Math.round(100 * y) / 100,
+                    }
+                    console.log(debug[RECORDING])
+                } else {
+                    // TODO get distance to closest goal, if distance is below threshold then consider the letter marked
                 }
-                console.log(debug[RECORDING])
             }
             event.stopPropagation()
         }
@@ -442,6 +533,11 @@
 
         <!-- Displayed cursor whose src is altered as needed -->
         <img src="assets/aero_arrow.cur" id="cursor" />
+
+        <!-- Spirit message -->
+        <div id="spiritMessageContainer" class="unselectable" data-text="YOUWILLDIE">
+            YOUWILLDIE
+        </div>
     </div>
 
     <noscript>
@@ -456,6 +552,7 @@
     <script>
 
         // Mouse move events
+        document.getElementsByClassName('')
         document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('board').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
