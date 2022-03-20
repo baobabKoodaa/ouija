@@ -13,6 +13,27 @@
             padding: 0;
         }
 
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            overflow-y: hidden;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            background: black;
+        }
+
+        #bg {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: none;
+            z-index: 9;
+        }
+
         @font-face {
             font-family: 'Feral';
             src: url('assets/Feral-Regular.woff2') format('woff2'),
@@ -39,17 +60,29 @@
             top: 50%;
             -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
+            z-index: 10;
         }
 
         #board {
+            position: relative;
             width: 100%;
             border-radius: 10%;
-            z-index: 10;
+            z-index: 11;
             animation-name: board-glow;
             animation-iteration-count: infinite;
             animation-duration: 2s;
             animation-timing-function: ease-in-out;
             animation-direction: alternate;
+        }
+
+        #hoverBoard {
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            z-index: 12;
+            cursor: none;
         }
 
         #planchette,
@@ -59,6 +92,7 @@
             left: 40.5%;
             width: 18%;
             transform: rotate(130deg);
+            cursor: none;
         }
 
         #planchette {
@@ -168,6 +202,33 @@
             }
         }
 
+        #userMessageContainer {
+            position: absolute;
+            margin-top: 5%;
+            pointer-events: none;
+            min-height: 40px;
+            /* TODO ??? */
+            white-space: nowrap;
+            letter-spacing: 0.5vw;
+        }
+
+        .blinking-caret {
+            border-right: .15em solid #ffb476;
+            animation: blink-caret .75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: #ffb476;
+            }
+        }
+
         #cursor {
             position: absolute;
             top: 30%;
@@ -177,15 +238,6 @@
             visibility: hidden;
             pointer-events: none;
             z-index: 1000;
-        }
-
-        body {
-            overflow-y: hidden;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            background: black;
-            cursor: none;
         }
 
         .unselectable {
@@ -201,10 +253,6 @@
         }
 
         @media only screen and (max-width: 760px) {
-            .button {
-                display: none;
-            }
-
             .mobile-warning {
                 display: block;
             }
@@ -212,6 +260,12 @@
     </style>
 
     <script>
+
+        // String literals
+        const ON_PLANCHETTE = 'onPlanchette'
+        const RECORDING = 'recording'
+        const TURN_SPIRIT = 'turnSpirit'
+        const TURN_USER = 'turnUser'
 
         // Global state
         let draggingPlanchette = false
@@ -225,11 +279,9 @@
         let remainingGoals = ''
         let spiritMessage = ''
         let userMessage = ''
+        let currentExchangeNumber = 0
+        let turn = TURN_USER
         let debug = {}
-
-        // String literals
-        const ON_PLANCHETTE = 'onPlanchette'
-        const RECORDING = 'recording'
 
         // Magnifier constants
         const MAG_ZOOM = 1.2
@@ -526,10 +578,14 @@
                         // Close enough, interpret that user intends to select this character
                         if (remainingGoals.length > 0 && closestChar === remainingGoals[0]) {
                             // Selected character was goal, move onto the next goal.
-                            addCharToSpiritMessage(closestChar)
+                            addCharToRevealedMessage(closestChar)
                             remainingGoals = remainingGoals.substring(1)
                             if (remainingGoals.length === 0) {
-                                document.getElementById('planchette').classList = ['planchette-no-glow']
+                                document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
+                                document.getElementById('userMessageContainer').classList = ['unselectable blinking-caret']
+                                document.getElementById('userMessageContainer').innerText = ''
+                                turn = TURN_USER
+                                currentExchangeNumber++
                             }
                         }
                     }
@@ -538,7 +594,7 @@
             event.stopPropagation()
         }
 
-        const addCharToSpiritMessage = function (char) {
+        const addCharToRevealedMessage = function (char) {
             spiritMessage += char
             const container = document.getElementById('spiritMessageContainer')
             container.innerText = spiritMessage
@@ -548,7 +604,15 @@
         const spiritIsReadyToCommunicate = function (message) {
             spiritMessage = '' // Clear previous message
             remainingGoals = message // Set incoming message as new goals
-            document.getElementById('planchette').classList = ['planchette-active-glow'] // Visual indicator to user
+            document.getElementById('planchette').classList = ['unselectable planchette-active-glow'] // Visual indicator to user
+
+            // Clear previously revealed answer from visuals
+            const container = document.getElementById('spiritMessageContainer')
+            container.innerText = ''
+            container.setAttribute('data-text', '')
+
+            // Stop blinking caret
+            document.getElementById('userMessageContainer').classList = ['unselectable']
         }
 
     </script>
@@ -556,11 +620,16 @@
 
 <body>
 
-    <div id="bg" style="position: absolute; width: 100%; height: 100%"></div>
+    <div id="bg" class="unselectable"></div>
 
     <!-- Warning: dont move elements outside boardContainer, otherwise browser resizing will cause inconsistencies in positioning! -->
     <div id="boardContainer" class="unselectable">
+
+        <!-- Board visual -->
         <img id="board" class="unselectable" src="assets/ouija_bg.jpg"></img>
+
+        <!-- Fix edge case where mousemove events aren't captured on board's rounded corners -->
+        <div id="hoverBoard" class="unselectable"></div>
 
         <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
         <img id="planchette" class="unselectable planchette-no-glow" src="assets/planchette2.png"></img>
@@ -582,6 +651,9 @@
 
         <!-- Spirit message -->
         <div id="spiritMessageContainer" class="unselectable" data-text=""></div>
+
+        <!-- User message -->
+        <div id="userMessageContainer" class="unselectable blinking-caret"></div>
     </div>
 
     <noscript>
@@ -596,9 +668,8 @@
     <script>
 
         // Mouse move events
-        document.getElementsByClassName('')
         document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
-        document.getElementById('board').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('hoverBoard').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('planchetteHelper').addEventListener('mousemove', e => { mouseMoved(e, ON_PLANCHETTE) })
 
@@ -624,18 +695,40 @@
             updatePlanchettePosition()
         })
 
-        // Helpers for debugging
+        // Keydown events
         document.body.addEventListener('keydown', e => {
+            const lowerCasedChar = e.key.toLocaleLowerCase()
+            if (turn === TURN_USER) {
+                const m = document.getElementById('userMessageContainer')
+                if (ALLOWED_CHARS.includes(lowerCasedChar)) {
+                    m.innerText += lowerCasedChar.toUpperCase()
+                } else if (e.key == 'Enter') {
+                    if (m.innerText.length >= 2) {
+                        turn = TURN_SPIRIT
+                        spiritIsReadyToCommunicate('') // Will fetch message later
+
+                    }
+                }
+            }
+
+            // Helpers for debugging
             if (!window.location.href.endsWith("#debug")) {
                 return
             }
             if (e.key == "d") {
-                if (document.body.style.cursor != 'none') {
+                if (document.getElementById('bg').style.cursor != 'none') {
                     document.getElementById('planchetteHelper').style.opacity = 0
-                    document.body.style.cursor = 'none'
+                    document.getElementById('bg').style.cursor = 'none'
+                    document.getElementById('hoverBoard').style.cursor = 'none'
+                    document.getElementById('planchette').style.cursor = 'none'
+                    document.getElementById('planchetteHelper').style.cursor = 'none'
+
                 } else {
                     document.getElementById('planchetteHelper').style.opacity = 0.5
-                    document.body.style.cursor = 'auto';
+                    document.getElementById('bg').style.cursor = 'auto'
+                    document.getElementById('hoverBoard').style.cursor = 'auto'
+                    document.getElementById('planchette').style.cursor = 'auto'
+                    document.getElementById('planchetteHelper').style.cursor = 'auto'
                 }
             }
             if (e.key == "r") {
@@ -643,6 +736,32 @@
                 console.log('Recording')
             }
         })
+
+        const cleanText = function (rawText) {
+            const lowerCased = rawText.toLocaleLowerCase()
+            let filtered = ''
+            for (let i = 0; i < lowerCased.length; i++) {
+                if (ALLOWED_CHARS.includes(lowerCased[i])) {
+                    filtered += lowerCased[i]
+                }
+            }
+            return filtered
+        }
+
+        // Fetch answers
+        const fetchAnswers = function () {
+            if (turn === TURN_SPIRIT && remainingGoals === '') {
+                fetch('https://temp-ouija.netlify.app/haario.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (remainingGoals.length == 0 && data?.responses?.length > currentExchangeNumber) {
+                            remainingGoals = cleanText(data.responses[currentExchangeNumber])
+                        }
+                    });
+            }
+        }
+        setInterval(fetchAnswers, 1000);
+
 
     </script>
 
