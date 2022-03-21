@@ -14,15 +14,16 @@
             padding: 0;
         }
 
-        html,
-        body {
+        html {
             height: 100%;
         }
 
         body {
+            /* Using 32px margin around body to avoid funny business with cursor near the edges of window */
+            margin: 32px;
+            height: calc(100% - 64px);
             overflow-y: hidden;
             overflow-x: hidden;
-            margin: 0;
             padding: 0;
             background: black;
         }
@@ -282,6 +283,7 @@
 
         // String literals
         const ON_PLANCHETTE = 'onPlanchette'
+        const ON_USER_MESSAGE = 'onUserMessage'
         const RECORDING = 'recording'
         const TURN_SPIRIT = 'turnSpirit'
         const TURN_USER = 'turnUser'
@@ -416,21 +418,6 @@
         const paintCursorWithOffset = function (cursor, realX, realY) {
             let x = realX + offsetX * planchetteWidth / 100
             let y = realY + offsetY * planchetteHeight / 100
-
-            // Never paint cursor outside partially outside viewport
-            if (x > windowWidth - 24) {
-                x = Math.max(realX, windowWidth - 24)
-            }
-            if (y > windowHeight - 24) {
-                y = Math.max(realY, windowHeight - 24)
-            }
-            if (x < 0) {
-                x = 0
-            }
-            if (y < 0) {
-                y = 0
-            }
-
             cursor.style.top = (y - boardTop) + "px";
             cursor.style.left = (x - boardLeft) + "px";
         }
@@ -445,7 +432,7 @@
             const yMag = yMoveWithOffset * planchetteHeight / magSize
             mag.style.transform = `translateX(${xMag}%) translateY(${yMag}%)`;
 
-            // Move background image inside magnifying glass (using pixels because couldn't get % to work, this is why we have to call this method inside resizeUpdates)
+            // Move background image inside magnifying glass (using pixels because I couldn't get % to work, this is why we have to call this method inside resizeUpdates)
             const xBgPosPx = -(xMoveWithOffset * planchetteWidth + MAG_LEFT * 100 * boardWidth) / 100 * MAG_ZOOM - magSize * MAG_ZOOM * (1 - 1 / MAG_ZOOM) / 2
             const yBgPosPx = -(yMoveWithOffset * planchetteHeight + MAG_TOP * 100 * boardHeight) / 100 * MAG_ZOOM - magSize * MAG_ZOOM * (1 - 1 / MAG_ZOOM) / 2
             mag.style.backgroundPosition = `${xBgPosPx}px ${yBgPosPx}px`
@@ -506,7 +493,7 @@
             }
         }
 
-        const mouseMoved = function (event, onPlanchette) {
+        const mouseMoved = function (event, onObject) {
             const currX = event.clientX
             const currY = event.clientY
             const diffX = (userMoveCount > 0 ? currX - prevX : 0)
@@ -554,16 +541,24 @@
             }
             updatePlanchettePosition()
 
+            const chooseCursorIcon = function () {
+                if (draggingPlanchette) return 'assets/grabbing.cur'
+                if (onObject === ON_PLANCHETTE && turn === TURN_SPIRIT) return 'assets/grab.cur'
+                return 'assets/aero_arrow.cur'
+            }
+
             const cursor = document.getElementById("cursor")
-            const newCursorSrc = (draggingPlanchette ? 'assets/grabbing.cur' : (onPlanchette === ON_PLANCHETTE ? 'assets/grab.cur' : 'assets/aero_arrow.cur'))
+            const newCursorSrc = chooseCursorIcon()
             if (cursor.src !== newCursorSrc) cursor.src = newCursorSrc
             cursor.style.visibility = "visible";
             paintCursorWithOffset(cursor, prevX, prevY)
         }
 
         const startDraggingPlanchette = function (event) {
-            draggingPlanchette = true
-            cursor.src = "assets/grabbing.cur"
+            if (turn === TURN_SPIRIT) {
+                draggingPlanchette = true
+                cursor.src = "assets/grabbing.cur"
+            }
         }
         const stopDraggingPlanchette = function (event, source) {
             draggingPlanchette = false
@@ -665,6 +660,7 @@
         <img src="assets/aero_link.cur" style="visibility: hidden; position: absolute;" />
         <img src="assets/grab.cur" style="visibility: hidden; position: absolute;" />
         <img src="assets/grabbing.cur" style="visibility: hidden; position: absolute;" />
+        <img src="assets/beam_i.cur" style="visibility: hidden; position: absolute;" />
 
         <!-- Displayed cursor whose src is altered as needed -->
         <img src="assets/aero_arrow.cur" id="cursor" />
@@ -733,8 +729,6 @@
                     }
                 } else if (e.key == 'Backspace' && m.innerText.length > 0) {
                     m.innerText = m.innerText.substring(0, m.innerText.length - 1)
-                } else {
-                    console.log(e.key)
                 }
             }
 
