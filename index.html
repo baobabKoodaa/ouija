@@ -229,7 +229,7 @@
         }
 
         .blinking-caret {
-            border-right: .15em solid #ffb476;
+            border-right: .15em solid #ff9900;
             animation: blink-caret .75s step-end infinite;
         }
 
@@ -241,7 +241,7 @@
             }
 
             50% {
-                border-color: #ffb476;
+                border-color: #ff9900;
             }
         }
 
@@ -285,6 +285,7 @@
         const ON_PLANCHETTE = 'onPlanchette'
         const ON_USER_MESSAGE = 'onUserMessage'
         const RECORDING = 'recording'
+        const SPEEDMODE = 'speedMode'
         const TURN_SPIRIT = 'turnSpirit'
         const TURN_USER = 'turnUser'
 
@@ -310,9 +311,9 @@
         const MAG_TOP = 0.58
 
         // Offset constants
-        const SPIRIT_MAX_DIST = 50.0
+        const SPIRIT_MAX_DIST = 60.0
         const SPIRIT_STOCHASTIC_STR = 0.6
-        const SPIRIT_ACCEL_STR = 1.2
+        const SPIRIT_ACCEL_STR = 1.3
         const OFFSET_CANCELLATION_STR = 0.3
         const OFFSET_CANCELLATION_LOW_URGENCY = 0.3
 
@@ -325,6 +326,9 @@
         const SOFT_Y_MIN = HARD_Y_MIN - 10
         const SOFT_X_MAX = HARD_X_MAX - 10
         const SOFT_X_MIN = HARD_X_MIN - 10
+
+        // User message constants
+        USER_MESSAGE_MAX_LENGTH = 40
 
         // Goal constants. Coordinates are in % relative to planchette transform.
         const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz1234567890'
@@ -617,12 +621,22 @@
         }
 
         const spiritIsReadyToCommunicate = function (message) {
+            const container = document.getElementById('spiritMessageContainer')
+
+            if (debug[SPEEDMODE]) {
+                spiritMessage = message
+                container.innerText = message
+                container.setAttribute('data-text', spiritMessage)
+                document.getElementById('userMessagePre').innerText = ''
+                return
+            }
+
+            turn = TURN_SPIRIT
             spiritMessage = '' // Clear previous message
             remainingGoals = message // Set incoming message as new goals
             document.getElementById('planchette').classList = ['unselectable planchette-active-glow'] // Visual indicator to user
 
             // Clear previously revealed answer from visuals
-            const container = document.getElementById('spiritMessageContainer')
             container.innerText = ''
             container.setAttribute('data-text', '')
 
@@ -635,6 +649,7 @@
 
 <body>
 
+    <!-- Background element for mousemove events -->
     <div id="bg" class="unselectable"></div>
 
     <!-- Warning: dont move elements outside boardContainer, otherwise browser resizing will cause inconsistencies in positioning! -->
@@ -718,14 +733,14 @@
             const lowerCasedChar = e.key.toLocaleLowerCase()
             if (turn === TURN_USER) {
                 const m = document.getElementById('userMessagePre')
-                if (ALLOWED_CHARS.includes(lowerCasedChar)) {
-                    m.innerText += lowerCasedChar.toUpperCase()
-                } else if (e.key == ' ') {
-                    m.innerText += ' '
+                if (ALLOWED_CHARS.includes(lowerCasedChar) || lowerCasedChar == ' ') {
+                    if (m.innerText.length < USER_MESSAGE_MAX_LENGTH) {
+                        m.innerText += lowerCasedChar.toUpperCase()
+                    }
                 } else if (e.key == 'Enter') {
                     if (m.innerText.length >= 2) {
-                        turn = TURN_SPIRIT
-                        spiritIsReadyToCommunicate('') // Will fetch message later
+                        spiritIsReadyToCommunicate(getSpiritResponse(m.innerText))
+                        //spiritIsReadyToCommunicate('') // Will fetch message later
                     }
                 } else if (e.key == 'Backspace' && m.innerText.length > 0) {
                     m.innerText = m.innerText.substring(0, m.innerText.length - 1)
@@ -736,7 +751,7 @@
             if (!window.location.href.endsWith("#debug")) {
                 return
             }
-            if (e.key == "d") {
+            if (e.key == "-") {
                 if (document.getElementById('bg').style.cursor != 'none') {
                     document.getElementById('planchetteHelper').style.opacity = 0
                     document.getElementById('bg').style.cursor = 'none'
@@ -752,9 +767,12 @@
                     document.getElementById('planchetteHelper').style.cursor = 'auto'
                 }
             }
-            if (e.key == "r") {
+            if (e.key == "=") {
                 debug[RECORDING] = {}
                 console.log('Recording')
+            }
+            if (e.key == "/") {
+                debug[SPEEDMODE] = true
             }
         })
 
@@ -770,18 +788,29 @@
         }
 
         // Fetch answers
-        const fetchAnswers = function () {
-            if (turn === TURN_SPIRIT && remainingGoals === '') {
-                fetch('https://temp-ouija.netlify.app/haario.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (remainingGoals.length == 0 && data?.responses?.length > currentExchangeNumber) {
-                            remainingGoals = cleanText(data.responses[currentExchangeNumber])
-                        }
-                    });
-            }
-        }
-        setInterval(fetchAnswers, 1000);
+        // const fetchAnswers = function () {
+        //     if (turn === TURN_SPIRIT && remainingGoals === '') {
+        //         fetch('https://temp-ouija.netlify.app/haario.json')
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (remainingGoals.length == 0 && data?.responses?.length > currentExchangeNumber) {
+        //                     remainingGoals = cleanText(data.responses[currentExchangeNumber])
+        //                 }
+        //             });
+        //     }
+        // }
+        // setInterval(fetchAnswers, 1000);
+
+
+
+        // fetch('http://ip-api.com/json')
+        //     .then(res => res.json())
+        //     .then(response => {
+        //         console.log("City: ", response.city);
+        //     })
+        //     .catch((data, status) => {
+        //         console.log('Request failed');
+        //     })
 
 
     </script>
@@ -791,6 +820,12 @@
     </audio> -->
 
     <!-- <script async data-domain="attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script> -->
+
+    <!-- <iframe width="361" height="25" src="https://www.youtube.com/embed/F0Jk80wDw2w" title="YouTube video player"
+        frameborder="0" allowfullscreen="false"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe> -->
+
+    <script async src="chatbot.js"></script>
 
 </body>
 
