@@ -108,11 +108,14 @@ const scriptedExperience = [
     {
         trigger: '{insult}',
         options: [
-            { value: 'imbecil' },
+            { value: 'bitch', priority: 0.5 },
+            { value: 'imbecil', priority: 0.3 },
             { value: 'fool' },
-            { value: 'bitch' },
             { value: 'harlot' },
             { value: 'idiot' },
+            { value: 'stupid' },
+            { value: 'maggot' },
+            { value: 'filthydog' },
             { value: 'areyoudeaf' }
         ]
     },
@@ -140,8 +143,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(how come|explain|like what)$/,
+        trigger: /^(how come|explain)$/,
         options: [
+            { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^like what$/,
+        options: [
+            { value: 'likediebitch', priority: 100 },
             { value: '{clarification}' },
         ]
     },
@@ -207,7 +217,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^when.*( did | were ).*/, // when did you die? when were you born?
+        trigger: /^when.*( did | where ).*/, // when did you die? when were you born (with were->where subsitution)
         options: [
             { value: '!RANDOM_YEAR_PAST' },
             { value: 'longago' },
@@ -254,7 +264,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you (in|at|there|close|near|here|around|present).*/,
+        trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over).*/,
         options: [
             { value: '{location}' }
         ]
@@ -334,7 +344,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(am i|is|will) .*/,
+        trigger: /^(am i|is|will)( |$).*/,
         options: [
             { value: '{boolean}' },
         ]
@@ -464,6 +474,18 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what.*year.* (where|did|was) .*/, // were->where substituted
+        options: [
+            { value: '!RANDOM_YEAR_PAST' },
+        ]
+    },
+    {
+        trigger: /^what.*year.*/,
+        options: [
+            { value: '!RANDOM_YEAR_FUTURE' },
+        ]
+    },
+    {
         trigger: /^what$/,
         options: [
             { value: 'youheardme' },
@@ -483,6 +505,36 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^(was|did) .*/,
+        options: [
+            { value: 'fortunately' },
+            { value: 'unfortunately' },
+            { value: 'regrettably' },
+            { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^do you.*/, // sleep? like me? kill people?
+        options: [
+            { value: 'sometimes' },
+            { value: 'imust' },
+            { value: 'perhaps' },
+            { value: 'ifyouwant', restrictedTo: [FRIENDLY] },
+            { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|shit)($| ).*/,
+        options: [
+            { value: 'ohplease' },
+            { value: 'manners' },
+            { value: 'youwillpayforthis' },
+            { value: 'howdareyou' },
+            { value: 'insolentcreature' },
+            { value: '{insult}' },
+        ]
+    },
+    {
         trigger: /^(ok|okay|i see|aha|sure|no|yes|it is|is it|really|right|yeah|whatever).*/,
         options: [
             { value: 'watchyourtone' },
@@ -492,7 +544,7 @@ const scriptedExperience = [
         ]
     },
     {
-        /* Nonsequitur fallback when nothing else matches */
+        /* Nonsequitur fallback when nothing else matches. Presumably user made a statement not a question. */
         trigger: /.*/,
         options: [
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
@@ -502,14 +554,13 @@ const scriptedExperience = [
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'youshallperish', restrictedTo: [EVIL] },
-            { value: 'youwilldiesoon', restrictedTo: [EVIL] },
+            { value: 'youwilldie', restrictedTo: [EVIL] },
             { value: 'false' },
-            { value: 'strange' },
+            { value: 'true' },
+            { value: 'indeed' },
             { value: 'perhaps' },
-            { value: 'intime' },
-            { value: 'essential' },
-            { value: 'flawed' },
-            // TODO insults
+            { value: 'isthatgood', restrictedTo: [FRIENDLY] },
+            
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
             // itconsumesme ... itwillcomeforyounow
@@ -528,8 +579,8 @@ const pickSuitableOption = function(options, spirit) {
         .map((option) => ({
             value: option.value,
             restrictedTo: option.restrictedTo,
-            // Priority: use random as tiebreaker, penalty for repeating previousOutputs
-            priority: Math.random() + (previousOutputs.has(option.value) ? -10 : 0)
+            // Priority: base priority, random as tiebreaker, penalty for repeating previousOutputs
+            priority: (option.priority ? option.priority : 0) + Math.random() + (previousOutputs.has(option.value) ? -10 : 0)
         }))
         .filter((option) => !option.restrictedTo || option.restrictedTo.includes(spirit.type))
     filteredOptions.sort((a, b) => b.priority - a.priority)
@@ -545,7 +596,7 @@ const resolveQuery = function(query, spirit) {
     // Special cases
     if (query === previousInput) {
         // TODO increase rage state?
-        return resolveQuery('{clarification}')
+        return resolveQuery('{insult}')
     }
     if (query.startsWith('!DEFINE')) {
         // TODO merkkaa localstorageen et on käytetty
