@@ -1,3 +1,8 @@
+// State
+let previousInput = ''
+let previousOutputs = new Set()
+let currentSpirit = null
+
 const FRIENDLY = 'friendly'
 const EVIL = 'evil'
 
@@ -62,7 +67,8 @@ const scriptedExperience = [
     {
         trigger: /^hi$/,
         options: [
-            { value: 'hello' }
+            { value: 'hello' },
+            { value: 'shalom' }
         ]
     },
     {
@@ -81,11 +87,22 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: '{identityFudge}', // TODO allow landing here unlimited times
+        trigger: '{identityFudge}',
         options: [
             { value: 'iusedtobelikeyou' },
             { value: 'itakemanyforms' },
             { value: 'iammanythings' },
+            { value: 'iamgod', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: '{clarification}',
+        options: [
+            { value: 'itoldyou' },
+            { value: 'think' },
+            { value: 'youknow' },
+            { value: 'leavemebe' },
+            { value: '{insult}' },
         ]
     },
     {
@@ -94,7 +111,9 @@ const scriptedExperience = [
             { value: 'imbecil' },
             { value: 'fool' },
             { value: 'bitch' },
+            { value: 'harlot' },
             { value: 'idiot' },
+            { value: 'areyoudeaf' }
         ]
     },
     {
@@ -117,12 +136,20 @@ const scriptedExperience = [
             { value: 'ether' },
             { value: 'hell', restrictedTo: [EVIL] },
             { value: 'grave' },
+            { value: 'crypt' },
+        ]
+    },
+    {
+        trigger: /^(how come|explain|like what)$/,
+        options: [
+            { value: '{clarification}' },
         ]
     },
     {
         trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
         options: [
             { value: '!DEFINE people' },
+            { value: 'justyou' },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: '2', restrictedTo: [FRIENDLY] },
         ]
@@ -137,11 +164,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how long.*/, // how long ago did you die? how long have you been dead? how long since ...
+        trigger: /^how long.*/, // how long ago did you die? how long have you been dead? how long since ... how long until ...
         options: [
             { value: 'toolong' },
             { value: 'ages' },
-            { value: 'horde' },
+            { value: 'centuries' },
             { value: '!RANDOM_COUNT_YEARS' }
         ]
     },
@@ -162,6 +189,11 @@ const scriptedExperience = [
             { value: 'suicide' },
             { value: 'knife' },
             { value: 'betrayal' },
+            { value: 'famine' },
+            { value: 'thirst' },
+            { value: 'inquisition' },
+            { value: 'witchhunt' },
+            { value: 'fire' },
         ]
     },
     {
@@ -179,7 +211,7 @@ const scriptedExperience = [
         options: [
             { value: '!RANDOM_YEAR_PAST' },
             { value: 'longago' },
-            { value: 'manymoonsago' },
+            { value: 'manymoonsago', restrictedTo: [FRIENDLY] },
         ]
     },
     {
@@ -202,9 +234,15 @@ const scriptedExperience = [
     {
         trigger: /^where.*/, // where were you killed? where will i die? where am i?
         options: [
-            { value: 'darkness' },
+            { value: 'indarkness' },
             { value: 'inthelight' },
             { value: 'home' },
+            { value: 'house' },
+            { value: 'tavern' },
+            { value: 'cabin' },
+            { value: 'forest' },
+            { value: 'desert' },
+            { value: 'swamp' },
         ]
     },
     {
@@ -212,11 +250,11 @@ const scriptedExperience = [
         options: [
             { value: 'both' },
             { value: 'neither' },
-            // TODO 50/50 x tai y
+            // TODO 50/50 x or y
         ]
     },
     {
-        trigger: /^are you (close|near|here|in here|around|inside|present)$/,
+        trigger: /^are you (in|at|there|close|near|here|around|present).*/,
         options: [
             { value: '{location}' }
         ]
@@ -224,7 +262,7 @@ const scriptedExperience = [
     {
         trigger: /^are you (old|young)$/,
         options: [
-            { value: '!RANDOM_COUNT_YEARS' }
+            { value: '!RANDOM_COUNT' }
         ]
     },
     {
@@ -249,20 +287,19 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you (ghost|spirit|undead)$/,
-        options: [
-            { value: '{identityFudge}' },
-        ]
-    },
-    {
         trigger: /^are you bot$/,
         options: [
             { value: 'donotinsultme' },
-            { value: 'whatisbot' },
             { value: 'human' },
             { value: 'no' },
             { value: 'thisisnotagame' },
             // TODO iam<name> / itoldyouiam<name>
+        ]
+    },
+    {
+        trigger: /^are you.*/, // Are you ghost, spirit, undead
+        options: [
+            { value: '{identityFudge}' },
         ]
     },
     {
@@ -279,28 +316,205 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are.*/,
+        trigger: /^are .*/,
         options: [
             { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^should .*/,
+        options: [
+            { value: '{boolean}' },
+            { value: 'risky' },
+            { value: 'worthit' },
+            { value: 'insane' },
+            { value: 'whynot' },
+            { value: 'toolate' },
+            { value: 'later' },
+        ]
+    },
+    {
+        trigger: /^(am i|is|will) .*/,
+        options: [
+            { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^who is my.*/,
+        options: [
+            { value: 'youknowwho' },
+            { value: 'thedarkone' },
+        ]
+    },
+    {
+        trigger: /^who (are you|is here|is this|is talking|is speaking)$/,
+        options: [
+            { value: '!NAME' },
+        ]
+    },
+    {
+        trigger: /^who$/,
+        options: [
+            { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^who.*/,
+        options: [
+            { value: 'lord' },
+            { value: 'angel' },
+            { value: 'demon' },
+            { value: 'savior' },
+            { value: 'messiah' },
+        ]
+    },
+    {
+        trigger: /^why.*/,
+        options: [
+            { value: 'youknowwhy' },
+            { value: 'greed' },
+            { value: 'money' },
+            { value: 'love' },
+            { value: 'lust' },
+            { value: 'mistake', restrictedTo: [FRIENDLY] },
+            { value: 'noreason', restrictedTo: [FRIENDLY] },
+            { value: 'forced', restrictedTo: [FRIENDLY] },
+            { value: 'nochoice', restrictedTo: [FRIENDLY] },
+            { value: 'influence' },
+            { value: 'power' },
+        ]
+    },
+    {
+        trigger: /^what are you$/,
+        options: [
+            { value: 'human' },
+            { value: 'lostsoul', restrictedTo: [FRIENDLY] },
+            { value: 'wanderer', restrictedTo: [FRIENDLY] },
+            { value: 'demon', restrictedTo: [EVIL] },
+            { value: 'angel', restrictedTo: [EVIL] },
+            { value: 'iamdeath', restrictedTo: [EVIL] },
+            { value: 'god', restrictedTo: [EVIL] },
+            { value: '666', restrictedTo: [EVIL] },
+            
+        ]
+    },
+    {
+        trigger: /^what.* mean.*/,
+        options: [
+            { value: 'iamnotmean' },
+            { value: 'yourchoice' },
+            { value: 'interpret' },
+            { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^what is your age$/,
+        options: [
+            { value: '!RANDOM_COUNT' }
+        ]
+    },
+    {
+        trigger: /^what is your name$/,
+        options: [
+            { value: '!NAME' },
+        ]
+    },
+    {
+        trigger: /^what is your.*/, // goal? motivation? favorite food?
+        options: [
+            { value: 'youwillsee', restrictedTo: [EVIL] },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^what is my.*/, // name? birthdate? location?
+        options: [
+            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
+            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
+            { value: 'youknow', restrictedTo: [FRIENDLY] },
+            { value: '{clarification}' },
+            { value: '{insult}' },
+        ]
+    },
+    {
+        trigger: /^what is this$/,
+        options: [
+            { value: 'nightmare' },
+            { value: 'feverdream' },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^what do you.*/, // want? feel?
+        options: [
+            { value: 'peace', restrictedTo: [FRIENDLY] },
+            { value: 'despair' },
+            { value: 'grief' },
+            { value: 'fortune' },
+            { value: 'regret' },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^what did you say$/,
+        options: [
+            { value: '{insult}' },
+        ]
+    },
+    {
+        trigger: /^what$/,
+        options: [
+            { value: 'youheardme' },
+            { value: 'whatisaid' },
+            { value: 'areyoudeaf' },
+            { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^what.*/,
+        options: [
+            { value: 'cantsee' },
+            { value: 'dontknow', restrictedTo: [FRIENDLY] },
+            { value: 'mirage' },
+            { value: 'careful', restrictedTo: [FRIENDLY] },
+            { value: 'darkness' },
+        ]
+    },
+    {
+        trigger: /^(ok|okay|i see|aha|sure|no|yes|it is|is it|really|right|yeah|whatever).*/,
+        options: [
+            { value: 'watchyourtone' },
+            { value: 'believeme' },
+            { value: 'itistrue' },
+            { value: 'youwillsee', restrictedTo: [EVIL] },
         ]
     },
     {
         /* Nonsequitur fallback when nothing else matches */
         trigger: /.*/,
         options: [
-            { value: 'youwilldiesoon', restrictedTo: [EVIL] },
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
-            { value: 'youthinkso' },
-            { value: 'youwillsee' },
+            { value: 'youthinkso', restrictedTo: [FRIENDLY] },
+            { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'youshallperish', restrictedTo: [EVIL] },
+            { value: 'youwilldiesoon', restrictedTo: [EVIL] },
+            { value: 'false' },
+            { value: 'strange' },
+            { value: 'perhaps' },
+            { value: 'intime' },
+            { value: 'essential' },
+            { value: 'flawed' },
             // TODO insults
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
             // itconsumesme ... itwillcomeforyounow
             // ithurts ... makeitstop
+            // theytookmyeyes ...
         ]
     }
 ]
@@ -314,17 +528,32 @@ const pickSuitableOption = function(options, spirit) {
         .map((option) => ({
             value: option.value,
             restrictedTo: option.restrictedTo,
-            priority: Math.random() // TODO alter priority based on what weve seen before
+            // Priority: use random as tiebreaker, penalty for repeating previousOutputs
+            priority: Math.random() + (previousOutputs.has(option.value) ? -10 : 0)
         }))
         .filter((option) => !option.restrictedTo || option.restrictedTo.includes(spirit.type))
-    filteredOptions.sort((a, b) => a.priority - b.priority)
-    return filteredOptions[0].value
+    filteredOptions.sort((a, b) => b.priority - a.priority)
+    const v = filteredOptions[0].value
+    if (!v.startsWith('!') && !v.startsWith('{')) {
+        // Node is fully resolved to actual output, save it to avoid repeating it in the future
+        previousOutputs.add(v)
+    }
+    return v
 }
 
 const resolveQuery = function(query, spirit) {
+    // Special cases
+    if (query === previousInput) {
+        // TODO increase rage state?
+        return resolveQuery('{clarification}')
+    }
     if (query.startsWith('!DEFINE')) {
-        // TODO merkkaa localstorageen et on käytetty + poista scriptedExperiencestä kaikki DEFINEit
+        // TODO merkkaa localstorageen et on käytetty
+        scriptedExperience.forEach((node) => node.options = node.options.filter((option) => !option.value.startsWith('!DEFINE')))
         return 'define' + query.split(" ")[1]
+    }
+    if (query.startsWith('!NAME')) {
+        return spirit.name
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {
         return '' + (2 + Math.floor(Math.random() * 13))
@@ -339,25 +568,29 @@ const resolveQuery = function(query, spirit) {
         return '' + (1500 + Math.floor(Math.random() * 522))
     }
     if (query.startsWith('!RANDOM_YEAR_FUTURE')) {
-        return '' + (2023 + Math.floor(Math.random() * 50))
+        return '' + (new Date().getFullYear() + 1 + Math.floor(Math.random() * 50))
     }
+
+    // Typical case: look for first match in scriptedExperience
     for (let i=0; i<scriptedExperience.length; i++) {
         const node = scriptedExperience[i]
         let matchingNode = null
+
+        // Trigger is string or regex
         if (typeof(node.trigger) == 'string') {
             if (node.trigger.startsWith('{') && query == node.trigger) {
                 matchingNode = node
             }
         } else {
-            // Trigger is regex
             if (query.match(node.trigger)) {
                 matchingNode = node
             }
         }
+
+        // Resolve matchingNode
         if (matchingNode) {
             const v = pickSuitableOption(matchingNode.options, spirit)
             if (v.startsWith('!') || v.startsWith('{')) {
-                // If chosen option needs more resolving, call resolveQuery recursively.
                 return resolveQuery(v, spirit)
             }
             return v
@@ -374,7 +607,7 @@ const initializeSpirit = function() {
         name: pickSuitableOption(names, { 'type': spiritType })
     }
 }
-const currentSpirit = initializeSpirit()
+currentSpirit = initializeSpirit()
 
 // TODO luetaan localStoragesta jo aiemmin käytetyt replat
 // TODO jos localStoragessa on merkitty et DEFINE on käytetty ni sit poistetaan ne scriptedExperiencestä
@@ -384,20 +617,23 @@ const getSpiritResponse = function(rawInput) {
         const input = rawInput
             .toLocaleLowerCase()
             .split(" ")
-            .filter((word) => !['the', 'a', 'an'].includes(word))
+            .filter((word) => !['the', 'a', 'an'].includes(word)) // Normalize common grammar typos
             .map((word) => {
+                // Normalize common word typos
                 if (word === 'were') return 'where'
                 if (word === 'u') return 'you'
                 if (word === 'r') return 'are'
+                if (word === 'youre') return 'your'
                 return word
             })
             .join(' ')
 
         const spiritResponse = resolveQuery(input, currentSpirit)
         // TODO tallenna käytetty repla localStorageen
+        previousInput = input
         return spiritResponse
     } catch (ex) {
-        //alert('Internal error, sorry!')
+        alert('Internal error, sorry!')
         console.log(ex)
         return 'error'
     }
