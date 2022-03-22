@@ -600,6 +600,7 @@
                             addCharToRevealedMessage(closestChar)
                             remainingGoals = remainingGoals.substring(1)
                             if (remainingGoals.length === 0) {
+                                console.log('Spirit: ' + spiritMessage.toUpperCase())
                                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                                 document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
                                 document.getElementById('userMessagePre').innerText = ''
@@ -625,6 +626,7 @@
 
             if (debug[SPEEDMODE]) {
                 spiritMessage = message
+                console.log('Spirit: ' + spiritMessage.toUpperCase())
                 container.innerText = message
                 container.setAttribute('data-text', spiritMessage)
                 document.getElementById('userMessagePre').innerText = ''
@@ -739,6 +741,7 @@
                     }
                 } else if (e.key == 'Enter') {
                     if (m.innerText.length >= 2) {
+                        console.log('Player: ' + m.innerText)
                         spiritIsReadyToCommunicate(getSpiritResponse(m.innerText))
                         //spiritIsReadyToCommunicate('') // Will fetch message later
                     }
@@ -815,17 +818,19 @@
 
     </script>
 
+    <script async src="chatbot.js"></script>
+
     <!--     <audio autoplay controls>
         <source src="assets/dk-atmosphere.mp3" type="audio/mpeg">
     </audio> -->
 
-    <!-- <script async data-domain="attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script> -->
+
+
+    <script defer data-domain="ouija.attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script>
 
     <!-- <iframe width="361" height="25" src="https://www.youtube.com/embed/F0Jk80wDw2w" title="YouTube video player"
         frameborder="0" allowfullscreen="false"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe> -->
-
-    <script async src="chatbot.js"></script>
 
 </body>
 

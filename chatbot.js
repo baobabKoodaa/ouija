@@ -357,7 +357,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^who (are you|is here|is this|is talking|is speaking)$/,
+        trigger: /^who (are you|is here|is there|is this|is talking|is speaking)$/,
         options: [
             { value: '!NAME' },
         ]
@@ -524,7 +524,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|shit)($| ).*/,
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up)($| ).*/,
         options: [
             { value: 'ohplease' },
             { value: 'manners' },
@@ -560,6 +560,7 @@ const scriptedExperience = [
             { value: 'indeed' },
             { value: 'perhaps' },
             { value: 'isthatgood', restrictedTo: [FRIENDLY] },
+            { value: 'thatsnotgood', restrictedTo: [FRIENDLY] },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
@@ -682,7 +683,7 @@ const getSpiritResponse = function(rawInput) {
         const spiritResponse = resolveQuery(input, currentSpirit)
         // TODO tallenna käytetty repla localStorageen
         previousInput = input
-        return spiritResponse
+        return spiritResponse.toLocaleLowerCase()
     } catch (ex) {
         alert('Internal error, sorry!')
         console.log(ex)
