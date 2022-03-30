@@ -46,6 +46,15 @@
             font-display: swap;
         }
 
+        @font-face {
+            font-family: 'Kingthings Trypewriter 2';
+            src: url('assets/KingthingsTrypewriter2.woff2') format('woff2'),
+                url('assets/KingthingsTrypewriter2.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
         #mobileWarning {
             display: none;
             background-color: white;
@@ -58,6 +67,7 @@
         }
 
         #consentPopup {
+            display: none;
             z-index: 994;
             border: 1px solid black;
             border-radius: 10px;
@@ -313,7 +323,7 @@
             font-size: 2vw;
             letter-spacing: 0.8vw;
             text-transform: uppercase;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Kingthings Trypewriter 2', 'Courier New', 'Courier', monospace;
             color: #fff;
             transition: color 1.0s ease-out;
         }
@@ -379,6 +389,7 @@
         const SPEEDMODE = 'speedMode'
         const TURN_SPIRIT = 'turnSpirit'
         const TURN_USER = 'turnUser'
+        const OUIJA_USER_ID = 'ouija-user-id'
 
         // Global state
         let waitingForConsent = false
@@ -744,6 +755,7 @@
             document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`;
             document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`;
             document.getElementById('userMessageContainer').style.visibility = `hidden`;
+            document.getElementById('consentPopup').style.display = `block`;
         }
 
         const mouseCheck = function () {
@@ -757,6 +769,7 @@
         const consentYes = function () {
             if (!mouseCheck()) return
             waitingForConsent = false
+            window.localStorage.setItem(OUIJA_USER_ID, 'user' + Math.round(1000000000 * Math.random()))
             document.getElementById('consentPopup').style.opacity = '0'
             setTimeout(() => document.getElementById('consentPopup').style.display = 'none', 3000)
             document.getElementById('board').style.filter = `none`;
@@ -956,7 +969,7 @@
             return filtered
         }
 
-        if (true) {
+        if (!window.localStorage.getItem(OUIJA_USER_ID)) {
             waitForConsent()
         }
 
@@ -972,7 +985,6 @@
         //     .catch((data, status) => {
         //         console.log('Request failed');
         //     })
-
 
     </script>
 
