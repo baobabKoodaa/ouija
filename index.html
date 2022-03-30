@@ -986,6 +986,38 @@
         //         console.log('Request failed');
         //     })
 
+        const spiritType = 'evil'
+        const userQuestion = 'how will i die'
+        fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            //mode: 'cors', // no-cors, *cors, same-origin
+            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${window.localStorage.getItem('ouija-openai-api-key')}`
+            },
+            //redirect: 'follow', // manual, *follow, error
+            //referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify({
+                "prompt": `
+                Participants huddle around the Ouija board and prepare to contact the spirit world. Participants gather around the board and place their fingers on the planchette. As the ${spiritType} spirit answers, the planchette moves to letters on the board.\n
+                Participants ask: what do you feel?\n
+                The ${spiritType} spirit responds and the planchette moves to the letters: P-A-I-N\n
+                Participants ask: ${userQuestion}?\n
+                The ${spiritType} spirit responds and the planchette moves to the letters:`,
+                "max_tokens": 32,
+                "temperature": 0.8,
+                "top_p": 1,
+                "n": 3,
+                "stream": false,
+                "stop": "\n"
+            })
+        })
+            .then((response) => response.json())
+            .then((response) => console.log(response.choices[0].text.split(/(\s+)/)[2], response))
+            .catch((exception) => console.log(exception))
+
     </script>
 
     <script async src="chatbot.js"></script>
