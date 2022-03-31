@@ -155,6 +155,26 @@
             }
         }
 
+        @keyframes scale-up-down {
+            0% {
+                transform: scale(1.0)
+            }
+
+            50% {
+                transform: scale(1.1)
+            }
+
+            100% {
+                transform: scale(1.0)
+            }
+        }
+
+        .one-time-bump {
+            animation-name: scale-up-down;
+            animation-iteration-count: 1;
+            animation-duration: 0.5s;
+        }
+
         #boardContainer {
             position: absolute;
             width: 50%;
@@ -522,6 +542,16 @@
             resizeUpdates()
         });
 
+        const LOG_ENDPOINT = 'https://endpoint1.collection.eu.sumologic.com/receiver/v1/http/ZaVnC4dhaV0vBIvS0oahg-8LYhDkyFCtWZ2zZ_7NbP0x0PYd0DmEk2cLgA4DJlePqnHWB5KjcxPFudwdOmtop0b6isr9VgLeKHYmzJ6eSqkD0cyZ6FNQiQ=='
+        const logToSumoLogic = function (message) {
+            try {
+                const augmentedMessage = `${window.localStorage.getItem(OUIJA_USER_ID)}:${Date.now()}:${using_GPT3 ? "GPT-3" : "Simple"}:${message}`
+                fetch(`${LOG_ENDPOINT}?${augmentedMessage}`)
+            } catch (ex) {
+                console.log('Logging to Sumo Logic failed', ex)
+            }
+        }
+
         const paintCursorWithOffset = function (cursor, realX, realY) {
             let x = realX + offsetX * planchetteWidth / 100
             let y = realY + offsetY * planchetteHeight / 100
@@ -704,7 +734,7 @@
                             addCharToRevealedMessage(closestChar)
                             remainingGoals = remainingGoals.substring(1)
                             if (remainingGoals.length === 0) {
-                                console.log('Spirit: ' + spiritMessage.toUpperCase())
+                                log('Spirit: ' + spiritMessage.toUpperCase())
                                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                                 document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
                                 document.getElementById('userMessagePre').innerText = ''
@@ -747,6 +777,8 @@
             const message = rawMessage.toLocaleLowerCase().replace(/[^0-9a-z]/gi, '')
             const container = document.getElementById('spiritMessageContainer')
 
+            logToSumoLogic(previousInput + " -> " + message)
+
             if (debug[SPEEDMODE]) {
                 turn = TURN_USER
                 spiritMessage = message
@@ -787,7 +819,7 @@
             document.getElementById('board').style.filter = `none`;
             document.getElementById('planchetteHelper').style.filter = `none`;
             document.getElementById('userMessageContainer').style.visibility = `visible`;
-            document.getElementById('consentYes').style.transform = `scale(1.1)`;
+            document.getElementById('consentYes').classList.add(['one-time-bump'])
             const elementsToFadeOut = document.getElementsByClassName('popupText')
             for (let i = 0; i < elementsToFadeOut.length; i++) {
                 elementsToFadeOut[i].style.opacity = '0.4';

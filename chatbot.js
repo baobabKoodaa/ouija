@@ -1,5 +1,5 @@
 // State
-let using_GPT3 = true // otherwise using simple chatbot
+let using_GPT3 = false // otherwise using simple chatbot
 let previousInput = ''
 let previousOutput = ''
 let previousOutputs = new Set()
@@ -60,8 +60,6 @@ const names = [
 
 /**************************************** OPENAI stuff begins ********************************************/
 
-const AVOIDABLE_RESPONSES = ['YES', 'NO', 'IAM']
-
 const parseOpenAIresponseText = function (rawText) {
     return rawText
         .split(/(\s+)/)
@@ -82,14 +80,10 @@ const parseOpenAIresponseJSON = function (response) {
             // Any response at least 2 characters long is good enough for our fallback response, and they all suck, so we don't care which one we pick.
             fallbackResponse = parsedResponse
         }
-        // Next we figure out if this is a candidate for bestResponse
-        if (AVOIDABLE_RESPONSES.includes(parsedResponse)) {
-            continue
-        }
         if (parsedResponse.length < 4 || parsedResponse.length > 15) {
+            // Avoid short responses like "YES", "NO", "IAM" and also long ones like "BECAUSEIAMYOURDARKLORDYOUSHOULDFOLLOWME"
             continue
         }
-        // Response is a candidate for bestResponse, calculate penalty
         let penalty = 0
         penalty += previousOutputs.has(parsedResponse) ? 10 : 0 // Prefer unseen responses
         penalty += parsedResponse.length // Prefer shorter responses (given that they are between 4 and 15 characters)
@@ -190,7 +184,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^hi$/,
+        trigger: /^(hi|hey)$/,
         options: [
             { value: 'hello' },
             { value: 'shalom' }
