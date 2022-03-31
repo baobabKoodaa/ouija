@@ -1,5 +1,7 @@
 // State
+let using_GPT3 = true // otherwise using simple chatbot
 let previousInput = ''
+let previousOutput = ''
 let previousOutputs = new Set()
 let currentSpirit = null
 
@@ -55,6 +57,129 @@ const names = [
     { value: 'Yacob', restrictedTo: [FRIENDLY] },
     { value: 'Zozo', restrictedTo: [EVIL] },
 ]
+
+/**************************************** OPENAI stuff begins ********************************************/
+
+const AVOIDABLE_RESPONSES = ['YES', 'NO', 'IAM']
+
+const parseOpenAIresponseText = function (rawText) {
+    return rawText
+        .split(/(\s+)/)
+        .filter((word) => !['A', 'AN', 'THE', ' '].includes(word))
+        .join("")
+        .toUpperCase()
+        .replace(/[^0-9A-Z]/gi, '')
+}
+
+const parseOpenAIresponseJSON = function (response) {
+    let bestResponse = ''
+    let bestResponsePenalty = 999999999
+    let fallbackResponse = ''
+    for (let i = 0; i < response.choices.length; i++) {
+        const parsedResponse = parseOpenAIresponseText(response.choices[i].text)
+        console.log(parsedResponse)
+        if (parsedResponse.length >= 2) {
+            // Any response at least 2 characters long is good enough for our fallback response, and they all suck, so we don't care which one we pick.
+            fallbackResponse = parsedResponse
+        }
+        // Next we figure out if this is a candidate for bestResponse
+        if (AVOIDABLE_RESPONSES.includes(parsedResponse)) {
+            continue
+        }
+        if (parsedResponse.length < 4 || parsedResponse.length > 15) {
+            continue
+        }
+        // Response is a candidate for bestResponse, calculate penalty
+        let penalty = 0
+        penalty += previousOutputs.has(parsedResponse) ? 10 : 0 // Prefer unseen responses
+        penalty += parsedResponse.length // Prefer shorter responses (given that they are between 4 and 15 characters)
+        if (penalty < bestResponsePenalty) {
+            bestResponsePenalty = penalty
+            bestResponse = parsedResponse
+        }
+    }
+    if (bestResponse.length > 0) {
+        return bestResponse
+    }
+    if (fallbackResponse.length > 0) {
+        return fallbackResponse
+    }
+    console.log(response)
+    return 'ERR'
+}
+
+const generateOpenAIPrompt = function (spirit, currentQuestion, previousQuestion, previousAnswer) {
+    const beginningInstructions = [
+        'The player communicates with a spirit using a Ouija board.',
+        'The spirit moves the planchette on the board to communicate.',
+        'The spirit answers with short answers containing 1 or 2 words.',
+        'The spirit never answers with "yes" or "no".',
+        'The spirit does not answer with simple yes/no answers.',
+        'The spirit answers with colorful language.',
+        `The spirit is ${spirit.type} and its answers are unsettling, creepy and scary.`
+    ].join(" ") + '\n'
+
+    const chatHistoryAsSampleQA = [
+        'Player: is this safe?',
+        'Spirit: TOXIC',
+        'Player: what do you feel?',
+        'Spirit: PAIN',
+        'Player: am i going to die?',
+        'Spirit: IN AGONY',
+        'Player: are you an angel?',
+        'Spirit: DEMON',
+        'Player: is this safe?',
+        'Spirit: DANGER',
+        'Player: are you good?',
+        'Spirit: VERY',
+        'Player: is this safe?',
+        'Spirit: LEAVE NOW',
+        'Player: do you want happiness?',
+        'Spirit: DEATH',
+        'Player: am i going to die?',
+        'Spirit: HORRIBLY',
+        'Player: can you hurt me?',
+        'Spirit: WITH PLEASURE',
+        //'Player: what is your name?',
+        //`Spirit: ${spirit.name.toUpperCase()}`,
+    ].join('\n') + '\n'
+
+    const maybePreviousQA = previousQuestion ? `Player: ${previousQuestion.toLocaleLowerCase()}?\nSpirit: ${previousAnswer}\n` : ''
+    const currentQA = `Player: ${currentQuestion.toLocaleLowerCase()}?\nSpirit:`
+    return beginningInstructions + chatHistoryAsSampleQA + maybePreviousQA + currentQA
+}
+
+const respondWithOpenAI = function (userQuestion, spirit, callback) {
+    const prompt = generateOpenAIPrompt(spirit, userQuestion, previousInput, previousOutput)
+    console.log(prompt)
+    fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.localStorage.getItem('ouija-openai-api-key')}`
+        },
+        body: JSON.stringify({
+            "prompt": prompt,
+            "max_tokens": 32,
+            "temperature": 0.9,
+            "top_p": 1,
+            "n": 5,
+            "stream": false,
+            "stop": "\n"
+        })
+    })
+    .then((response) => response.json())
+    .then((response) => parseOpenAIresponseJSON(response))
+    .then((parsed) => {
+        previousInput = userQuestion
+        previousOutput = parsed
+        previousOutputs.add(parsed)
+        callback(parsed)
+    })
+    .catch((exception) => console.log(exception))
+}
+
+/**************************************** OPENAI stuff ends ********************************************/
 
 const scriptedExperience = [
     {
@@ -357,7 +482,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^who (are you|is here|is there|is this|is talking|is speaking)$/,
+        trigger: /^who (are you|is it|is here|is there|is this|is talking|is speaking)$/,
         options: [
             { value: '!NAME' },
         ]
@@ -593,14 +718,13 @@ const pickSuitableOption = function(options, spirit) {
     return v
 }
 
-const resolveQuery = function(query, spirit) {
+const resolveQueryWithSimpleChatbot = function(query, spirit) {
     // Special cases
     if (query === previousInput) {
         // TODO increase rage state?
-        return resolveQuery('{insult}')
+        return resolveQueryWithSimpleChatbot('{insult}')
     }
     if (query.startsWith('!DEFINE')) {
-        // TODO merkkaa localstorageen et on käytetty
         scriptedExperience.forEach((node) => node.options = node.options.filter((option) => !option.value.startsWith('!DEFINE')))
         return 'define' + query.split(" ")[1]
     }
@@ -614,7 +738,7 @@ const resolveQuery = function(query, spirit) {
         return '' + (2 + Math.floor(Math.random() * 600))
     }
     if (query.startsWith('!RANDOM_COUNT_YEARS')) {
-        return resolveQuery('!RANDOM_COUNT', spirit) + 'years'
+        return resolveQueryWithSimpleChatbot('!RANDOM_COUNT', spirit) + 'years'
     }
     if (query.startsWith('!RANDOM_YEAR_PAST')) {
         return '' + (1500 + Math.floor(Math.random() * 522))
@@ -643,7 +767,7 @@ const resolveQuery = function(query, spirit) {
         if (matchingNode) {
             const v = pickSuitableOption(matchingNode.options, spirit)
             if (v.startsWith('!') || v.startsWith('{')) {
-                return resolveQuery(v, spirit)
+                return resolveQueryWithSimpleChatbot(v, spirit)
             }
             return v
         }
@@ -661,29 +785,32 @@ const initializeSpirit = function() {
 }
 currentSpirit = initializeSpirit()
 
-// TODO luetaan localStoragesta jo aiemmin käytetyt replat
-// TODO jos localStoragessa on merkitty et DEFINE on käytetty ni sit poistetaan ne scriptedExperiencestä
-const getSpiritResponse = function(rawInput) {
+const respondWithSimpleChatbot = function(rawInput, currentSpirit, callback) {
+    const input = rawInput
+        .toLocaleLowerCase()
+        .split(" ")
+        .filter((word) => !['the', 'a', 'an'].includes(word)) // Normalize common grammar typos
+        .map((word) => {
+            // Normalize common word typos
+            if (word === 'were') return 'where'
+            if (word === 'u') return 'you'
+            if (word === 'r') return 'are'
+            if (word === 'youre') return 'your'
+            return word
+        })
+        .join(' ')
 
+    const spiritResponse = resolveQueryWithSimpleChatbot(input, currentSpirit).toLocaleLowerCase()
+    
+    previousInput = input
+    previousOutput = spiritResponse
+    callback(spiritResponse)
+}
+
+const dispatchToSpirit = function(rawInput, callback) {
     try {
-        const input = rawInput
-            .toLocaleLowerCase()
-            .split(" ")
-            .filter((word) => !['the', 'a', 'an'].includes(word)) // Normalize common grammar typos
-            .map((word) => {
-                // Normalize common word typos
-                if (word === 'were') return 'where'
-                if (word === 'u') return 'you'
-                if (word === 'r') return 'are'
-                if (word === 'youre') return 'your'
-                return word
-            })
-            .join(' ')
-
-        const spiritResponse = resolveQuery(input, currentSpirit)
-        // TODO tallenna käytetty repla localStorageen
-        previousInput = input
-        return spiritResponse.toLocaleLowerCase()
+        if (using_GPT3) respondWithOpenAI(rawInput, currentSpirit, callback)
+        else respondWithSimpleChatbot(rawInput, currentSpirit, callback)
     } catch (ex) {
         alert('Internal error, sorry!')
         console.log(ex)
