@@ -230,7 +230,7 @@
 
         .switch {
             position: relative;
-            display: inline-block;
+            display: block;
             width: 4.6vw;
             height: 2.6vw;
             z-index: 996;
@@ -577,7 +577,6 @@
         const ON_BUTTON = 'onButton'
         const ON_TEXT_INPUT = 'onTextInput'
         const RECORDING = 'recording'
-        const SPEEDMODE = 'speedMode'
         const TURN_SPIRIT = 'turnSpirit'
         const TURN_USER = 'turnUser'
         const OUIJA_USER_ID = 'ouija-user-id'
@@ -593,10 +592,12 @@
         let offsetY = 0 // In % relative to planchette's width (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
         let remainingGoals = ''
-        let spiritMessage = ''
+        let revealedSpiritLetters = ''
         let userMessage = ''
         let currentExchangeNumber = 0
         let turn = TURN_USER
+        let speedMode = false
+        let revealMouse = false
         let debug = {}
 
         // Magnifier constants
@@ -905,7 +906,7 @@
                             addCharToRevealedMessage(closestChar)
                             remainingGoals = remainingGoals.substring(1)
                             if (remainingGoals.length === 0) {
-                                console.log('Spirit: ' + spiritMessage.toUpperCase())
+                                console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
                                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                                 document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
                                 document.getElementById('userMessagePre').innerText = ''
@@ -920,17 +921,17 @@
         }
 
         const addCharToRevealedMessage = function (char) {
-            spiritMessage += char
+            revealedSpiritLetters += char
             const container = document.getElementById('spiritMessageContainer')
-            container.innerText = spiritMessage
-            container.setAttribute('data-text', spiritMessage)
+            container.innerText = revealedSpiritLetters
+            container.setAttribute('data-text', revealedSpiritLetters)
         }
 
         const switchTurnToSpirit = function () {
             turn = TURN_SPIRIT
 
             // Clear previously revealed spirit message
-            spiritMessage = ''
+            revealedSpiritLetters = ''
 
             // Indicate to user that planchette can be dragged
             document.getElementById('planchette').classList = ['unselectable planchette-active-glow']
@@ -950,10 +951,10 @@
 
             logToSumoLogic(previousInput + " -> " + message)
 
-            if (debug[SPEEDMODE]) {
+            if (speedMode) {
                 turn = TURN_USER
-                spiritMessage = message
-                console.log('Spirit: ' + spiritMessage.toUpperCase())
+                revealedSpiritLetters = message
+                console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
                 container.innerText = message
                 container.setAttribute('data-text', message)
                 document.getElementById('userMessagePre').innerText = ''
@@ -1008,11 +1009,44 @@
         }
 
         const toggleRevealMouse = function () {
-            // TODO
+            revealMouse = !revealMouse
+            const slider = document.getElementById('revealMouseSliderSlider')
+            if (!revealMouse) {
+                slider.classList.remove(['checked'])
+                document.getElementById('planchetteHelper').style.opacity = 0
+                document.getElementById('bg').style.cursor = 'none'
+                document.getElementById('hoverBoard').style.cursor = 'none'
+                document.getElementById('planchette').style.cursor = 'none'
+                document.getElementById('planchetteHelper').style.cursor = 'none'
+            } else {
+                slider.classList.add(['checked'])
+                document.getElementById('planchetteHelper').style.opacity = 0.5
+                document.getElementById('bg').style.cursor = 'auto'
+                document.getElementById('hoverBoard').style.cursor = 'auto'
+                document.getElementById('planchette').style.cursor = 'auto'
+                document.getElementById('planchetteHelper').style.cursor = 'auto'
+            }
         }
 
         const toggleSpeedMode = function () {
-            // TODO
+            speedMode = !speedMode
+            const slider = document.getElementById('speedModeSliderSlider')
+            if (speedMode) {
+                slider.classList.add(['checked'])
+            } else {
+                slider.classList.remove(['checked'])
+            }
+            if (speedMode && remainingGoals.length > 0) {
+                turn = TURN_USER
+                const container = document.getElementById('spiritMessageContainer')
+                container.innerText = revealedSpiritLetters + remainingGoals
+                container.setAttribute('data-text', revealedSpiritLetters + remainingGoals)
+                document.getElementById('userMessagePre').innerText = ''
+                document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
+                document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
+                remainingGoals = ''
+                currentExchangeNumber++
+            }
         }
 
         const toggleOpenAI = function () {
@@ -1024,7 +1058,7 @@
                 document.getElementById('textInputAPIKey').style.marginTop = '2.2vw'
             } else {
                 slider.classList.add(['checked'])
-                document.getElementById('popupButtonsContainer').style.marginTop = '5vw'
+                document.getElementById('popupButtonsContainer').style.marginTop = '4.6vw'
                 document.getElementById('textInputAPIKey').value = window.localStorage.getItem('ouija-openai-api-key')
                 document.getElementById('textInputAPIKey').style.marginTop = '1vw'
             }
@@ -1175,12 +1209,10 @@
                     <span id="revealMouseSliderSlider" class="slider"></span>
                     <p class="slider-text">Reveal mouse magic</p>
                 </label>
-                <br /> <!-- TODO fix -->
                 <label class="switch" id="speedModeSlider">
                     <span id="speedModeSliderSlider" class="slider"></span>
                     <p class="slider-text">Speed mode</p>
                 </label>
-                <br /> <!-- TODO fix -->
                 <label class="switch" id="openAISlider">
                     <span id="openAISliderSlider" class="slider"></span>
                     <p class="slider-text">Use gpt3 (requires openai api key)</p>
@@ -1312,28 +1344,9 @@
             if (!window.location.href.endsWith("#debug")) {
                 return
             }
-            if (e.key == "-") {
-                if (document.getElementById('bg').style.cursor != 'none') {
-                    document.getElementById('planchetteHelper').style.opacity = 0
-                    document.getElementById('bg').style.cursor = 'none'
-                    document.getElementById('hoverBoard').style.cursor = 'none'
-                    document.getElementById('planchette').style.cursor = 'none'
-                    document.getElementById('planchetteHelper').style.cursor = 'none'
-
-                } else {
-                    document.getElementById('planchetteHelper').style.opacity = 0.5
-                    document.getElementById('bg').style.cursor = 'auto'
-                    document.getElementById('hoverBoard').style.cursor = 'auto'
-                    document.getElementById('planchette').style.cursor = 'auto'
-                    document.getElementById('planchetteHelper').style.cursor = 'auto'
-                }
-            }
             if (e.key == "=") {
                 debug[RECORDING] = {}
                 console.log('Recording')
-            }
-            if (e.key == "/") {
-                debug[SPEEDMODE] = true
             }
         })
 
