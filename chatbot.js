@@ -115,7 +115,7 @@ const generateOpenAIPrompt = function (spirit, currentQuestion, previousQuestion
 
     const chatHistoryAsSampleQA = [
         'Player: is this safe?',
-        'Spirit: TOXIC',
+        'Spirit: RUN',
         'Player: what do you feel?',
         'Spirit: PAIN',
         'Player: am i going to die?',
@@ -177,14 +177,14 @@ const respondWithOpenAI = function (userQuestion, spirit, callback) {
 
 const scriptedExperience = [
     {
-        trigger: /^hello$/,
+        trigger: /^hello.*/,
         options: [
             { value: 'greetings' },
             { value: 'mylord' }
         ],
     },
     {
-        trigger: /^(hi|hey)$/,
+        trigger: /^(hi|hey)($| .*)/,
         options: [
             { value: 'hello' },
             { value: 'shalom' }

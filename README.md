@@ -8,3 +8,5 @@ I designed and implemented this experience, but I didn't create the audio and vi
 - Font 'Carnevalee Freakshow' was created by Chris Hansen and was downloaded from [1001fonts](https://www.1001fonts.com/carnivalee-freakshow-font.html), which provide permission for both personal and commercial use.
 - Font 'Kingthings Trypewriter 2' was created by Kevin King and was downloaded from [1001fonts](https://www.1001fonts.com/kingthings-trypewriter-2-font.html), which provide permission for both personal and commercial use.
 - Background pattern used in first-visit popup is from [Hero Patterns](https://heropatterns.com/), which provide permission for use under CC BY 4.0 license.
+- Text glitch effect used in spirit message was popularized by Tiktok and implementation is adapted from [AmazingCSS](https://amazingcss.com/glitch-text-effect-like-tiktok/).
+- Gear icon is from [FontAwesome](https://fontawesome.com/icons/gear?s=solid) with permission for both personal and commercial use.

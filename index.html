@@ -9,9 +9,15 @@
         }
 
         p,
+        h1,
         pre {
             margin: 0;
             padding: 0;
+        }
+
+        a {
+            color: black;
+            cursor: none;
         }
 
         html {
@@ -55,6 +61,10 @@
             font-display: swap;
         }
 
+        h1 {
+            font-size: 4vw;
+        }
+
         #mobileWarning {
             display: none;
             background-color: white;
@@ -66,7 +76,32 @@
             z-index: 1100;
         }
 
-        #consentPopup {
+        #settingsGearHoverboard {
+            position: absolute;
+            top: 0vw;
+            right: 0vw;
+            width: 6vw;
+            height: 6vw;
+            z-index: 998;
+        }
+
+        #settingsGear {
+            position: absolute;
+            top: 2vw;
+            right: 2vw;
+            width: 2vw;
+            height: 2vw;
+            fill: #ffa900;
+            opacity: 0.7;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        #settingsGear:hover {
+            opacity: 1.0;
+        }
+
+        #popupContainer {
             display: none;
             z-index: 994;
             border: 1px solid black;
@@ -89,7 +124,7 @@
             background-image: url("data:image/svg+xml,%3Csvg width='180' height='180' viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M82.42 180h-1.415L0 98.995v-2.827L6.167 90 0 83.833V81.004L81.005 0h2.827L90 6.167 96.167 0H98.996L180 81.005v2.827L173.833 90 180 96.167V98.996L98.995 180h-2.827L90 173.833 83.833 180H82.42zm0-1.414L1.413 97.58 8.994 90l-7.58-7.58L82.42 1.413 90 8.994l7.58-7.58 81.006 81.005-7.58 7.58 7.58 7.58-81.005 81.006-7.58-7.58-7.58 7.58zM175.196 0h-25.832c1.033 2.924 2.616 5.59 4.625 7.868C152.145 9.682 151 12.208 151 15c0 5.523 4.477 10 10 10 1.657 0 3 1.343 3 3v4h16V0h-4.803c.51.883.803 1.907.803 3 0 3.314-2.686 6-6 6s-6-2.686-6-6c0-1.093.292-2.117.803-3h10.394-13.685C161.18.938 161 1.948 161 3v4c-4.418 0-8 3.582-8 8s3.582 8 8 8c2.76 0 5 2.24 5 5v2h4v-4h2v4h4v-4h2v4h2V0h-4.803zm-15.783 0c-.27.954-.414 1.96-.414 3v2.2c-1.25.254-2.414.74-3.447 1.412-1.716-1.93-3.098-4.164-4.054-6.612h7.914zM180 17h-3l2.143-10H180v10zm-30.635 163c-.884-2.502-1.365-5.195-1.365-8 0-13.255 10.748-24 23.99-24H180v32h-30.635zm12.147 0c.5-1.416 1.345-2.67 2.434-3.66l-1.345-1.48c-1.498 1.364-2.62 3.136-3.186 5.14H151.5c-.97-2.48-1.5-5.177-1.5-8 0-12.15 9.84-22 22-22h8v30h-18.488zm13.685 0c-1.037-1.793-2.976-3-5.197-3-2.22 0-4.16 1.207-5.197 3h10.394zM0 148h8.01C21.26 148 32 158.742 32 172c0 2.805-.48 5.498-1.366 8H0v-32zm0 2h8c12.15 0 22 9.847 22 22 0 2.822-.53 5.52-1.5 8h-7.914c-.567-2.004-1.688-3.776-3.187-5.14l-1.346 1.48c1.09.99 1.933 2.244 2.434 3.66H0v-30zm15.197 30c-1.037-1.793-2.976-3-5.197-3-2.22 0-4.16 1.207-5.197 3h10.394zM0 32h16v-4c0-1.657 1.343-3 3-3 5.523 0 10-4.477 10-10 0-2.794-1.145-5.32-2.992-7.134C28.018 5.586 29.6 2.924 30.634 0H0v32zm0-2h2v-4h2v4h4v-4h2v4h4v-2c0-2.76 2.24-5 5-5 4.418 0 8-3.582 8-8s-3.582-8-8-8V3c0-1.052-.18-2.062-.512-3H0v30zM28.5 0c-.954 2.448-2.335 4.683-4.05 6.613-1.035-.672-2.2-1.16-3.45-1.413V3c0-1.04-.144-2.046-.414-3H28.5zM0 17h3L.857 7H0v10zM15.197 0c.51.883.803 1.907.803 3 0 3.314-2.686 6-6 6S4 6.314 4 3c0-1.093.292-2.117.803-3h10.394zM109 115c-1.657 0-3 1.343-3 3v4H74v-4c0-1.657-1.343-3-3-3-5.523 0-10-4.477-10-10 0-2.793 1.145-5.318 2.99-7.132C60.262 93.638 58 88.084 58 82c0-13.255 10.748-24 23.99-24h16.02C111.26 58 122 68.742 122 82c0 6.082-2.263 11.636-5.992 15.866C117.855 99.68 119 102.206 119 105c0 5.523-4.477 10-10 10zm0-2c-2.76 0-5 2.24-5 5v2h-4v-4h-2v4h-4v-4h-2v4h-4v-4h-2v4h-4v-4h-2v4h-4v-2c0-2.76-2.24-5-5-5-4.418 0-8-3.582-8-8s3.582-8 8-8v-4c0-2.64 1.136-5.013 2.946-6.66L72.6 84.86C70.39 86.874 69 89.775 69 93v2.2c-1.25.254-2.414.74-3.447 1.412C62.098 92.727 60 87.61 60 82c0-12.15 9.84-22 22-22h16c12.15 0 22 9.847 22 22 0 5.61-2.097 10.728-5.55 14.613-1.035-.672-2.2-1.16-3.45-1.413V93c0-3.226-1.39-6.127-3.6-8.14l-1.346 1.48C107.864 87.987 109 90.36 109 93v4c4.418 0 8 3.582 8 8s-3.582 8-8 8zM90.857 97L93 107h-6l2.143-10h1.714zM80 99c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6zm20 0c3.314 0 6-2.686 6-6s-2.686-6-6-6-6 2.686-6 6 2.686 6 6 6z' fill='%23d9c99f' fill-opacity='0.24' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
-        #consentHoverboard {
+        #popupHoverboard {
             position: absolute;
             top: 0;
             left: 0;
@@ -98,17 +133,20 @@
             z-index: 995;
         }
 
-        #consentButtonsContainer {
+        #popupButtonsContainer {
             display: flex;
             flex-direction: row;
             width: 100%;
             text-align: center;
-            margin-top: 1em;
-            z-index: 996;
+            margin-top: 2vw;
+            z-index: 997;
+            transition: margin-top 0.5s ease-in-out;
         }
 
         #consentYes,
-        #consentNo {
+        #consentNo,
+        #saveSettings,
+        #textInputAPIKey {
             border: 1px solid black;
             border-radius: 10px;
             padding: 0.5vw;
@@ -128,6 +166,54 @@
             transition: 0.5s;
         }
 
+        #saveSettings {
+            display: none;
+            height: 4vw;
+            line-height: 3vw;
+            background-color: #ebebeb;
+        }
+
+        #saveSettings:hover {
+            color: gray;
+        }
+
+        #textInputAPIKey {
+            display: none;
+            background-color: white;
+            position: absolute;
+            border-radius: 5px;
+            margin-top: 2.2vw;
+            width: 31.3vw;
+            left: 7vw;
+            height: 2vw;
+            line-height: 2vw;
+            transition: margin-top 0.5s ease-in-out;
+        }
+
+        .externalLinkRow {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            margin-top: 2vw;
+            z-index: 997;
+            text-align: left;
+        }
+
+        .externalLinkRow svg {
+            height: 2.6vw;
+            vertical-align: middle;
+            fill: #958219;
+        }
+
+        .externalLinkRow span {
+            vertical-align: middle;
+        }
+
+        .externalLinkRow:hover {
+            opacity: 0.5;
+        }
+
         #consentYes:hover {
             box-shadow: 0 0 15px #ffb700;
             text-shadow: 0 0 7px #5c533b;
@@ -135,6 +221,73 @@
 
         #consentNo:hover {
             color: gray;
+        }
+
+        #popupSettings {
+            display: none;
+            z-index: 996;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 4.6vw;
+            height: 2.6vw;
+            z-index: 996;
+            margin-top: 1em;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider-text {
+            position: absolute;
+            display: inline-block;
+            left: 5.6vw;
+            height: 2.4vw;
+            width: 30vw;
+            line-height: 2.4vw;
+            pointer-events: none;
+
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 2.0vw;
+            width: 2.0vw;
+            left: 0.3vw;
+            bottom: 0.3vw;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .checked {
+            background-color: #958219;
+        }
+
+        .checked:before {
+            -webkit-transform: translateX(2.0vw);
+            -ms-transform: translateX(2.0vw);
+            transform: translateX(2.0vw);
         }
 
         #bg {
@@ -169,10 +322,28 @@
             }
         }
 
+        @keyframes rotate-circle {
+            0% {
+                transform: rotateZ(0deg)
+            }
+
+            100% {
+                transform: rotateZ(180deg)
+            }
+        }
+
         .one-time-bump {
             animation-name: scale-up-down;
             animation-iteration-count: 1;
             animation-duration: 0.5s;
+        }
+
+        .one-time-gear-roll {
+            animation-name: rotate-circle;
+            animation-timing-function: cubic-bezier(.12, 1, .96, .97);
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            animation-duration: 1s;
         }
 
         #boardContainer {
@@ -297,7 +468,6 @@
             animation: glitch-effect 4s infinite;
         }
 
-        /* Glitch effect popularized by Tiktok, code from https://amazingcss.com/glitch-text-effect-like-tiktok/ */
         @keyframes glitch-effect {
             0% {
                 left: -4px;
@@ -405,6 +575,7 @@
         const ON_PLANCHETTE = 'onPlanchette'
         const ON_USER_MESSAGE = 'onUserMessage'
         const ON_BUTTON = 'onButton'
+        const ON_TEXT_INPUT = 'onTextInput'
         const RECORDING = 'recording'
         const SPEEDMODE = 'speedMode'
         const TURN_SPIRIT = 'turnSpirit'
@@ -412,7 +583,7 @@
         const OUIJA_USER_ID = 'ouija-user-id'
 
         // Global state
-        let waitingForConsent = false
+        let popupIsOpen = false
         let draggingPlanchette = false
         let planchetteTransformX = 0 // In % relative to planchette's own width (to support browser resizing)
         let planchetteTransformY = 0 // In % relative to planchette's own width (to support browser resizing)
@@ -681,7 +852,7 @@
             const chooseCursorIcon = function () {
                 if (draggingPlanchette) return 'assets/grabbing.cur'
                 if (onObject === ON_PLANCHETTE && turn === TURN_SPIRIT) return 'assets/grab.cur'
-                if (onObject === ON_BUTTON && waitingForConsent) return 'assets/aero_link.cur'
+                if (onObject === ON_BUTTON && popupIsOpen) return 'assets/aero_link.cur'
                 return 'assets/aero_arrow.cur'
             }
 
@@ -734,7 +905,7 @@
                             addCharToRevealedMessage(closestChar)
                             remainingGoals = remainingGoals.substring(1)
                             if (remainingGoals.length === 0) {
-                                log('Spirit: ' + spiritMessage.toUpperCase())
+                                console.log('Spirit: ' + spiritMessage.toUpperCase())
                                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                                 document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
                                 document.getElementById('userMessagePre').innerText = ''
@@ -794,12 +965,74 @@
             remainingGoals = message // Set incoming message as new goals
         }
 
-        const waitForConsent = function () {
-            waitingForConsent = true
-            document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`;
-            document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`;
-            document.getElementById('userMessageContainer').style.visibility = `hidden`;
-            document.getElementById('consentPopup').style.display = `block`;
+        const openSettingsPopup = function () {
+            document.getElementById('settingsGear').classList.add(['one-time-gear-roll'])
+            document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('planchette').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('spiritMessageContainer').style.visibility = `hidden`
+            document.getElementById('userMessageContainer').style.visibility = `hidden`
+
+            /* Hide consent stuff from popup element */
+            const elementsToHide = document.getElementsByClassName('consentText')
+            for (let i = 0; i < elementsToHide.length; i++) {
+                elementsToHide[i].style.display = 'none'
+            }
+            document.getElementById('changingConsentText').style.display = 'none'
+            document.getElementById('consentYes').style.display = 'none'
+            document.getElementById('consentNo').style.display = 'none'
+
+            /* Display settings inside popup element */
+            document.getElementById('popupSettings').style.display = 'block'
+            document.getElementById('saveSettings').style.display = 'block'
+            document.getElementById('textInputAPIKey').style.display = 'block'
+
+            /* Make popup visible again */
+            document.getElementById('popupContainer').style.opacity = '1'
+            document.getElementById('popupContainer').style.display = `block`
+        }
+
+        const closeSettingsPopup = function () {
+            document.getElementById('settingsGear').classList.remove(['one-time-gear-roll'])
+            document.getElementById('planchette').style.filter = `unset`
+            document.getElementById('popupContainer').style.display = 'none'
+            document.getElementById('board').style.filter = `none`;
+            document.getElementById('planchetteHelper').style.filter = `none`;
+            document.getElementById('spiritMessageContainer').style.visibility = `visible`
+            document.getElementById('userMessageContainer').style.visibility = `visible`;
+        }
+
+        const toggleSettingsPopup = function () {
+            popupIsOpen = !popupIsOpen
+            popupIsOpen ? openSettingsPopup() : closeSettingsPopup()
+        }
+
+        const toggleRevealMouse = function () {
+            // TODO
+        }
+
+        const toggleSpeedMode = function () {
+            // TODO
+        }
+
+        const toggleOpenAI = function () {
+            using_GPT3 = !using_GPT3
+            const slider = document.getElementById('openAISliderSlider')
+            if (!using_GPT3) {
+                slider.classList.remove(['checked'])
+                document.getElementById('popupButtonsContainer').style.marginTop = '2vw'
+                document.getElementById('textInputAPIKey').style.marginTop = '2.2vw'
+            } else {
+                slider.classList.add(['checked'])
+                document.getElementById('popupButtonsContainer').style.marginTop = '5vw'
+                document.getElementById('textInputAPIKey').value = window.localStorage.getItem('ouija-openai-api-key')
+                document.getElementById('textInputAPIKey').style.marginTop = '1vw'
+            }
+
+        }
+
+        const userPastedAPIKey = function () {
+            window.localStorage.setItem('ouija-openai-api-key', document.getElementById('textInputAPIKey').value)
         }
 
         const mouseCheck = function () {
@@ -810,21 +1043,36 @@
             return true
         }
 
+        const openConsentPopup = function () {
+            popupIsOpen = true
+            document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('planchette').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('userMessageContainer').style.visibility = `hidden`
+            document.getElementById('popupContainer').style.display = `block`
+            document.getElementById('settingsGear').style.display = `none`
+        }
+
         const consentYes = function () {
             if (!mouseCheck()) return
-            waitingForConsent = false
+            popupIsOpen = false
             window.localStorage.setItem(OUIJA_USER_ID, 'user' + Math.round(1000000000 * Math.random()))
-            document.getElementById('consentPopup').style.opacity = '0'
-            setTimeout(() => document.getElementById('consentPopup').style.display = 'none', 3000)
+            document.getElementById('popupContainer').style.opacity = '0'
+            setTimeout(() => {
+                document.getElementById('popupContainer').style.display = 'none'
+                document.getElementById('settingsGear').style.display = `block`
+            }, 3000)
             document.getElementById('board').style.filter = `none`;
+            document.getElementById('planchette').style.filter = `unset`
             document.getElementById('planchetteHelper').style.filter = `none`;
             document.getElementById('userMessageContainer').style.visibility = `visible`;
             document.getElementById('consentYes').classList.add(['one-time-bump'])
-            const elementsToFadeOut = document.getElementsByClassName('popupText')
+            const elementsToFadeOut = document.getElementsByClassName('consentText')
             for (let i = 0; i < elementsToFadeOut.length; i++) {
                 elementsToFadeOut[i].style.opacity = '0.4';
             }
-            document.getElementById('changingPopupText').innerText = 'Thank you for complying. We shall come for your soul after death.'
+            document.getElementById('changingConsentText').innerText = 'Thank you for complying. We shall come for your soul after death.'
+
         }
 
         const consentNo = function () {
@@ -873,23 +1121,79 @@
             <pre id="userMessagePre" class="unselectable blinking-caret"></pre>
         </div>
 
-        <!-- Pop-up for first-time visitors -->
-        <div id="consentPopup" class="unselectable">
-            <p class="popupText">Welcome, friend.</p>
-            <ul class="popupText">
+        <!-- Popup -->
+        <div id="popupContainer" class="unselectable">
+            <div id="popupHoverboard" class="unselectable"></div>
+
+            <!-- Sometimes Popup contains consent stuff for first-time visitors. -->
+            <h1 class="consentText">Welcome, friend</h1>
+            <ul class="consentText">
                 <li>This website provides a horror experience. It is akin to a magic show; no actual spirits are
                     involved.
                 </li>
                 <li>Your conversations with spirits are recorded for development purposes, so do not divulge any
                     sensitive
                     information.</li>
-                <li id="mouseRequirement">The experience requires a mouse. Please use your mouse to proceed.</li>
+                <li id="mouseRequirement">This experience requires a mouse. Please use your mouse to proceed.</li>
             </ul>
-            <p id="changingPopupText">Would you like to offer your soul to support this website?</p>
-            <div id="consentHoverboard" class="unselectable"></div>
-            <div id="consentButtonsContainer">
+            <p id="changingConsentText">Would you like to offer your soul to support this website?</p>
+
+            <!-- Sometimes Popup contains settings. -->
+            <div id="popupSettings">
+                <h1>Switchboard</h1>
+                <a href="https://www.youtube.com/watch?v=uTmBeR32GRA" target="_blank">
+                    <div id="extRowMusic" class="externalLinkRow">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                            <path
+                                d="M384 320c-17.67 0-32 14.33-32 32v96H64V160h96c17.67 0 32-14.32 32-32s-14.33-32-32-32L64 96c-35.35 0-64 28.65-64 64V448c0 35.34 28.65 64 64 64h288c35.35 0 64-28.66 64-64v-96C416 334.3 401.7 320 384 320zM488 0H352c-12.94 0-24.62 7.797-29.56 19.75c-4.969 11.97-2.219 25.72 6.938 34.88L370.8 96L169.4 297.4c-12.5 12.5-12.5 32.75 0 45.25C175.6 348.9 183.8 352 192 352s16.38-3.125 22.62-9.375L416 141.3l41.38 41.38c9.156 9.141 22.88 11.84 34.88 6.938C504.2 184.6 512 172.9 512 160V24C512 10.74 501.3 0 488 0z" />
+                        </svg>
+                        <span>Recommended background music</span>
+                    </div>
+                </a>
+                <a href="https://github.com/baobabKoodaa/ouija" target="_blank">
+                    <div id="extRowGithub" class="externalLinkRow">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                            <path
+                                d="M384 320c-17.67 0-32 14.33-32 32v96H64V160h96c17.67 0 32-14.32 32-32s-14.33-32-32-32L64 96c-35.35 0-64 28.65-64 64V448c0 35.34 28.65 64 64 64h288c35.35 0 64-28.66 64-64v-96C416 334.3 401.7 320 384 320zM488 0H352c-12.94 0-24.62 7.797-29.56 19.75c-4.969 11.97-2.219 25.72 6.938 34.88L370.8 96L169.4 297.4c-12.5 12.5-12.5 32.75 0 45.25C175.6 348.9 183.8 352 192 352s16.38-3.125 22.62-9.375L416 141.3l41.38 41.38c9.156 9.141 22.88 11.84 34.88 6.938C504.2 184.6 512 172.9 512 160V24C512 10.74 501.3 0 488 0z" />
+                        </svg>
+                        <span>View source code</span>
+                    </div>
+                </a>
+                <a href="https://attejuvonen.fi/contact" target="_blank">
+                    <div id="extRowFeedback" class="externalLinkRow">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+                            <path
+                                d="M384 320c-17.67 0-32 14.33-32 32v96H64V160h96c17.67 0 32-14.32 32-32s-14.33-32-32-32L64 96c-35.35 0-64 28.65-64 64V448c0 35.34 28.65 64 64 64h288c35.35 0 64-28.66 64-64v-96C416 334.3 401.7 320 384 320zM488 0H352c-12.94 0-24.62 7.797-29.56 19.75c-4.969 11.97-2.219 25.72 6.938 34.88L370.8 96L169.4 297.4c-12.5 12.5-12.5 32.75 0 45.25C175.6 348.9 183.8 352 192 352s16.38-3.125 22.62-9.375L416 141.3l41.38 41.38c9.156 9.141 22.88 11.84 34.88 6.938C504.2 184.6 512 172.9 512 160V24C512 10.74 501.3 0 488 0z" />
+                        </svg>
+                        <span>Send feedback</span>
+                    </div>
+                </a>
+                <label class="switch" id="revealMouseSlider">
+                    <span id="revealMouseSliderSlider" class="slider"></span>
+                    <p class="slider-text">Reveal mouse magic</p>
+                </label>
+                <br /> <!-- TODO fix -->
+                <label class="switch" id="speedModeSlider">
+                    <span id="speedModeSliderSlider" class="slider"></span>
+                    <p class="slider-text">Speed mode</p>
+                </label>
+                <br /> <!-- TODO fix -->
+                <label class="switch" id="openAISlider">
+                    <span id="openAISliderSlider" class="slider"></span>
+                    <p class="slider-text">Use gpt3 (requires openai api key)</p>
+                </label>
+            </div>
+            <input id="textInputAPIKey" type="password" placeholder="Paste your OpenAI API key here"
+                onChange="userPastedAPIKey()"></input>
+
+            <!--Bottom of popup has some buttons (either consent yes/no or settings save) -->
+            <div id="popupButtonsContainer">
                 <div id="consentYes">Consent to selling your soul</div>
                 <div id="consentNo">Enter without selling your soul</div>
+                <div id="saveSettings">Continue</div>
             </div>
         </div>
 
@@ -904,12 +1208,21 @@
         <img src="assets/aero_arrow.cur" id="cursor" />
     </div>
 
+    <!-- Settings gear icon -->
+    <div id="settingsGearHoverboard"></div>
+    <div id="settingsGear">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+                d="M495.9 166.6C499.2 175.2 496.4 184.9 489.6 191.2L446.3 230.6C447.4 238.9 448 247.4 448 256C448 264.6 447.4 273.1 446.3 281.4L489.6 320.8C496.4 327.1 499.2 336.8 495.9 345.4C491.5 357.3 486.2 368.8 480.2 379.7L475.5 387.8C468.9 398.8 461.5 409.2 453.4 419.1C447.4 426.2 437.7 428.7 428.9 425.9L373.2 408.1C359.8 418.4 344.1 427 329.2 433.6L316.7 490.7C314.7 499.7 307.7 506.1 298.5 508.5C284.7 510.8 270.5 512 255.1 512C241.5 512 227.3 510.8 213.5 508.5C204.3 506.1 197.3 499.7 195.3 490.7L182.8 433.6C167 427 152.2 418.4 138.8 408.1L83.14 425.9C74.3 428.7 64.55 426.2 58.63 419.1C50.52 409.2 43.12 398.8 36.52 387.8L31.84 379.7C25.77 368.8 20.49 357.3 16.06 345.4C12.82 336.8 15.55 327.1 22.41 320.8L65.67 281.4C64.57 273.1 64 264.6 64 256C64 247.4 64.57 238.9 65.67 230.6L22.41 191.2C15.55 184.9 12.82 175.3 16.06 166.6C20.49 154.7 25.78 143.2 31.84 132.3L36.51 124.2C43.12 113.2 50.52 102.8 58.63 92.95C64.55 85.8 74.3 83.32 83.14 86.14L138.8 103.9C152.2 93.56 167 84.96 182.8 78.43L195.3 21.33C197.3 12.25 204.3 5.04 213.5 3.51C227.3 1.201 241.5 0 256 0C270.5 0 284.7 1.201 298.5 3.51C307.7 5.04 314.7 12.25 316.7 21.33L329.2 78.43C344.1 84.96 359.8 93.56 373.2 103.9L428.9 86.14C437.7 83.32 447.4 85.8 453.4 92.95C461.5 102.8 468.9 113.2 475.5 124.2L480.2 132.3C486.2 143.2 491.5 154.7 495.9 166.6V166.6zM256 336C300.2 336 336 300.2 336 255.1C336 211.8 300.2 175.1 256 175.1C211.8 175.1 176 211.8 176 255.1C176 300.2 211.8 336 256 336z" />
+        </svg>
+    </div>
 
-
+    <!-- Error message for users who have disabled JavaScript -->
     <noscript>
-        <h1>This website requires JavaScript in order to do a trick. Please enable JavaScript and refresh.</h1>
+        <h1>This website requires JavaScript in order to do some tricks. Please enable JavaScript and refresh.</h1>
     </noscript>
 
+    <!-- Error message for users who are on mobile devices -->
     <div id="mobileWarning">
         <h1>
             Your device is not supported, sorry. Can you come back on a desktop/laptop? You need a mouse and at least
@@ -919,30 +1232,7 @@
 
     <script>
 
-        // Mouse move events
-        document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
-        document.getElementById('hoverBoard').addEventListener('mousemove', e => { mouseMoved(e) })
-        document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
-        document.getElementById('planchetteHelper').addEventListener('mousemove', e => { mouseMoved(e, ON_PLANCHETTE) })
-        document.getElementById('consentHoverboard').addEventListener('mousemove', e => { mouseMoved(e) })
-        document.getElementById('consentYes').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
-        document.getElementById('consentNo').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
-
-        // Consent click events
-        document.getElementById('consentYes').addEventListener('click', e => { consentYes() })
-        document.getElementById('consentNo').addEventListener('click', e => { consentNo() })
-
-        // Activating planchetteDragging
-        document.getElementById('planchetteHelper').addEventListener('mousedown', e => { startDraggingPlanchette(e) })
-
-        // Deactivating planchetteDragging
-        document.getElementById('planchetteHelper').addEventListener('mouseup', e => { stopDraggingPlanchette(e, ON_PLANCHETTE) })
-        document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
-        document.body.addEventListener('mouseleave', e => {
-            stopDraggingPlanchette(e)
-            document.getElementById("cursor").style.visibility = "hidden"
-
-            // Hopefully we dont have offsets when escaping window, but if we do, clear offsets
+        const clearOffsets = function () {
             if (offsetX != 0) {
                 planchetteTransformX += offsetX // This negates any effect on planchette positioning
                 offsetX = 0
@@ -951,13 +1241,56 @@
                 planchetteTransformY += offsetY
                 offsetY = 0
             }
+        }
+
+        const switchToNormalCursor = function (e) {
+            stopDraggingPlanchette(e)
+            document.getElementById("cursor").style.visibility = "hidden"
+            clearOffsets()
             updatePlanchettePosition()
-        })
+        }
+
+        // Mouse move events
+        document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('hoverBoard').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('planchetteHelper').addEventListener('mousemove', e => { mouseMoved(e, ON_PLANCHETTE) })
+        document.getElementById('popupHoverboard').addEventListener('mousemove', e => { mouseMoved(e) })
+        document.getElementById('consentYes').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('consentNo').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('saveSettings').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('revealMouseSlider').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('speedModeSlider').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('openAISlider').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('extRowMusic').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('extRowGithub').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('extRowFeedback').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+
+        // Button click events
+        document.getElementById('consentYes').addEventListener('click', e => { consentYes() })
+        document.getElementById('consentNo').addEventListener('click', e => { consentNo() })
+        document.getElementById('saveSettings').addEventListener('click', e => { toggleSettingsPopup() })
+        document.getElementById('revealMouseSlider').addEventListener('click', e => { toggleRevealMouse() })
+        document.getElementById('speedModeSlider').addEventListener('click', e => { toggleSpeedMode() })
+        document.getElementById('openAISlider').addEventListener('click', e => { toggleOpenAI() })
+        document.getElementById('settingsGear').addEventListener('click', e => { toggleSettingsPopup() })
+
+        // Activating planchetteDragging
+        document.getElementById('planchetteHelper').addEventListener('mousedown', e => { startDraggingPlanchette(e) })
+
+        // Deactivating planchetteDragging
+        document.getElementById('planchetteHelper').addEventListener('mouseup', e => { stopDraggingPlanchette(e, ON_PLANCHETTE) })
+        document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
+
+        // Switches from fake cursor to normal cursor
+        document.body.addEventListener('mouseleave', e => { switchToNormalCursor(e) })
+        document.getElementById('settingsGearHoverboard').addEventListener('mousemove', e => { switchToNormalCursor(e) })
+        document.getElementById('textInputAPIKey').addEventListener('mousemove', e => { switchToNormalCursor(e) })
 
         // Keydown events
         document.body.addEventListener('keydown', e => {
             const lowerCasedChar = e.key.toLocaleLowerCase()
-            if (turn === TURN_USER && !waitingForConsent) {
+            if (turn === TURN_USER && !popupIsOpen) {
                 const m = document.getElementById('userMessagePre')
                 if (ALLOWED_CHARS.includes(lowerCasedChar) || lowerCasedChar == ' ') {
                     if (m.innerText.length < USER_MESSAGE_MAX_LENGTH) {
@@ -1016,7 +1349,7 @@
         }
 
         if (!window.localStorage.getItem(OUIJA_USER_ID)) {
-            waitForConsent()
+            openConsentPopup()
         }
 
         if (window.innerWidth < 1200) {
