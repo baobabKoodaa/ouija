@@ -154,14 +154,14 @@
             z-index: 996;
         }
 
-        #consentYes {
+        .primaryButton {
             background-color: #958219;
-            color: black;
+            color: white;
             transition: 0.5s;
         }
 
-        #consentYes:hover {
-            color: white;
+        .primaryButton:hover {
+            background-color: #968a47;
             box-shadow: 0 0 15px #5c533b;
             text-shadow: 0 0 5px #5c533b;
         }
@@ -179,11 +179,6 @@
         #tooltipContinueButton {
             height: 4vw;
             line-height: 2.6vw;
-            background-color: #958219;
-        }
-
-        #tooltipContinueButton:hover {
-            color: white;
         }
 
         #tooltipShutUpButton {
@@ -191,6 +186,7 @@
             line-height: 2.6vw;
             background-color: #ebebeb;
             margin-left: 1.5vw;
+            transition: 0.5s;
         }
 
         #tooltipShutUpButton:hover {
@@ -200,11 +196,6 @@
         #saveSettings {
             height: 4vw;
             line-height: 2.6vw;
-            background-color: #958219;
-        }
-
-        #saveSettings:hover {
-            color: white;
         }
 
         #textInputAPIKey {
@@ -275,6 +266,10 @@
             border-radius: 34px;
         }
 
+        .slider:not(.checked):hover {
+            background-color: #bbb;
+        }
+
         .slider-text {
             position: absolute;
             display: inline-block;
@@ -283,7 +278,6 @@
             width: 30vw;
             line-height: 2.4vw;
             pointer-events: none;
-
         }
 
         .slider:before {
@@ -1304,7 +1298,7 @@
         <img id="planchette" class="unselectable planchette-no-glow" src="assets/planchette2.png"></img>
         <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
 
-        <!-- Tooltip for new users -->
+        <!-- Smokey question mark tooltip -->
         <div id="tooltipContainer">
             <div id="tooltipSymbol">?</div>
             <svg width="0">
@@ -1325,7 +1319,7 @@
             <div id="magnifying-glass-surface"></div>
         </div>
 
-        <!-- Spirit message -->
+        <!-- Revealed portion of spirit message -->
         <div id="spiritMessageContainer" class="unselectable" data-text=""></div>
 
         <!-- User message -->
@@ -1348,7 +1342,7 @@
             </ul>
             <p id="changingConsentText">Would you like to offer your soul to support this website?</p>
             <div class="popupButtonsContainer">
-                <div id="consentYes" class="popupButton">Consent to selling your soul</div>
+                <div id="consentYes" class="popupButton primaryButton">Consent to selling your soul</div>
                 <div id="consentNo" class="popupButton">Enter without selling your soul</div>
             </div>
         </div>
@@ -1368,7 +1362,7 @@
                 the board.
             </p>
             <div class="popupButtonsContainer">
-                <div id="tooltipContinueButton" class="popupButton">Continue</div>
+                <div id="tooltipContinueButton" class="popupButton primaryButton">Continue</div>
                 <div id="tooltipShutUpButton" class="popupButton">No more tips</div>
             </div>
         </div>
@@ -1424,7 +1418,7 @@
             <input id="textInputAPIKey" type="password" placeholder="Paste your OpenAI API key here"
                 onChange="userPastedAPIKey()"></input>
             <div id="settingsPopupButtonsContainer" class="popupButtonsContainer">
-                <div id="saveSettings" class="popupButton">Continue</div>
+                <div id="saveSettings" class="popupButton primaryButton">Continue</div>
             </div>
         </div>
 
