@@ -756,6 +756,10 @@
 
         const LOG_ENDPOINT = 'https://endpoint1.collection.eu.sumologic.com/receiver/v1/http/ZaVnC4dhaV0vBIvS0oahg-8LYhDkyFCtWZ2zZ_7NbP0x0PYd0DmEk2cLgA4DJlePqnHWB5KjcxPFudwdOmtop0b6isr9VgLeKHYmzJ6eSqkD0cyZ6FNQiQ=='
         const logToSumoLogic = function (message) {
+            if (window.localStorage.getItem('ouija-dont-log-myself')) {
+                // Exclude debug testing messages from logs (use incognito if you need to test logging)
+                return
+            }
             try {
                 const augmentedMessage = `${window.localStorage.getItem(OUIJA_USER_ID)}:${Date.now()}:${using_GPT3 ? "GPT-3" : "Simple"}:${message}`
                 fetch(`${LOG_ENDPOINT}?${augmentedMessage}`)
@@ -1174,17 +1178,20 @@
             document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`
             document.getElementById('userMessageContainer').style.visibility = `hidden`
             document.getElementById('popupContainer').style.display = `block`
-            document.getElementById('settingsGear').style.display = `none`
+            document.getElementById('settingsGear').style.opacity = `0`
+            document.getElementById('settingsGear').style.transition = `opacity 3s`
         }
 
-        const consentYes = function () {
+        const closeConsentPopup = function () {
             if (!mouseCheck()) return
             popupIsOpen = false
             window.localStorage.setItem(OUIJA_USER_ID, 'user' + Math.round(1000000000 * Math.random()))
             document.getElementById('popupContainer').style.opacity = '0'
+            document.getElementById('settingsGear').style.opacity = `0.7`
             setTimeout(() => {
                 document.getElementById('popupContainer').style.display = 'none'
-                document.getElementById('settingsGear').style.display = `block`
+                document.getElementById('settingsGear').style.removeProperty('opacity')
+                document.getElementById('settingsGear').style.removeProperty('transition')
             }, 3000)
             document.getElementById('board').style.filter = `none`;
             document.getElementById('planchette').style.filter = `unset`
@@ -1200,8 +1207,15 @@
             document.getElementById('consentNo').style.pointerEvents = 'none'
         }
 
+        const consentYes = function () {
+            logToSumoLogic('!CONSENT_YES')
+            closeConsentPopup()
+        }
+
         const consentNo = function () {
             if (!mouseCheck()) return
+            logToSumoLogic('!CONSENT_NO')
+            // Make it appear as if the user clicked 'yes', even though they actually clicked 'no'
             const shiftXbuttonWidth = document.getElementById('consentNo').getBoundingClientRect().width * 100.0 / planchetteWidth
             const shiftXmarginWidth = windowWidth * 1.5 / planchetteWidth
             const shiftX = shiftXbuttonWidth + shiftXmarginWidth
@@ -1209,7 +1223,7 @@
             planchetteTransformX += shiftX // Negate any effect on planchette's position
             const cursor = document.getElementById("cursor")
             paintCursorWithOffset(cursor, prevX, prevY)
-            consentYes()
+            closeConsentPopup()
         }
 
         const startSmokeAnimation = function () {
