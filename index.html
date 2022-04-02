@@ -441,14 +441,15 @@
             line-height: 15vw;
             font-family: 'Kingthings Trypewriter 2', 'Courier New', 'Courier', monospace;
             font-size: 14vw;
-            color: white;
+            color: black;
             text-align: center;
             vertical-align: middle;
             filter: blur(11px);
             transition: filter 2s ease-out;
             /* color: transparent;
             background: linear-gradient(#fff, #999, #ddd, #888);
-            background-clip: text; */
+            background-clip: text;
+            -webkit-background-clip: text; */
         }
 
         #spiritMessageContainer {
@@ -1133,7 +1134,8 @@
                 elementsToFadeOut[i].style.opacity = '0.4';
             }
             document.getElementById('changingConsentText').innerText = 'Thank you for complying. We shall come for your soul after death.'
-
+            document.getElementById('consentYes').style.pointerEvents = 'none'
+            document.getElementById('consentNo').style.pointerEvents = 'none'
         }
 
         const consentNo = function () {
@@ -1445,9 +1447,13 @@
         let frames = 1;
         let rad = Math.PI / 180;
         let bfx, bfy;
-
+        let prevTime = Date.now()
         function freqAnimation() {
-            frames += .2
+            // Use elapsedTime to stabilize animation speed regardless of device
+            const currTime = Date.now()
+            const timeElapsed = currTime - prevTime
+            prevTime = currTime
+            frames += .02 * timeElapsed
 
             bfx = 0.03;
             bfy = 0.03;
@@ -1458,6 +1464,7 @@
             bf = bfx.toString() + " " + bfy.toString();
             filter.setAttributeNS(null, "baseFrequency", bf);
 
+            // Use requestIdleBallback instead of requestAnimationFrame, because we want our mouse move event listener callbacks to be prioritized higher than this low-prio animation in the queue for event loop.
             window.requestIdleCallback(freqAnimation);
         }
 
