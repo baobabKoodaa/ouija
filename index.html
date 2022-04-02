@@ -956,7 +956,7 @@
                 // We need coordinates relative to board (to support browser resizing).
                 x = (x * windowWidth - boardLeft) / boardWidth
                 y = (y * windowHeight - boardTop) / boardHeight
-                if (showTips && !popupIsOpen && x > tooltipHoverArea.left && x < tooltipHoverArea.right && y > tooltipHoverArea.top && y < tooltipHoverArea.bottom) {
+                if (showTips && !popupIsOpen && !pauseSmokeAnimation && x > tooltipHoverArea.left && x < tooltipHoverArea.right && y > tooltipHoverArea.top && y < tooltipHoverArea.bottom) {
                     // We are hovering over tooltip.
                     if (!hoveringOverTooltip) {
                         // We just now entered the hover area.
@@ -1038,6 +1038,10 @@
                                 document.getElementById('userMessagePre').innerText = ''
                                 turn = TURN_USER
                                 currentExchangeNumber++
+                                if (currentExchangeNumber === 1 && showTips) {
+                                    stopSmokeAnimation()
+                                    setTimeout(() => createTooltip(2), 5000)
+                                }
                             }
                         }
                     }
@@ -1093,6 +1097,10 @@
                 document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                 currentExchangeNumber++
+                if (currentExchangeNumber === 1 && showTips) {
+                    stopSmokeAnimation()
+                    setTimeout(() => createTooltip(2), 5000)
+                }
                 return
             }
             remainingGoals = message // Set incoming message as new goals
@@ -1117,10 +1125,11 @@
                 ]
             },
             {
-                tooltip: '!',
-                headline: '',
+                tooltip: 'O',
+                headline: 'Objective',
                 paragraphs: [
-                    '',
+                    `That's a good start, looks like you're getting the hang of it. We need to keep this thing talking in order trap it.`,
+                    `If you can, find out who... and what... we're dealing with here.`,
                 ]
             }
         ]
@@ -1135,6 +1144,8 @@
         }
 
         const openTooltipPopup = function (e) {
+            clearOffsets()
+            mouseMoved(e) // To update cursor location after clearing offsets.
             document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`
             document.getElementById('planchette').style.filter = `blur(10px) brightness(0.6)`
             document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`
@@ -1142,8 +1153,6 @@
             document.getElementById('userMessageContainer').style.visibility = `hidden`
             document.getElementById('tooltipPopup').style.opacity = '1'
             document.getElementById('tooltipPopup').style.display = `block`
-            clearOffsets()
-            mouseMoved(e) // To update cursor location after clearing offsets.
         }
 
         const closeTooltipPopup = function (shutUp) {
@@ -1577,8 +1586,8 @@
         // Button click events
         document.getElementById('consentYes').addEventListener('click', e => { consentYes() })
         document.getElementById('consentNo').addEventListener('click', e => { consentNo() })
-        document.getElementById('bg').addEventListener('click', e => { if (hoveringOverTooltip) toggleTooltipPopup(e) })
-        document.getElementById('hoverBoard').addEventListener('click', e => { if (hoveringOverTooltip) toggleTooltipPopup(e) })
+        document.getElementById('bg').addEventListener('click', e => { if (hoveringOverTooltip && showTips && !pauseSmokeAnimation) toggleTooltipPopup(e) })
+        document.getElementById('hoverBoard').addEventListener('click', e => { if (hoveringOverTooltip && showTips && !pauseSmokeAnimation) toggleTooltipPopup(e) })
         document.getElementById('tooltipContinueButton').addEventListener('click', e => { toggleTooltipPopup(e) })
         document.getElementById('tooltipShutUpButton').addEventListener('click', e => { toggleTooltipPopup(e, SHUT_UP) })
         document.getElementById('saveSettings').addEventListener('click', e => { toggleSettingsPopup() })
