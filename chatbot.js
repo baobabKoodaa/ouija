@@ -618,7 +618,6 @@ const scriptedExperience = [
         options: [
             { value: 'cantsee' },
             { value: 'dontknow', restrictedTo: [FRIENDLY] },
-            { value: 'mirage' },
             { value: 'careful', restrictedTo: [FRIENDLY] },
             { value: 'darkness' },
         ]
@@ -678,8 +677,7 @@ const scriptedExperience = [
             { value: 'true' },
             { value: 'indeed' },
             { value: 'perhaps' },
-            { value: 'isthatgood', restrictedTo: [FRIENDLY] },
-            { value: 'thatsnotgood', restrictedTo: [FRIENDLY] },
+            { value: 'liar' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist

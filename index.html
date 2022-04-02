@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <meta name="theme-color" content="#d35400" />
     <title>Ouija Online - A horror experience</title>
     <style>
         * {
@@ -169,7 +171,7 @@
         #saveSettings {
             display: none;
             height: 4vw;
-            line-height: 3vw;
+            line-height: 2.6vw;
             background-color: #ebebeb;
         }
 
@@ -432,8 +434,9 @@
             bottom: 2vw;
             width: 10vw;
             height: 15vw;
-            z-index: 996;
+            z-index: 12;
             cursor: none;
+            pointer-events: none;
             filter: url(#smokeFilter);
         }
 
@@ -810,6 +813,17 @@
             }
         }
 
+        const clearOffsets = function () {
+            if (offsetX != 0) {
+                planchetteTransformX += offsetX // This negates any effect on planchette positioning
+                offsetX = 0
+            }
+            if (offsetY != 0) {
+                planchetteTransformY += offsetY
+                offsetY = 0
+            }
+        }
+
         const cancelSomeOffset = function (diffX, diffY, urgency) {
             // Will accelerate or decelerate latest mouse move in an effort to reduce offset
             const e = OFFSET_CANCELLATION_STR * urgency
@@ -869,12 +883,18 @@
                 }
             } else {
                 // User is not dragging planchette, use this opportunity to reduce cursor offset to prevent the real cursor from escaping window.
-                const x = (currX + offsetX) / windowWidth
-                const y = (currY + offsetY) / windowHeight
+                const x = (currX + offsetX * planchetteWidth / 100) / windowWidth
+                const y = (currY + offsetY * planchetteHeight / 100) / windowHeight
                 const minimumEscapeDistance = Math.min(Math.abs(x - 0), Math.abs(x - 1), Math.abs(y - 1), Math.abs(y - 0))
-                // TODO instead of linear we need to have exponential urgency towards the edges of window
-                const urgency = Math.max(1 - minimumEscapeDistance / 0.30, OFFSET_CANCELLATION_LOW_URGENCY)
-                cancelSomeOffset(diffX, diffY, urgency)
+                if (minimumEscapeDistance > 0.04) {
+                    // TODO instead of linear we need to have exponential urgency towards the edges of window
+                    const urgency = Math.max(1 - minimumEscapeDistance / 0.30, OFFSET_CANCELLATION_LOW_URGENCY)
+                    cancelSomeOffset(diffX, diffY, urgency)
+                } else {
+                    // We are too close to the edge, immediately cancel all offset
+                    clearOffsets()
+                }
+
             }
             updatePlanchettePosition()
 
@@ -1163,6 +1183,36 @@
             document.getElementById('deanimateSmokeFilterMap').beginElement()
         }
 
+        const startSmokeAnimation = function () {
+            const filter = document.getElementById("smokeFilterTurbulence");
+            let frames = 1;
+            let rad = Math.PI / 180;
+            let bfx, bfy;
+            let prevTime = Date.now()
+            function freqAnimation() {
+                // Use elapsedTime to stabilize animation speed regardless of device
+                const currTime = Date.now()
+                const timeElapsed = currTime - prevTime
+                prevTime = currTime
+                frames += .02 * timeElapsed
+
+                bfx = 0.03;
+                bfy = 0.03;
+
+                bfx += 0.005 * Math.cos(frames * rad);
+                bfy += 0.005 * Math.sin(frames * rad);
+
+                bf = bfx.toString() + " " + bfy.toString();
+                filter.setAttributeNS(null, "baseFrequency", bf);
+
+                // Use requestIdleBallback instead of requestAnimationFrame, because 
+                // we want our mouse move event listener callbacks to be prioritized
+                // higher than this low-prio animation in the queue for event loop.
+                window.requestIdleCallback(freqAnimation);
+            }
+            window.requestIdleCallback(freqAnimation);
+        }
+
     </script>
 </head>
 
@@ -1199,7 +1249,6 @@
                 </filter>
             </svg>
         </div>
-
 
         <!-- Magnifying glass -->
         <div id="magnifying-glass" class="unselectable">
@@ -1323,17 +1372,6 @@
 
     <script>
 
-        const clearOffsets = function () {
-            if (offsetX != 0) {
-                planchetteTransformX += offsetX // This negates any effect on planchette positioning
-                offsetX = 0
-            }
-            if (offsetY != 0) {
-                planchetteTransformY += offsetY
-                offsetY = 0
-            }
-        }
-
         const switchToNormalCursor = function (e) {
             stopDraggingPlanchette(e)
             document.getElementById("cursor").style.visibility = "hidden"
@@ -1356,12 +1394,6 @@
         document.getElementById('extRowMusic').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
         document.getElementById('extRowGithub').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
         document.getElementById('extRowFeedback').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
-
-        // Tooltip fog events
-        // TODO ei voida kayttaa naita oikeita eventteja ! pitaa purkata planchetteHelperin kaltainen hommeli !
-        document.getElementById('tooltipSymbol').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
-        document.getElementById('tooltipSymbol').addEventListener('mouseenter', e => { startedHoverOnTooltip() })
-        document.getElementById('tooltipSymbol').addEventListener('mouseleave', e => { stoppedHoverOnTooltip() })
 
         // Button click events
         document.getElementById('consentYes').addEventListener('click', e => { consentYes() })
@@ -1443,32 +1475,8 @@
         //         console.log('Request failed');
         //     })
 
-        const filter = document.getElementById("smokeFilterTurbulence");
-        let frames = 1;
-        let rad = Math.PI / 180;
-        let bfx, bfy;
-        let prevTime = Date.now()
-        function freqAnimation() {
-            // Use elapsedTime to stabilize animation speed regardless of device
-            const currTime = Date.now()
-            const timeElapsed = currTime - prevTime
-            prevTime = currTime
-            frames += .02 * timeElapsed
-
-            bfx = 0.03;
-            bfy = 0.03;
-
-            bfx += 0.005 * Math.cos(frames * rad);
-            bfy += 0.005 * Math.sin(frames * rad);
-
-            bf = bfx.toString() + " " + bfy.toString();
-            filter.setAttributeNS(null, "baseFrequency", bf);
-
-            // Use requestIdleBallback instead of requestAnimationFrame, because we want our mouse move event listener callbacks to be prioritized higher than this low-prio animation in the queue for event loop.
-            window.requestIdleCallback(freqAnimation);
-        }
-
-        window.requestIdleCallback(freqAnimation);
+        // TODO move this and create stopper etc
+        startSmokeAnimation()
 
     </script>
 
