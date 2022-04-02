@@ -93,7 +93,7 @@
             right: 2vw;
             width: 2vw;
             height: 2vw;
-            fill: #ffa900;
+            fill: #d35400;
             opacity: 0.7;
             cursor: pointer;
             z-index: 999;
@@ -131,7 +131,8 @@
             margin-bottom: 0;
         }
 
-        .popupContainer>p {
+        .popupContainer>p,
+        #tooltipContent>p {
             margin-top: 1.5vw;
         }
 
@@ -151,7 +152,7 @@
             text-align: center;
             margin-top: 1.5vw;
             z-index: 997;
-            transition: margin-top 0.5s ease-in-out;
+            transition: margin-top 0.4s ease-in-out;
         }
 
         .popupButton {
@@ -166,7 +167,7 @@
         .primaryButton {
             background-color: #958219;
             color: white;
-            transition: 0.5s;
+            transition: 0.3s linear;
         }
 
         .primaryButton:hover {
@@ -178,7 +179,7 @@
         #consentNo {
             background-color: #ebebeb;
             margin-left: 1.5vw;
-            transition: 0.5s;
+            transition: 0.3s linear;
         }
 
         #consentNo:hover {
@@ -195,7 +196,7 @@
             line-height: 2.6vw;
             background-color: #ebebeb;
             margin-left: 1.5vw;
-            transition: 0.5s;
+            transition: 0.3s linear;
         }
 
         #tooltipShutUpButton:hover {
@@ -216,7 +217,7 @@
             left: 7vw;
             height: 2vw;
             line-height: 2vw;
-            transition: margin-top 0.5s ease-in-out;
+            transition: margin-top 0.4s ease-in-out;
         }
 
         .externalLinkRow {
@@ -277,6 +278,10 @@
 
         .slider:not(.checked):hover {
             background-color: #bbb;
+        }
+
+        .slider.checked:hover {
+            background-color: #968a47;
         }
 
         .slider-text {
@@ -468,7 +473,8 @@
             text-align: center;
             vertical-align: middle;
             filter: blur(11px);
-            transition: filter 2s ease-out;
+            transform: scale(0.0);
+            transition: filter 2s ease-out, transform 4s ease-in-out;
             /* color: transparent;
             background: linear-gradient(#fff, #999, #ddd, #888);
             background-clip: text;
@@ -719,12 +725,12 @@
             "z": { "x": 147.65, "y": -9.44 }
         }
 
-        // Tooltip hovering area. Coordinates are relative to window width.
+        // Tooltip hovering area. Coordinates are relative to planchette's size.
         const tooltipHoverArea = {
-            top: 0.532,
-            left: 0.666,
-            bottom: 0.650,
-            right: 0.728
+            top: 0.57,
+            left: 0.83,
+            bottom: 0.87,
+            right: 0.96
         }
 
         // Memoize some values to reduce reflows (improve performance).
@@ -933,8 +939,9 @@
                 // User is not dragging planchette.
 
                 // Take the opportunity to reduce cursor offset to prevent the real cursor from escaping window.
-                const x = (currX + offsetX * planchetteWidth / 100) / windowWidth
-                const y = (currY + offsetY * planchetteHeight / 100) / windowHeight
+                // We need coordinates relative to viewport.
+                let x = (currX + offsetX * planchetteWidth / 100) / windowWidth
+                let y = (currY + offsetY * planchetteHeight / 100) / windowHeight
                 const minimumEscapeDistance = Math.min(Math.abs(x - 0), Math.abs(x - 1), Math.abs(y - 1), Math.abs(y - 0))
                 if (minimumEscapeDistance > 0.04) {
                     // TODO instead of linear we need to have exponential urgency towards the edges of window
@@ -945,7 +952,10 @@
                     clearOffsets()
                 }
 
-                // Determine if user's fake cursor is hovering over tooltip
+                // Determine if user's fake cursor is hovering over tooltip.
+                // We need coordinates relative to board (to support browser resizing).
+                x = (x * windowWidth - boardLeft) / boardWidth
+                y = (y * windowHeight - boardTop) / boardHeight
                 if (showTips && !popupIsOpen && x > tooltipHoverArea.left && x < tooltipHoverArea.right && y > tooltipHoverArea.top && y < tooltipHoverArea.bottom) {
                     // We are hovering over tooltip.
                     if (!hoveringOverTooltip) {
@@ -1059,6 +1069,12 @@
 
             // Stop blinking caret
             document.getElementById('userMessagePre').classList = ['unselectable orangey-text']
+
+            // Maybe update tooltip
+            if (showTips && currentExchangeNumber === 0) {
+                stopSmokeAnimation()
+                setTimeout(() => createTooltip(1), 5000)
+            }
         }
 
         const spiritIsReadyToCommunicate = function (rawMessage) {
@@ -1082,6 +1098,42 @@
             remainingGoals = message // Set incoming message as new goals
         }
 
+        const TOOLTIP_CONTENTS = [
+            {
+                tooltip: '?',
+                headline: 'And so it begins',
+                paragraphs: [
+                    'You can use the ouija board to communicate with the spirit world. To send a message, type on your keyboard and press enter.'
+                ]
+            },
+            {
+                tooltip: '?',
+                headline: 'A message from beyond',
+                paragraphs: [
+                    'The planchette is glowing! That means a spirit is trying to communicate.',
+                    'The spirit needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers on the board.',
+                    'When you are close to the mark, you will feel it. The spirit will pull you in.',
+                    'If you are having trouble, try hovering slowly with different patterns.'
+                ]
+            },
+            {
+                tooltip: '!',
+                headline: '',
+                paragraphs: [
+                    '',
+                ]
+            }
+        ]
+
+        const createTooltip = function (i) {
+            const t = TOOLTIP_CONTENTS[i]
+            document.getElementById('tooltipSymbol').innerText = t.tooltip
+            document.getElementById('tooltipContent').innerHTML = `<h1>${t.headline}</h1>\n${t.paragraphs.map((str) => '<p>' + str + '</p>\n').join("")}`
+            if (showTips) {
+                startSmokeAnimation()
+            }
+        }
+
         const openTooltipPopup = function (e) {
             document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`
             document.getElementById('planchette').style.filter = `blur(10px) brightness(0.6)`
@@ -1097,7 +1149,7 @@
         const closeTooltipPopup = function (shutUp) {
             if (shutUp) toggleShowTips()
             document.getElementById('settingsGear').classList.remove(['one-time-gear-roll'])
-            document.getElementById('planchette').style.filter = `unset`
+            document.getElementById('planchette').style.removeProperty('filter')
             document.getElementById('tooltipPopup').style.display = 'none'
             document.getElementById('board').style.filter = `none`;
             document.getElementById('planchetteHelper').style.filter = `none`;
@@ -1123,7 +1175,7 @@
 
         const closeSettingsPopup = function () {
             document.getElementById('settingsGear').classList.remove(['one-time-gear-roll'])
-            document.getElementById('planchette').style.filter = `unset`
+            document.getElementById('planchette').style.removeProperty('filter')
             document.getElementById('settingsPopup').style.display = 'none'
             document.getElementById('board').style.filter = `none`;
             document.getElementById('planchetteHelper').style.filter = `none`;
@@ -1141,11 +1193,9 @@
             const slider = document.getElementById('showTipsSliderSlider')
             if (showTips) {
                 slider.classList.add(['checked'])
-                document.getElementById('tooltipContainer').style.display = 'block'
                 startSmokeAnimation()
             } else {
                 slider.classList.remove(['checked'])
-                document.getElementById('tooltipContainer').style.display = 'none'
                 stopSmokeAnimation()
             }
         }
@@ -1240,9 +1290,10 @@
                 document.getElementById('consentPopup').style.display = 'none'
                 document.getElementById('settingsGear').style.removeProperty('opacity')
                 document.getElementById('settingsGear').style.removeProperty('transition')
+                createTooltip(0)
             }, 3000)
             document.getElementById('board').style.filter = `none`;
-            document.getElementById('planchette').style.filter = `unset`
+            document.getElementById('planchette').style.removeProperty('filter')
             document.getElementById('planchetteHelper').style.filter = `none`;
             document.getElementById('userMessageContainer').style.visibility = `visible`;
             document.getElementById('consentYes').classList.add(['one-time-bump'])
@@ -1274,14 +1325,31 @@
             closeConsentPopup()
         }
 
-        let tickSmokeAnimation = null
+        let pauseSmokeAnimation = true
+        let timerToPauseSmokeAnimation = null
         const startSmokeAnimation = function () {
+            // This is complicated because we have a 4s scale transition to start/stop smoke animation,
+            // and after those 4 seconds we want to kill our animation tick for performance reasons.
+            // The user might toggle on/off after 4 seconds or faster than 4 seconds.
+            if (timerToPauseSmokeAnimation) {
+                // This might happen if the user quickly toggles tips off and on.
+                clearTimeout(timerToPauseSmokeAnimation)
+            }
+            document.getElementById('tooltipSymbol').style.transform = 'scale(1.0)'
+            if (!pauseSmokeAnimation) {
+                return
+            }
+            pauseSmokeAnimation = false
             const filter = document.getElementById("smokeFilterTurbulence");
             let frames = 1;
             let rad = Math.PI / 180;
             let bfx, bfy;
             let prevTime = Date.now()
-            tickSmokeAnimation = function () {
+            const tickSmokeAnimation = function () {
+                if (pauseSmokeAnimation) {
+                    // For performance reasons
+                    return
+                }
                 // Use elapsedTime to stabilize animation speed regardless of device
                 const currTime = Date.now()
                 const timeElapsed = currTime - prevTime
@@ -1306,7 +1374,10 @@
         }
 
         const stopSmokeAnimation = function () {
-            tickSmokeAnimation = () => { }
+            document.getElementById('tooltipSymbol').style.transform = 'scale(0.0)'
+            timerToPauseSmokeAnimation = setTimeout(() => {
+                pauseSmokeAnimation = true
+            }, 4000)
         }
 
     </script>
@@ -1382,17 +1453,8 @@
         <!-- Tooltip popup -->
         <div id="tooltipPopup" class="unselectable popupContainer">
             <div class="unselectable popupHoverboard"></div>
-            <h1>And so it begins</h1>
-            <p>
-                You can use the ouija board to talk with spirits. To send a message, type on your keyboard and press
-                enter.
-            </p>
-            <p>
-                The planchette is glowing! That means a spirit is attempting to talk. The spirit
-                needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers
-                on
-                the board.
-            </p>
+            <div id="tooltipContent">
+            </div>
             <div class="popupButtonsContainer">
                 <div id="tooltipContinueButton" class="popupButton primaryButton">Continue</div>
                 <div id="tooltipShutUpButton" class="popupButton">No more tips</div>
@@ -1582,6 +1644,8 @@
 
         if (!window.localStorage.getItem(OUIJA_USER_ID)) {
             openConsentPopup()
+        } else {
+            setTimeout(() => createTooltip(0), 1000)
         }
 
         if (window.innerWidth < 1200) {
@@ -1596,9 +1660,6 @@
         //     .catch((data, status) => {
         //         console.log('Request failed');
         //     })
-
-        // TODO move this and create stopper etc
-        startSmokeAnimation()
 
     </script>
 
