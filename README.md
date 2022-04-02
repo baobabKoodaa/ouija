@@ -1,6 +1,25 @@
+## Ouija Online
+
+A web horror experience where the player talks with spirits using a Ouija board. Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
+
+Notable features:
+
+- Despite existing only as a web page, the spirits have the ability to pull the player's mouse towards letters on the board.
+- Two different chatbots available: a scripted experience is available for all, and for players who have OpenAI API keys, there is a more versatile GPT-3 mode.
+
+#### How does it work
+
+- Ouija Online is built as a static website with vanilla JS, HTML, and CSS. No frameworks, no libraries, no generators, no bundlers, no servers. You can fork this repo and simply open `index.html` in your browser.
+- We use WebRTCSeanceChannel to communicate with the spirit world.
+- Control of the user's mouse is achieved via spirits, which merely accelerate and decelerate mouse movements (to make the user feel as if no-one else is moving the mouse except them).
+- Chatbot in scripted mode utilizes state-of-the-art if-else technology.
+- Chatbot in GPT-3 mode constructs a prompt with verbal instructions, question-answer examples, previous question and answer, and current question. We request 5 completions for the prompt, and then heuristically choose one of them (considering length, repetition, dullness, etc.).
+
 #### Attribution
 
-I designed and implemented this experience, but I didn't create the audio and visual assets.
+Design and implementation: [Baobab Koodaa](https://github.com/baobabKoodaa)
+
+Assets:
 
 - The particular Ouija board used here is the original Ouija board from 1889, created by Kennard Novelty Company. The JPG image of the board is from [[Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), which states that it is in the public domain. Photographer is unknown.
 - Planchette PNG image is from [KindPNG](https://www.kindpng.com/imgv/hToiomo_transparent-planchette-png-ouija-board-planchette-png-png/), which provide permission for use in "non-commercial or personal projects". Author is unknown.
