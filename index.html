@@ -613,18 +613,19 @@
         // Global state
         let popupIsOpen = false
         let draggingPlanchette = false
-        let planchetteTransformX = 0 // In % relative to planchette's own width (to support browser resizing)
-        let planchetteTransformY = 0 // In % relative to planchette's own width (to support browser resizing)
+        let planchetteTransformX = 0 // In % relative to planchette's own size (to support browser resizing)
+        let planchetteTransformY = 0 // In % relative to planchette's own size (to support browser resizing)
         let prevX = undefined
         let prevY = undefined
-        let offsetX = 0 // In % relative to planchette's width (to support browser resizing consistently with planchetteHelper)
-        let offsetY = 0 // In % relative to planchette's width (to support browser resizing consistently with planchetteHelper)
+        let offsetX = 0 // In % relative to planchette's size (to support browser resizing consistently with planchetteHelper)
+        let offsetY = 0 // In % relative to planchette's size (to support browser resizing consistently with planchetteHelper)
         let userMoveCount = 0
         let remainingGoals = ''
         let revealedSpiritLetters = ''
         let userMessage = ''
         let currentExchangeNumber = 0
         let turn = TURN_USER
+        let hoveringOverTooltip = false
         let speedMode = false
         let revealMouse = false
         let debug = {}
@@ -694,6 +695,14 @@
             "x": { "x": 111.63, "y": -37.72 },
             "y": { "x": 134.21, "y": -24.18 },
             "z": { "x": 147.65, "y": -9.44 }
+        }
+
+        // Tooltip hovering area. Coordinates are relative to window width.
+        const tooltipHoverArea = {
+            top: 0.532,
+            left: 0.666,
+            bottom: 0.650,
+            right: 0.728
         }
 
         // Memoize some values to reduce reflows (improve performance).
@@ -844,6 +853,19 @@
             }
         }
 
+        const startedHoverOnTooltip = function () {
+            document.getElementById('tooltipSymbol').style.filter = 'blur(2px)'
+            // Set 'from' attribute to make animation smooth even when the user abruptly moves in and out with the mouse
+            document.getElementById('animateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('animateSmokeFilterMap').beginElement()
+        }
+
+        const stoppedHoverOnTooltip = function () {
+            document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
+            document.getElementById('deanimateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('deanimateSmokeFilterMap').beginElement()
+        }
+
         const mouseMoved = function (event, onObject) {
             const currX = event.clientX
             const currY = event.clientY
@@ -882,7 +904,9 @@
                     }
                 }
             } else {
-                // User is not dragging planchette, use this opportunity to reduce cursor offset to prevent the real cursor from escaping window.
+                // User is not dragging planchette.
+
+                // Take the opportunity to reduce cursor offset to prevent the real cursor from escaping window.
                 const x = (currX + offsetX * planchetteWidth / 100) / windowWidth
                 const y = (currY + offsetY * planchetteHeight / 100) / windowHeight
                 const minimumEscapeDistance = Math.min(Math.abs(x - 0), Math.abs(x - 1), Math.abs(y - 1), Math.abs(y - 0))
@@ -895,6 +919,23 @@
                     clearOffsets()
                 }
 
+                // Determine if user's fake cursor is hovering over tooltip
+                if (!popupIsOpen && x > tooltipHoverArea.left && x < tooltipHoverArea.right && y > tooltipHoverArea.top && y < tooltipHoverArea.bottom) {
+                    // We are hovering over tooltip.
+                    if (!hoveringOverTooltip) {
+                        // We just now entered the hover area.
+                        hoveringOverTooltip = true
+                        startedHoverOnTooltip()
+                    }
+                } else {
+                    // We are not hovering over tooltip (or popup is open so we dont do the hover effect anyway).
+                    if (hoveringOverTooltip) {
+                        // We just now left the hover area.
+                        hoveringOverTooltip = false
+                        stoppedHoverOnTooltip()
+                    }
+                }
+
             }
             updatePlanchettePosition()
 
@@ -902,6 +943,7 @@
                 if (draggingPlanchette) return 'assets/grabbing.cur'
                 if (onObject === ON_PLANCHETTE && turn === TURN_SPIRIT) return 'assets/grab.cur'
                 if (onObject === ON_BUTTON) return 'assets/aero_link.cur'
+                if (hoveringOverTooltip) return 'assets/aero_link.cur'
                 return 'assets/aero_arrow.cur'
             }
 
@@ -1168,19 +1210,6 @@
             const cursor = document.getElementById("cursor")
             paintCursorWithOffset(cursor, prevX, prevY)
             consentYes()
-        }
-
-        const startedHoverOnTooltip = function () {
-            document.getElementById('tooltipSymbol').style.filter = 'blur(2px)'
-            // Set 'from' attribute to make animation smooth even when the user abruptly moves in and out with the mouse
-            document.getElementById('animateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
-            document.getElementById('animateSmokeFilterMap').beginElement()
-        }
-
-        const stoppedHoverOnTooltip = function () {
-            document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
-            document.getElementById('deanimateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
-            document.getElementById('deanimateSmokeFilterMap').beginElement()
         }
 
         const startSmokeAnimation = function () {
