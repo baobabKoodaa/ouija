@@ -426,6 +426,31 @@
             height: 100%;
         }
 
+        #tooltipContainer {
+            position: absolute;
+            right: 0;
+            bottom: 2vw;
+            width: 10vw;
+            height: 15vw;
+            z-index: 996;
+            cursor: none;
+            filter: url(#smokeFilter);
+        }
+
+        #tooltipSymbol {
+            line-height: 15vw;
+            font-family: 'Kingthings Trypewriter 2', 'Courier New', 'Courier', monospace;
+            font-size: 14vw;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+            filter: blur(11px);
+            transition: filter 2s ease-out;
+            /* color: transparent;
+            background: linear-gradient(#fff, #999, #ddd, #888);
+            background-clip: text; */
+        }
+
         #spiritMessageContainer {
             position: absolute;
             top: -13%;
@@ -704,7 +729,9 @@
             updateMagnifyingGlassPosition()
 
             // Fix edge case where user sees 2 cursors when using keyboard shortcut to resize browser
-            cursor.style.visibility = "hidden";
+            if (cursor) {
+                cursor.style.visibility = "hidden";
+            }
         }
         // Call resizeUpdates after the first complete render and after each resize
         window.addEventListener('load', function (event) {
@@ -853,7 +880,7 @@
             const chooseCursorIcon = function () {
                 if (draggingPlanchette) return 'assets/grabbing.cur'
                 if (onObject === ON_PLANCHETTE && turn === TURN_SPIRIT) return 'assets/grab.cur'
-                if (onObject === ON_BUTTON && popupIsOpen) return 'assets/aero_link.cur'
+                if (onObject === ON_BUTTON) return 'assets/aero_link.cur'
                 return 'assets/aero_arrow.cur'
             }
 
@@ -1121,6 +1148,19 @@
             consentYes()
         }
 
+        const startedHoverOnTooltip = function () {
+            document.getElementById('tooltipSymbol').style.filter = 'blur(2px)'
+            // Set 'from' attribute to make animation smooth even when the user abruptly moves in and out with the mouse
+            document.getElementById('animateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('animateSmokeFilterMap').beginElement()
+        }
+
+        const stoppedHoverOnTooltip = function () {
+            document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
+            document.getElementById('deanimateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('deanimateSmokeFilterMap').beginElement()
+        }
+
     </script>
 </head>
 
@@ -1141,6 +1181,23 @@
         <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
         <img id="planchette" class="unselectable planchette-no-glow" src="assets/planchette2.png"></img>
         <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
+
+        <!-- Tooltip for new users -->
+        <div id="tooltipContainer">
+            <div id="tooltipSymbol">?</div>
+            <svg width="0">
+                <filter id="smokeFilter">
+                    <feTurbulence id="smokeFilterTurbulence" type="fractalNoise" baseFrequency=".03" numOctaves="20" />
+                    <feDisplacementMap id="smokeFilterMap" in="SourceGraphic" scale="50">
+                        <animate id="animateSmokeFilterMap" attributeName="scale" from="50" to="15" dur="2s"
+                            repeatCount="0" restart="always" begin="indefinite" fill="freeze" />
+                        <animate id="deanimateSmokeFilterMap" attributeName="scale" from="15" to="50" dur="2s"
+                            repeatCount="0" restart="always" begin="indefinite" fill="freeze" />
+                    </feDisplacementMap>
+                </filter>
+            </svg>
+        </div>
+
 
         <!-- Magnifying glass -->
         <div id="magnifying-glass" class="unselectable">
@@ -1298,6 +1355,12 @@
         document.getElementById('extRowGithub').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
         document.getElementById('extRowFeedback').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
 
+        // Tooltip fog events
+        // TODO ei voida kayttaa naita oikeita eventteja ! pitaa purkata planchetteHelperin kaltainen hommeli !
+        document.getElementById('tooltipSymbol').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.getElementById('tooltipSymbol').addEventListener('mouseenter', e => { startedHoverOnTooltip() })
+        document.getElementById('tooltipSymbol').addEventListener('mouseleave', e => { stoppedHoverOnTooltip() })
+
         // Button click events
         document.getElementById('consentYes').addEventListener('click', e => { consentYes() })
         document.getElementById('consentNo').addEventListener('click', e => { consentNo() })
@@ -1378,6 +1441,28 @@
         //         console.log('Request failed');
         //     })
 
+        const filter = document.getElementById("smokeFilterTurbulence");
+        let frames = 1;
+        let rad = Math.PI / 180;
+        let bfx, bfy;
+
+        function freqAnimation() {
+            frames += .2
+
+            bfx = 0.03;
+            bfy = 0.03;
+
+            bfx += 0.005 * Math.cos(frames * rad);
+            bfy += 0.005 * Math.sin(frames * rad);
+
+            bf = bfx.toString() + " " + bfy.toString();
+            filter.setAttributeNS(null, "baseFrequency", bf);
+
+            window.requestIdleCallback(freqAnimation);
+        }
+
+        window.requestIdleCallback(freqAnimation);
+
     </script>
 
     <script async src="chatbot.js"></script>
@@ -1385,8 +1470,6 @@
     <!--     <audio autoplay controls>
         <source src="assets/dk-atmosphere.mp3" type="audio/mpeg">
     </audio> -->
-
-
 
     <script defer data-domain="ouija.attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script>
 
