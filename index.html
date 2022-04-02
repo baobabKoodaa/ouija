@@ -145,10 +145,7 @@
             transition: margin-top 0.5s ease-in-out;
         }
 
-        #consentYes,
-        #consentNo,
-        #saveSettings,
-        #textInputAPIKey {
+        .popupButton {
             border: 1px solid black;
             border-radius: 10px;
             padding: 0.5vw;
@@ -158,8 +155,15 @@
         }
 
         #consentYes {
-            background-color: #ffb700;
+            background-color: #958219;
+            color: black;
             transition: 0.5s;
+        }
+
+        #consentYes:hover {
+            color: white;
+            box-shadow: 0 0 15px #5c533b;
+            text-shadow: 0 0 5px #5c533b;
         }
 
         #consentNo {
@@ -168,14 +172,39 @@
             transition: 0.5s;
         }
 
-        #saveSettings {
+        #consentNo:hover {
+            color: gray;
+        }
+
+        #tooltipContinueButton {
+            height: 4vw;
+            line-height: 2.6vw;
+            background-color: #958219;
+        }
+
+        #tooltipContinueButton:hover {
+            color: white;
+        }
+
+        #tooltipShutUpButton {
             height: 4vw;
             line-height: 2.6vw;
             background-color: #ebebeb;
+            margin-left: 1.5vw;
+        }
+
+        #tooltipShutUpButton:hover {
+            color: gray;
+        }
+
+        #saveSettings {
+            height: 4vw;
+            line-height: 2.6vw;
+            background-color: #958219;
         }
 
         #saveSettings:hover {
-            color: gray;
+            color: white;
         }
 
         #textInputAPIKey {
@@ -212,15 +241,6 @@
 
         .externalLinkRow:hover {
             opacity: 0.5;
-        }
-
-        #consentYes:hover {
-            box-shadow: 0 0 15px #ffb700;
-            text-shadow: 0 0 7px #5c533b;
-        }
-
-        #consentNo:hover {
-            color: gray;
         }
 
         #popupSettings {
@@ -1057,6 +1077,32 @@
             remainingGoals = message // Set incoming message as new goals
         }
 
+        const openTooltipPopup = function () {
+            document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('planchette').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('planchetteHelper').style.filter = `blur(10px) brightness(0.6)`
+            document.getElementById('spiritMessageContainer').style.visibility = `hidden`
+            document.getElementById('userMessageContainer').style.visibility = `hidden`
+            document.getElementById('tooltipPopup').style.opacity = '1'
+            document.getElementById('tooltipPopup').style.display = `block`
+            clearOffsets()
+        }
+
+        const closeTooltipPopup = function () {
+            document.getElementById('settingsGear').classList.remove(['one-time-gear-roll'])
+            document.getElementById('planchette').style.filter = `unset`
+            document.getElementById('tooltipPopup').style.display = 'none'
+            document.getElementById('board').style.filter = `none`;
+            document.getElementById('planchetteHelper').style.filter = `none`;
+            document.getElementById('spiritMessageContainer').style.visibility = `visible`
+            document.getElementById('userMessageContainer').style.visibility = `visible`;
+        }
+
+        const toggleTooltipPopup = function () {
+            popupIsOpen = !popupIsOpen
+            popupIsOpen ? openTooltipPopup() : closeTooltipPopup()
+        }
+
         const openSettingsPopup = function () {
             document.getElementById('settingsGear').classList.add(['one-time-gear-roll'])
             document.getElementById('board').style.filter = `blur(10px) brightness(0.6)`
@@ -1302,12 +1348,32 @@
             </ul>
             <p id="changingConsentText">Would you like to offer your soul to support this website?</p>
             <div class="popupButtonsContainer">
-                <div id="consentYes">Consent to selling your soul</div>
-                <div id="consentNo">Enter without selling your soul</div>
+                <div id="consentYes" class="popupButton">Consent to selling your soul</div>
+                <div id="consentNo" class="popupButton">Enter without selling your soul</div>
             </div>
         </div>
 
-        <!-- Popup -->
+        <!-- Tooltip popup -->
+        <div id="tooltipPopup" class="unselectable popupContainer">
+            <div class="unselectable popupHoverboard"></div>
+            <h1>Instructions</h1>
+            <p style="margin-top: 2vw">
+                You can use the ouija board to talk with spirits. To send a message, type on your keyboard and press
+                enter.
+            </p>
+            <p style="margin-top: 2vw">
+                The planchette is glowing! That means a spirit is attempting to talk. The spirit
+                needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers
+                on
+                the board.
+            </p>
+            <div class="popupButtonsContainer">
+                <div id="tooltipContinueButton" class="popupButton">Continue</div>
+                <div id="tooltipShutUpButton" class="popupButton">No more tips</div>
+            </div>
+        </div>
+
+        <!-- Settings popup -->
         <div id="settingsPopup" class="unselectable popupContainer">
             <div class="unselectable popupHoverboard"></div>
             <div id="popupSettings">
@@ -1358,7 +1424,7 @@
             <input id="textInputAPIKey" type="password" placeholder="Paste your OpenAI API key here"
                 onChange="userPastedAPIKey()"></input>
             <div id="settingsPopupButtonsContainer" class="popupButtonsContainer">
-                <div id="saveSettings">Continue</div>
+                <div id="saveSettings" class="popupButton">Continue</div>
             </div>
         </div>
 
@@ -1410,9 +1476,7 @@
         document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
         document.getElementById('planchetteHelper').addEventListener('mousemove', e => { mouseMoved(e, ON_PLANCHETTE) })
         document.querySelectorAll('.popupHoverboard').forEach((element) => element.addEventListener('mousemove', e => { mouseMoved(e) }))
-        document.getElementById('consentYes').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
-        document.getElementById('consentNo').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
-        document.getElementById('saveSettings').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
+        document.querySelectorAll('.popupButton').forEach((element) => element.addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) }))
         document.getElementById('revealMouseSlider').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
         document.getElementById('speedModeSlider').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
         document.getElementById('openAISlider').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
@@ -1423,6 +1487,9 @@
         // Button click events
         document.getElementById('consentYes').addEventListener('click', e => { consentYes() })
         document.getElementById('consentNo').addEventListener('click', e => { consentNo() })
+        document.getElementById('bg').addEventListener('click', e => { if (hoveringOverTooltip) toggleTooltipPopup() })
+        document.getElementById('hoverBoard').addEventListener('click', e => { if (hoveringOverTooltip) toggleTooltipPopup() })
+        document.getElementById('tooltipContinueButton').addEventListener('click', e => { toggleTooltipPopup() })
         document.getElementById('saveSettings').addEventListener('click', e => { toggleSettingsPopup() })
         document.getElementById('revealMouseSlider').addEventListener('click', e => { toggleRevealMouse() })
         document.getElementById('speedModeSlider').addEventListener('click', e => { toggleSpeedMode() })
