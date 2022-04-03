@@ -12,37 +12,27 @@ let questGoals = {
 }
 
 // Snoop user city from IP in order to provide creepy location for spirit.
+// Using free CloudFlare worker to bypass Adblockers.
+// Geolocation provider is CloudFlare, no other third parties involved.
 let userCity = ''
-let geolocationAPIs = [
-    'https://ipapi.co/json/',
-    'https://api.freegeoip.app/json/?apikey=4dbbda10-b36a-11ec-896d-d36c077879f7',
-]
-let nextGeoIndex = 0
-const tryToFetchLocation = function(i) {
-    const url = geolocationAPIs[i]
-    fetch(url)
-        .then(res => res.json())
-        .then(response => {
-            const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
-            const cleanedResponse = response.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
-            for (let i=0; i<cleanedResponse.length; i++) {
-                const c = cleanedResponse[i]
-                if (ALLOWED_CHARS.includes(c)) {
-                    userCity += c
-                }
+fetch('https://geo.atte-cloudflare.workers.dev/', { mode: 'cors' })
+    .then(res => res.json())
+    .then(response => {
+        const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
+        const cleanedResponse = response.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
+        for (let i=0; i<cleanedResponse.length; i++) {
+            const c = cleanedResponse[i]
+            if (ALLOWED_CHARS.includes(c)) {
+                userCity += c
             }
-            if (userCity.length < 3) {
-                userCity = ''
-            }
-        })
-        .catch(exception => {
-            // Ad-blocker prevents request? API key rate limited? Suppress error from user and try the next geolocation service.
-            if (nextGeoIndex < geolocationAPIs.length) {
-                tryToFetchLocation(nextGeoIndex++)
-            }
-        })
-}
-tryToFetchLocation(nextGeoIndex++)
+        }
+        if (userCity.length < 3) {
+            userCity = ''
+        }
+    })
+    .catch(exception => {
+        // Ad-blocker prevents request? API key rate limited? Suppress error from user.
+    })
 
 const FRIENDLY = 'friendly'
 const EVIL = 'evil'
@@ -217,7 +207,8 @@ const scriptedExperience = [
         trigger: /^hello.*/,
         options: [
             { value: 'greetings' },
-            { value: 'mylord' }
+            { value: 'mylord' },
+            { value: 'myliege' },
         ],
     },
     {
@@ -267,8 +258,8 @@ const scriptedExperience = [
         trigger: '{insult}',
         options: [
             { value: 'bitch', priority: 0.5 },
-            { value: 'imbecil', priority: 0.3 },
-            { value: 'fool' },
+            { value: 'imbecil', priority: 0.5 },
+            { value: 'fool', priority: 0.5 },
             { value: 'harlot' },
             { value: 'idiot' },
             { value: 'stupid' },
