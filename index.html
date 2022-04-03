@@ -218,6 +218,7 @@
             height: 2vw;
             line-height: 2vw;
             transition: margin-top 0.4s ease-in-out;
+            z-index: 996;
         }
 
         .externalLinkRow {
@@ -774,6 +775,7 @@
             updateMagnifyingGlassPosition()
 
             // Fix edge case where user sees 2 cursors when using keyboard shortcut to resize browser
+            const cursor = document.getElementById("cursor")
             if (cursor) {
                 cursor.style.visibility = "hidden";
             }
@@ -1043,7 +1045,7 @@
                                 turn = TURN_USER
                                 currentExchangeNumber++
                                 if (currentExchangeNumber === 1 && showTips) {
-                                    stopSmokeAnimation()
+                                    if (!using_GPT3) stopSmokeAnimation()
                                     setTimeout(() => createTooltip(2), 2500)
                                 }
                             }
@@ -1080,7 +1082,7 @@
 
             // Maybe update tooltip
             if (showTips && currentExchangeNumber === 0) {
-                stopSmokeAnimation()
+                if (!using_GPT3) stopSmokeAnimation()
                 setTimeout(() => createTooltip(1), 2500)
             }
         }
@@ -1102,8 +1104,8 @@
                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                 currentExchangeNumber++
                 if (currentExchangeNumber === 1 && showTips) {
-                    stopSmokeAnimation()
-                    setTimeout(() => createTooltip(2), 5000)
+                    if (!using_GPT3) stopSmokeAnimation()
+                    setTimeout(() => createTooltip(2), 2500)
                 }
                 return
             }
@@ -1229,6 +1231,10 @@
                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
                 remainingGoals = ''
                 currentExchangeNumber++
+                if (currentExchangeNumber === 1 && showTips) {
+                    if (!using_GPT3) stopSmokeAnimation()
+                    setTimeout(() => createTooltip(2), 2500)
+                }
             }
         }
 

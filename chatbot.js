@@ -13,21 +13,36 @@ let questGoals = {
 
 // Snoop user city from IP in order to provide creepy location for spirit.
 let userCity = ''
-fetch('http://ip-api.com/json')
-    .then(res => res.json())
-    .then(response => {
-        const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
-        const cleanedResponse = response.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
-        for (let i=0; i<cleanedResponse.length; i++) {
-            const c = cleanedResponse[i]
-            if (ALLOWED_CHARS.includes(c)) {
-                userCity += c
+let geolocationAPIs = [
+    'https://ipapi.co/json/',
+    'https://api.freegeoip.app/json/?apikey=4dbbda10-b36a-11ec-896d-d36c077879f7',
+]
+let nextGeoIndex = 0
+const tryToFetchLocation = function(i) {
+    const url = geolocationAPIs[i]
+    fetch(url)
+        .then(res => res.json())
+        .then(response => {
+            const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
+            const cleanedResponse = response.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
+            for (let i=0; i<cleanedResponse.length; i++) {
+                const c = cleanedResponse[i]
+                if (ALLOWED_CHARS.includes(c)) {
+                    userCity += c
+                }
             }
-        }
-        if (userCity.length < 3) {
-            userCity = ''
-        }
-    })
+            if (userCity.length < 3) {
+                userCity = ''
+            }
+        })
+        .catch(exception => {
+            // Ad-blocker prevents request? API key rate limited? Suppress error from user and try the next geolocation service.
+            if (nextGeoIndex < geolocationAPIs.length) {
+                tryToFetchLocation(nextGeoIndex++)
+            }
+        })
+}
+tryToFetchLocation(nextGeoIndex++)
 
 const FRIENDLY = 'friendly'
 const EVIL = 'evil'
@@ -99,7 +114,6 @@ const parseOpenAIresponseJSON = function (response) {
     let fallbackResponse = ''
     for (let i = 0; i < response.choices.length; i++) {
         const parsedResponse = parseOpenAIresponseText(response.choices[i].text)
-        console.log(parsedResponse)
         if (parsedResponse.length >= 2) {
             // Any response at least 2 characters long is good enough for our fallback response, and they all suck, so we don't care which one we pick.
             fallbackResponse = parsedResponse
@@ -122,7 +136,6 @@ const parseOpenAIresponseJSON = function (response) {
     if (fallbackResponse.length > 0) {
         return fallbackResponse
     }
-    console.log(response)
     return 'ERR'
 }
 
@@ -374,13 +387,22 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how.*/, // how does the world end? how do you hear my questions? how are you?
+        trigger: /^how are you$/,
         options: [
-            { value: 'agony' },
+            { value: 'hungry' },
+            { value: 'thirsty' },
+            { value: 'thirsty' },
+            { value: 'lonely', restrictedTo: [FRIENDLY] },
+        ]
+    },
+    {
+        trigger: /^how.*/, // how does the world end? how do you hear my questions? how do you know where i am? how is this possible?
+        options: [
             { value: 'secret' },
             { value: 'supernatural' },
             { value: 'voodoo' },
             { value: 'blackmagic' },
+            { value: 'hack' },
         ]
     },
     {
@@ -403,7 +425,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(where are you|where in|where .* (house|home)|where exactly|where specifically|whose home|whos home).*/, // e.g. where in {userCity}
+        trigger: /^where (are you|in|.* (house|home)|exactly|specifically).*/, // where in {userCity}, where inside the house
         options: [
             { value: '!LOCATION' }
         ]
@@ -468,7 +490,6 @@ const scriptedExperience = [
         options: [
             { value: 'donotinsultme' },
             { value: 'human' },
-            { value: 'no' },
             { value: 'thisisnotagame' },
             // TODO iam<name> / itoldyouiam<name>
         ]
@@ -512,6 +533,12 @@ const scriptedExperience = [
         trigger: /^(am i|is|will)( |$).*/,
         options: [
             { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^(whose|whos) home$/,
+        options: [
+            { value: 'yours' },
         ]
     },
     {
@@ -867,7 +894,21 @@ const SCRIPTED_TOOLTIPS = [
             `That's a good start, looks like you're getting the hang of it. We need to keep this thing talking.`,
             `If you can, find out who... and what... we're dealing with here.`,
         ]
-    }
+    },
+    {
+        tooltip: 'O',
+        headline: 'Objective',
+        paragraphs: [
+            '',
+        ]
+    },
+    {
+        tooltip: 'A',
+        headline: 'Objective',
+        paragraphs: [
+            '',
+        ]
+    },
 ]
 
 const initializeSpirit = function() {
