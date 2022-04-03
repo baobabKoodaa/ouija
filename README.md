@@ -23,7 +23,7 @@ Design and implementation: [Baobab Koodaa](https://github.com/baobabKoodaa)
 
 Assets:
 
-- The particular Ouija board used here is the original Ouija board from 1889, created by Kennard Novelty Company. The JPG image of the board is from [[Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), which states that it is in the public domain. Photographer is unknown.
+- The particular Ouija board used here is the original Ouija board from 1889, created by Kennard Novelty Company. The JPG image of the board is from [Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), which states that it is in the public domain. Photographer is unknown.
 - Planchette PNG image is from [KindPNG](https://www.kindpng.com/imgv/hToiomo_transparent-planchette-png-ouija-board-planchette-png-png/), which provide permission for use in "non-commercial or personal projects". Author is unknown.
 - Smoke effect used in question mark tooltip is adapted from work by [chokcoco](https://segmentfault.com/a/1190000041189786/en). To achieve realistic smoke, we create a custom filter with Perlin turbulence effect, then we animate the filter itself using SVG animate (not CSS), while also applying blur with CSS transition.
 - Text glitch effect used in spirit message was popularized by Tiktok and implementation is adapted from [AmazingCSS](https://amazingcss.com/glitch-text-effect-like-tiktok/).

@@ -326,9 +326,9 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how.*/, // how does the world end? how do you hear my questions?
+        trigger: /^how.*/, // how does the world end? how do you hear my questions? how are you?
         options: [
-            { value: 'withagony' },
+            { value: 'agony' },
             { value: 'secret' },
             { value: 'supernatural' },
             { value: 'voodoo' },
@@ -434,8 +434,6 @@ const scriptedExperience = [
     {
         trigger: '{boolean}',
         options: [
-            { value: 'yes' },
-            { value: 'no' },
             { value: 'perhaps' },
             { value: 'ofcourse' },
             { value: 'ithinkso' },
@@ -501,6 +499,7 @@ const scriptedExperience = [
         trigger: /^why.*/,
         options: [
             { value: 'youknowwhy' },
+            { value: 'sin' },
             { value: 'greed' },
             { value: 'money' },
             { value: 'love' },
@@ -623,21 +622,20 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^(do|did) you.*/, // sleep? like me? kill people?
+        options: [
+            { value: 'sometimes' },
+            { value: 'fun' },
+            { value: 'imust' },
+            { value: '{boolean}' },
+        ]
+    },
+    {
         trigger: /^(was|did) .*/,
         options: [
             { value: 'fortunately' },
             { value: 'unfortunately' },
             { value: 'regrettably' },
-            { value: '{boolean}' },
-        ]
-    },
-    {
-        trigger: /^do you.*/, // sleep? like me? kill people?
-        options: [
-            { value: 'sometimes' },
-            { value: 'imust' },
-            { value: 'perhaps' },
-            { value: 'ifyouwant', restrictedTo: [FRIENDLY] },
             { value: '{boolean}' },
         ]
     },
@@ -662,8 +660,10 @@ const scriptedExperience = [
         ]
     },
     {
-        /* Nonsequitur fallback when nothing else matches. Presumably user made a statement not a question. */
-        trigger: /.*/,
+        /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
+         * We might end up here after recursively the query such that we always drop the first word,
+         * until finally we end up with empty string. */
+        trigger: /^$/,
         options: [
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
@@ -765,7 +765,13 @@ const resolveQueryWithSimpleChatbot = function(query, spirit) {
         }
         
     }
-    throw new Exception('query didnt match anything, are we missing a fallback regex match')
+
+    // Query didn't match anything, try running query without the first word.
+    // This helps for inputs like "sup how do you do" that we want to match for "how do you do".
+    // ScriptedExperience must have fallback regex /^$/ for empty strings.
+    const splitted = query.split(" ")
+    splitted.shift() // Remove first word
+    return resolveQueryWithSimpleChatbot(splitted.join(" "), spirit)
 }
 
 const initializeSpirit = function() {
