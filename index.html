@@ -1110,39 +1110,15 @@
             remainingGoals = message // Set incoming message as new goals
         }
 
-        const TOOLTIP_CONTENTS = [
-            {
-                tooltip: '?',
-                headline: 'And so it begins',
-                paragraphs: [
-                    'You can use the ouija board to communicate with the spirit world. To send a message, type on your keyboard and press enter.'
-                ]
-            },
-            {
-                tooltip: '?',
-                headline: 'A message from beyond',
-                paragraphs: [
-                    'The planchette is glowing! That means a spirit is trying to communicate.',
-                    'The spirit needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers on the board. When you are close to the mark, you will feel it. The spirit will pull you in.',
-                    'Drop the planchette on the correct letters to reveal the message.',
-                    'If you are having trouble, try hovering slowly with different patterns.'
-                ]
-            },
-            {
-                tooltip: 'O',
-                headline: 'Objective',
-                paragraphs: [
-                    `That's a good start, looks like you're getting the hang of it. We need to keep this thing talking in order trap it.`,
-                    `If you can, find out who... and what... we're dealing with here.`,
-                ]
-            }
-        ]
-
         const createTooltip = function (i) {
-            const t = TOOLTIP_CONTENTS[i]
+            if (!SCRIPTED_TOOLTIPS) {
+                // Possibly slow connection and chatbot.js hasn't loaded yet
+                setTimeout(() => createTooltip(i), 500)
+            }
+            const t = SCRIPTED_TOOLTIPS[i]
             document.getElementById('tooltipSymbol').innerText = t.tooltip
             document.getElementById('tooltipContent').innerHTML = `<h1>${t.headline}</h1>\n${t.paragraphs.map((str) => '<p>' + str + '</p>\n').join("")}`
-            if (showTips) {
+            if (showTips && !using_GPT3) {
                 startSmokeAnimation()
             }
         }
@@ -1206,10 +1182,10 @@
             const slider = document.getElementById('showTipsSliderSlider')
             if (showTips) {
                 slider.classList.add(['checked'])
-                startSmokeAnimation()
+                if (!using_GPT3) startSmokeAnimation()
             } else {
                 slider.classList.remove(['checked'])
-                stopSmokeAnimation()
+                if (!using_GPT3) stopSmokeAnimation()
             }
         }
 
@@ -1261,11 +1237,13 @@
                 slider.classList.remove(['checked'])
                 document.getElementById('settingsPopupButtonsContainer').style.marginTop = '1.5vw'
                 document.getElementById('textInputAPIKey').style.marginTop = '1.7vw'
+                if (showTips) startSmokeAnimation()
             } else {
                 slider.classList.add(['checked'])
                 document.getElementById('settingsPopupButtonsContainer').style.marginTop = '4.1vw'
                 document.getElementById('textInputAPIKey').value = window.localStorage.getItem('ouija-openai-api-key')
                 document.getElementById('textInputAPIKey').style.marginTop = '1vw'
+                if (showTips) stopSmokeAnimation()
             }
 
         }
@@ -1341,7 +1319,7 @@
         let pauseSmokeAnimation = true
         let timerToPauseSmokeAnimation = null
         const startSmokeAnimation = function () {
-            // This is complicated because we have a scale transition to start/stop smoke animation,
+            // We have a scale transition to start/stop smoke animation,
             // and after that transition is done we want to kill our animation tick for performance reasons.
             // The user might toggle on/off before the transition is completed.
             if (timerToPauseSmokeAnimation) {

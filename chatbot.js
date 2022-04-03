@@ -570,6 +570,7 @@ const scriptedExperience = [
         options: [
             { value: 'nightmare' },
             { value: 'feverdream' },
+            { value: 'nirvana' },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: '{clarification}' },
         ]
@@ -651,18 +652,24 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(ok|okay|i see|aha|sure|no|yes|it is|is it|really|right|yeah|whatever).*/,
+        trigger: /^(it is|is it) .*/,
+        options: [
+            { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^(ok|okay|i see|aha|sure|no|yes|really|right|yeah|whatever)( .*|$)/,
         options: [
             { value: 'watchyourtone' },
             { value: 'believeme' },
-            { value: 'itistrue' },
+            { value: 'trustme' },
             { value: 'youwillsee', restrictedTo: [EVIL] },
         ]
     },
     {
         /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
-         * We might end up here after recursively the query such that we always drop the first word,
-         * until finally we end up with empty string. */
+         * We might end up here after recursively resolving the query such that we always drop the first word,
+         * until finally we end up here with empty string. */
         trigger: /^$/,
         options: [
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
@@ -673,11 +680,11 @@ const scriptedExperience = [
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'youshallperish', restrictedTo: [EVIL] },
             { value: 'youwilldie', restrictedTo: [EVIL] },
+            { value: 'itisknown' },
+            { value: 'liar' },
+            { value: 'indeed' },
             { value: 'false' },
             { value: 'true' },
-            { value: 'indeed' },
-            { value: 'perhaps' },
-            { value: 'liar' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
@@ -773,6 +780,34 @@ const resolveQueryWithSimpleChatbot = function(query, spirit) {
     splitted.shift() // Remove first word
     return resolveQueryWithSimpleChatbot(splitted.join(" "), spirit)
 }
+
+const SCRIPTED_TOOLTIPS = [
+    {
+        tooltip: '?',
+        headline: 'And so it begins',
+        paragraphs: [
+            'You can use the ouija board to communicate with the spirit world. To send a message, type on your keyboard and press enter.'
+        ]
+    },
+    {
+        tooltip: '?',
+        headline: 'A message from beyond',
+        paragraphs: [
+            'The planchette is glowing! That means a spirit is trying to communicate.',
+            'The spirit needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers on the board. When you are close to the mark, you will feel it. The spirit will pull you in.',
+            'Drop the planchette on the correct letters to reveal the message.',
+            'If you are having trouble, try hovering slowly with different patterns.'
+        ]
+    },
+    {
+        tooltip: 'O',
+        headline: 'Objective',
+        paragraphs: [
+            `That's a good start, looks like you're getting the hang of it. We need to keep this thing talking.`,
+            `If you can, find out who... and what... we're dealing with here.`,
+        ]
+    }
+]
 
 const initializeSpirit = function() {
     const spiritType = Math.random() > 0.5 ? EVIL : FRIENDLY
