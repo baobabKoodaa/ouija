@@ -474,7 +474,7 @@
             vertical-align: middle;
             filter: blur(11px);
             transform: scale(0.0);
-            transition: filter 2s ease-out, transform 4s ease-in-out;
+            transition: filter 2s ease-out, transform 2s ease-in-out, opacity 2s ease-in-out;
             /* color: transparent;
             background: linear-gradient(#fff, #999, #ddd, #888);
             background-clip: text;
@@ -615,6 +615,10 @@
 
             user-drag: none;
             -webkit-user-drag: none;
+        }
+
+        .disable-transitions {
+            transition: none !important;
         }
 
         @media only screen and (max-width: 760px) {
@@ -888,14 +892,14 @@
         const startedHoverOnTooltip = function () {
             document.getElementById('tooltipSymbol').style.filter = 'blur(2px)'
             // Set 'from' attribute to make animation smooth even when the user abruptly moves in and out with the mouse
-            document.getElementById('animateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
-            document.getElementById('animateSmokeFilterMap').beginElement()
+            document.getElementById('animateToFocus').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('animateToFocus').beginElement()
         }
 
         const stoppedHoverOnTooltip = function () {
             document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
-            document.getElementById('deanimateSmokeFilterMap').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
-            document.getElementById('deanimateSmokeFilterMap').beginElement()
+            document.getElementById('animateRemoveFocus').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('animateRemoveFocus').beginElement()
         }
 
         const mouseMoved = function (event, onObject) {
@@ -1040,7 +1044,7 @@
                                 currentExchangeNumber++
                                 if (currentExchangeNumber === 1 && showTips) {
                                     stopSmokeAnimation()
-                                    setTimeout(() => createTooltip(2), 5000)
+                                    setTimeout(() => createTooltip(2), 2500)
                                 }
                             }
                         }
@@ -1077,7 +1081,7 @@
             // Maybe update tooltip
             if (showTips && currentExchangeNumber === 0) {
                 stopSmokeAnimation()
-                setTimeout(() => createTooltip(1), 5000)
+                setTimeout(() => createTooltip(1), 2500)
             }
         }
 
@@ -1337,14 +1341,17 @@
         let pauseSmokeAnimation = true
         let timerToPauseSmokeAnimation = null
         const startSmokeAnimation = function () {
-            // This is complicated because we have a 4s scale transition to start/stop smoke animation,
-            // and after those 4 seconds we want to kill our animation tick for performance reasons.
-            // The user might toggle on/off after 4 seconds or faster than 4 seconds.
+            // This is complicated because we have a scale transition to start/stop smoke animation,
+            // and after that transition is done we want to kill our animation tick for performance reasons.
+            // The user might toggle on/off before the transition is completed.
             if (timerToPauseSmokeAnimation) {
                 // This might happen if the user quickly toggles tips off and on.
                 clearTimeout(timerToPauseSmokeAnimation)
+                document.getElementById('animateRemoveFocus').beginElement()
             }
             document.getElementById('tooltipSymbol').style.transform = 'scale(1.0)'
+            document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
+            document.getElementById('tooltipSymbol').style.opacity = '1.0'
             if (!pauseSmokeAnimation) {
                 return
             }
@@ -1356,7 +1363,7 @@
             let prevTime = Date.now()
             const tickSmokeAnimation = function () {
                 if (pauseSmokeAnimation) {
-                    // For performance reasons
+                    // This pause only exists for performance reasons, smoke would be hidden anyway.
                     return
                 }
                 // Use elapsedTime to stabilize animation speed regardless of device
@@ -1383,10 +1390,21 @@
         }
 
         const stopSmokeAnimation = function () {
-            document.getElementById('tooltipSymbol').style.transform = 'scale(0.0)'
+            document.getElementById('tooltipSymbol').style.transform = 'scale(3.0)'
+            document.getElementById('tooltipSymbol').style.filter = 'blur(13px)'
+            document.getElementById('tooltipSymbol').style.opacity = '0.0'
+            document.getElementById('animateDissipate').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
+            document.getElementById('animateDissipate').beginElement()
             timerToPauseSmokeAnimation = setTimeout(() => {
                 pauseSmokeAnimation = true
-            }, 4000)
+                document.getElementById('tooltipSymbol').classList.add('disable-transitions')
+                document.getElementById('tooltipSymbol').style.transform = 'scale(0.0)'
+                document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
+                document.getElementById('tooltipSymbol').style.opacity = '1.0'
+                document.getElementById('tooltipSymbol').offsetHeight // Trigger a reflow while transitions are disabled.
+                document.getElementById('tooltipSymbol').classList.remove('disable-transitions')
+                document.getElementById('animateRemoveFocus').beginElement()
+            }, 2000)
         }
 
     </script>
@@ -1410,17 +1428,19 @@
         <img id="planchette" class="unselectable planchette-no-glow" src="assets/planchette2.png"></img>
         <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
 
-        <!-- Smokey question mark tooltip -->
+        <!-- Smokey tooltip -->
         <div id="tooltipContainer">
             <div id="tooltipSymbol">?</div>
             <svg width="0">
                 <filter id="smokeFilter">
                     <feTurbulence id="smokeFilterTurbulence" type="fractalNoise" baseFrequency=".03" numOctaves="20" />
                     <feDisplacementMap id="smokeFilterMap" in="SourceGraphic" scale="50">
-                        <animate id="animateSmokeFilterMap" attributeName="scale" from="50" to="15" dur="2s"
+                        <animate id="animateToFocus" attributeName="scale" from="50" to="15" dur="2s" repeatCount="0"
+                            restart="always" begin="indefinite" fill="freeze" />
+                        <animate id="animateRemoveFocus" attributeName="scale" from="15" to="50" dur="2s"
                             repeatCount="0" restart="always" begin="indefinite" fill="freeze" />
-                        <animate id="deanimateSmokeFilterMap" attributeName="scale" from="15" to="50" dur="2s"
-                            repeatCount="0" restart="always" begin="indefinite" fill="freeze" />
+                        <animate id="animateDissipate" attributeName="scale" from="15" to="200" dur="2s" repeatCount="0"
+                            restart="always" begin="indefinite" fill="freeze" />
                     </feDisplacementMap>
                 </filter>
             </svg>
