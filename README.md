@@ -1,6 +1,6 @@
 ## Ouija Online
 
-A web horror experience where the player talks with spirits using a Ouija board.
+A web horror experience where the player you can talk with spirits using a Ouija board.
 
 Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
 
@@ -21,11 +21,11 @@ Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://o
 
 Design and implementation: [Baobab Koodaa](https://github.com/baobabKoodaa)
 
-Assets:
+Assets and effects:
 
 - The particular Ouija board used here is the original Ouija board from 1889, created by Kennard Novelty Company. The JPG image of the board is from [Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), which states that it is in the public domain. Photographer is unknown.
 - Planchette PNG image is from [KindPNG](https://www.kindpng.com/imgv/hToiomo_transparent-planchette-png-ouija-board-planchette-png-png/), which provide permission for use in "non-commercial or personal projects". Author is unknown.
-- Smoke effect used in question mark tooltip is adapted from work by [chokcoco](https://segmentfault.com/a/1190000041189786/en). To achieve realistic smoke, we create a custom filter with Perlin turbulence effect, then we animate the filter itself using SVG animate (not CSS), while also applying blur with CSS transition.
+- Smoke effect used in tooltip is adapted from work by [chokcoco](https://segmentfault.com/a/1190000041189786/en). I modified the effect heavily in order to get smoother transitions for dissipation and hover. Those transitions now animate the Perlin turbulence filter by using SVG animate (not CSS!) in addition to some CSS transitions.
 - Text glitch effect used in spirit message was popularized by Tiktok and implementation is adapted from [AmazingCSS](https://amazingcss.com/glitch-text-effect-like-tiktok/).
 - Magnifying glass effect adapted from [W3Schools](https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp) example code.
 - Font 'Feral' was created by Marcus Lien Gundersen and was downloaded from [1001fonts](https://www.1001fonts.com/feral-font.html), which provide permission for both personal and commercial use.

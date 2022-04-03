@@ -1,6 +1,6 @@
 // State
 let using_GPT3 = false // otherwise using simple chatbot
-let previousInput = ''
+let previousInput = '-666'
 let previousOutput = ''
 let previousOutputs = new Set()
 let currentSpirit = null
@@ -31,7 +31,7 @@ fetch('https://geo.atte-cloudflare.workers.dev/', { mode: 'cors' })
         }
     })
     .catch(exception => {
-        // Ad-blocker prevents request? API key rate limited? Suppress error from user.
+        // Ad-blocker prevents request? Rate limited? Suppress error from user.
     })
 
 const FRIENDLY = 'friendly'
@@ -240,7 +240,10 @@ const scriptedExperience = [
             { value: 'itakemanyforms' },
             { value: 'iammanythings' },
             { value: 'iamgod', restrictedTo: [EVIL] },
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: '{clarification}',
@@ -375,6 +378,7 @@ const scriptedExperience = [
             { value: 'inquisition' },
             { value: 'witchhunt' },
             { value: 'fire' },
+            { value: 'carnage' },
         ]
     },
     {
@@ -382,7 +386,7 @@ const scriptedExperience = [
         options: [
             { value: 'hungry' },
             { value: 'thirsty' },
-            { value: 'thirsty' },
+            { value: 'craving' },
             { value: 'lonely', restrictedTo: [FRIENDLY] },
         ]
     },
@@ -416,13 +420,26 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^where is home$/,
+        options: [
+            { value: '{clarification}' }
+        ]
+    },
+    {
         trigger: /^where (are you|in|.* (house|home)|exactly|specifically).*/, // where in {userCity}, where inside the house
         options: [
             { value: '!LOCATION' }
         ]
     },
     {
-        trigger: /^where.*/, // where? where were you killed? where will i die? where am i?
+        trigger: /^where$/,
+        options: [
+            { value: 'indarkness' },
+            { value: 'inthelight' },
+        ]
+    },
+    {
+        trigger: /^where.*/, // where were you killed? where will i die? where am i?
         options: [
             { value: 'indarkness' },
             { value: 'inthelight' },
@@ -433,6 +450,12 @@ const scriptedExperience = [
             //{ value: 'forest' },
             //{ value: 'desert' },
             //{ value: 'swamp' },
+        ]
+    },
+    {
+        trigger: /^can (i|you|we) .*/,
+        options: [
+            { value: '{boolean}' }
         ]
     },
     {
@@ -486,7 +509,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you.*/, // Are you ghost, spirit, undead
+        trigger: /^are you.*/, // Are you ghost, spirit, undead, alive
         options: [
             { value: '{identityFudge}' },
         ]
@@ -589,8 +612,10 @@ const scriptedExperience = [
             { value: 'iamdeath', restrictedTo: [EVIL] },
             { value: 'god', restrictedTo: [EVIL] },
             { value: '666', restrictedTo: [EVIL] },
-            
-        ]
+        ],
+        questGoals: {
+            who: 1
+        }
     },
     {
         trigger: /^what.* mean.*/,
@@ -611,6 +636,12 @@ const scriptedExperience = [
         trigger: /^what is your name$/,
         options: [
             { value: '!NAME' },
+        ]
+    },
+    {
+        trigger: /^what is your (location|position)$/, 
+        options: [
+            { value: '!LOCATION' },
         ]
     },
     {
@@ -650,7 +681,10 @@ const scriptedExperience = [
             { value: 'fortune' },
             { value: 'regret' },
             { value: 'dontworry', restrictedTo: [EVIL] },
-        ]
+        ],
+        questGoals: {
+            who: 1
+        }
     },
     {
         trigger: /^what did you say$/,
@@ -785,9 +819,6 @@ const pickSuitableOption = function(options, currentSpirit) {
 
 const resolveQueryWithSimpleChatbot = function(query) {
     // Special cases
-    if (query === previousInput) {
-        return resolveQueryWithSimpleChatbot('{clarification}')
-    }
     if (query.startsWith('!LOCATION')) {
         if (questGoals.where === 3) {
             questGoals.where -= 1
@@ -802,6 +833,9 @@ const resolveQueryWithSimpleChatbot = function(query) {
         return 'define' + query.split(" ")[1]
     }
     if (query.startsWith('!NAME')) {
+        if (questGoals.who > 0) {
+            questGoals.who -= 1
+        }
         return currentSpirit.name
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {
@@ -852,7 +886,7 @@ const resolveQueryWithSimpleChatbot = function(query) {
         
     }
 
-    // Query didn't match anything, try running query without the first word.
+    // Query didn't match anything, so we try running query without the first word.
     // This helps for inputs like "sup how do you do" that we want to match for "how do you do".
     // ScriptedExperience must have fallback regex /^$/ for empty strings.
     const splitted = query.split(" ")
@@ -879,25 +913,28 @@ const SCRIPTED_TOOLTIPS = [
         ]
     },
     {
-        tooltip: 'O',
-        headline: 'Objective',
+        tooltip: 'T',
+        headline: 'Taleteller',
         paragraphs: [
             `That's a good start, looks like you're getting the hang of it. We need to keep this thing talking.`,
             `If you can, find out who... and what... we're dealing with here.`,
         ]
     },
     {
-        tooltip: 'O',
-        headline: 'Objective',
+        tooltip: 'x',
+        headline: 'All about location',
         paragraphs: [
-            '',
+            'Uh, this is not good. Not good at all. The spirit is gaining force and the bond to the netherworld is becoming unstable.',
+            'The only way for us to end this session safely is to trap the spirit. In order to do that we need to pinpoint its exact location. You might have to ask multiple questions to find out. I trust you got this.'
         ]
     },
     {
-        tooltip: 'A',
-        headline: 'Objective',
+        tooltip: 'o',
+        headline: 'Final objective',
         paragraphs: [
-            '',
+            'Almost there! I have the perfect concoction for this beast, and thanks to you we know where to hit it.',
+            'Just one thing left: we need to rile up the bastard to make it vulnerable to entrapment.',
+            'Can you figure out a way to anger the spirit?',
         ]
     },
 ]
@@ -926,7 +963,7 @@ const respondWithSimpleChatbot = function(rawInput, callback) {
         })
         .join(' ')
 
-    const spiritResponse = resolveQueryWithSimpleChatbot(input).toLocaleLowerCase()
+    const spiritResponse = (input !== previousInput ? resolveQueryWithSimpleChatbot(input) : resolveQueryWithSimpleChatbot('{clarification}')).toLocaleLowerCase()
     
     previousInput = input
     previousOutput = spiritResponse

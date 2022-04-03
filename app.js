@@ -271,6 +271,20 @@ const stoppedHoverOnTooltip = function () {
     document.getElementById('animateRemoveFocus').beginElement()
 }
 
+const maybeUpdateTooltip = function() {
+    if (!showTips) {
+        return
+    }
+    if (currentTooltip === 0) delayedCreateTooltip(1)
+    else if (currentTooltip === 1) delayedCreateTooltip(2)
+    else if (currentTooltip === 2 && questGoals.who <= 0) delayedCreateTooltip(3)
+    else if (currentTooltip === 3 && questGoals.where <= 0) delayedCreateTooltip(4)
+    else if (currentTooltip === 4 && questGoals.rage <= 0) {
+        //TODO win/lose conditions?
+        //setTimeout(() => createTooltip(5), 2500)
+    }
+}
+
 const mouseMoved = function (event, onObject) {
     const currX = event.clientX
     const currY = event.clientY
@@ -411,10 +425,7 @@ const stopDraggingPlanchette = function (event, source) {
                         document.getElementById('userMessagePre').innerText = ''
                         turn = TURN_USER
                         currentExchangeNumber++
-                        if (currentExchangeNumber === 1 && showTips) {
-                            if (!using_GPT3) stopSmokeAnimation()
-                            setTimeout(() => createTooltip(2), 2500)
-                        }
+                        maybeUpdateTooltip()
                     }
                 }
             }
@@ -448,10 +459,7 @@ const switchTurnToSpirit = function () {
     document.getElementById('userMessagePre').classList = ['unselectable orangey-text']
 
     // Maybe update tooltip
-    if (showTips && currentExchangeNumber === 0) {
-        if (!using_GPT3) stopSmokeAnimation()
-        setTimeout(() => createTooltip(1), 2500)
-    }
+    maybeUpdateTooltip()
 }
 
 const spiritIsReadyToCommunicate = function (rawMessage) {
@@ -470,19 +478,25 @@ const spiritIsReadyToCommunicate = function (rawMessage) {
         document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
         document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
         currentExchangeNumber++
-        if (currentExchangeNumber === 1 && showTips) {
-            if (!using_GPT3) stopSmokeAnimation()
-            setTimeout(() => createTooltip(2), 2500)
-        }
+        maybeUpdateTooltip()
         return
     }
     remainingGoals = message // Set incoming message as new goals
+}
+
+let currentTooltip = 0
+
+const delayedCreateTooltip = function(i) {
+    currentTooltip = i
+    if (!using_GPT3) stopSmokeAnimation()
+    setTimeout(() => createTooltip(i), 2500)
 }
 
 const createTooltip = function (i) {
     if (!SCRIPTED_TOOLTIPS) {
         // Possibly slow connection and chatbot.js hasn't loaded yet
         setTimeout(() => createTooltip(i), 500)
+        return
     }
     const t = SCRIPTED_TOOLTIPS[i]
     document.getElementById('tooltipSymbol').innerText = t.tooltip
@@ -598,10 +612,7 @@ const toggleSpeedMode = function () {
         document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
         remainingGoals = ''
         currentExchangeNumber++
-        if (currentExchangeNumber === 1 && showTips) {
-            if (!using_GPT3) stopSmokeAnimation()
-            setTimeout(() => createTooltip(2), 2500)
-        }
+        maybeUpdateTooltip()
     }
 }
 
