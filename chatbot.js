@@ -4,6 +4,30 @@ let previousInput = ''
 let previousOutput = ''
 let previousOutputs = new Set()
 let currentSpirit = null
+let questGoals = {
+    // How many QAs of a certain tag the user must go through before progressing in the quest.
+    who: 2,
+    where: 3,
+    rage: 5
+}
+
+// Snoop user city from IP in order to provide creepy location for spirit.
+let userCity = ''
+fetch('http://ip-api.com/json')
+    .then(res => res.json())
+    .then(response => {
+        const ALLOWED_CHARS = 'abcdefghijklmnopqrstuvwxyz'
+        const cleanedResponse = response.city.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase()
+        for (let i=0; i<cleanedResponse.length; i++) {
+            const c = cleanedResponse[i]
+            if (ALLOWED_CHARS.includes(c)) {
+                userCity += c
+            }
+        }
+        if (userCity.length < 3) {
+            userCity = ''
+        }
+    })
 
 const FRIENDLY = 'friendly'
 const EVIL = 'evil'
@@ -102,7 +126,7 @@ const parseOpenAIresponseJSON = function (response) {
     return 'ERR'
 }
 
-const generateOpenAIPrompt = function (spirit, currentQuestion, previousQuestion, previousAnswer) {
+const generateOpenAIPrompt = function (currentQuestion, previousQuestion, previousAnswer) {
     const beginningInstructions = [
         'The player communicates with a spirit using a Ouija board.',
         'The spirit moves the planchette on the board to communicate.',
@@ -110,7 +134,7 @@ const generateOpenAIPrompt = function (spirit, currentQuestion, previousQuestion
         'The spirit never answers with "yes" or "no".',
         'The spirit does not answer with simple yes/no answers.',
         'The spirit answers with colorful language.',
-        `The spirit is ${spirit.type} and its answers are unsettling, creepy and scary.`
+        `The spirit is ${currentSpirit.type} and its answers are unsettling, creepy and scary.`
     ].join(" ") + '\n'
 
     const chatHistoryAsSampleQA = [
@@ -143,8 +167,8 @@ const generateOpenAIPrompt = function (spirit, currentQuestion, previousQuestion
     return beginningInstructions + chatHistoryAsSampleQA + maybePreviousQA + currentQA
 }
 
-const respondWithOpenAI = function (userQuestion, spirit, callback) {
-    const prompt = generateOpenAIPrompt(spirit, userQuestion, previousInput, previousOutput)
+const respondWithOpenAI = function (userQuestion, callback) {
+    const prompt = generateOpenAIPrompt(userQuestion, previousInput, previousOutput)
     console.log(prompt)
     fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
         method: 'POST',
@@ -217,12 +241,14 @@ const scriptedExperience = [
     {
         trigger: '{clarification}',
         options: [
-            { value: 'itoldyou' },
-            { value: 'think' },
+            { value: 'itoldyou', priority: 1 },
             { value: 'youknow' },
             { value: 'leavemebe' },
             { value: '{insult}' },
-        ]
+        ],
+        questGoals: {
+            rage: 1
+        }
     },
     {
         trigger: '{insult}',
@@ -236,29 +262,51 @@ const scriptedExperience = [
             { value: 'maggot' },
             { value: 'filthydog' },
             { value: 'areyoudeaf' }
-        ]
+        ],
+        questGoals: {
+            rage: 1
+        }
     },
     {
-        trigger: '{location}',
+        trigger: '{location2}',
+        options: [
+            { value: 'home' },
+            { value: 'yourhouse' },
+        ],
+        questGoals: {
+            where: 1
+        }
+    },
+    {
+        trigger: '{location1}',
         options: [
             { value: 'lookup' },
             { value: 'aboveyou' },
             { value: 'yourleft' },
             { value: 'inyourbedroom', restrictedTo: [EVIL] },
-            { value: 'kitchen' },
             { value: 'ceilingbehindyou' },
             { value: 'behindthedoor' },
             { value: 'insidethewalls' },
             { value: 'underthefloor' },
             { value: 'closet' },
-            { value: 'outside' },
             { value: 'mirror' },
+        ],
+        questGoals: {
+            where: 1
+        }
+    },
+    {
+        trigger: '{location0}',
+        options: [
             { value: 'darkness' },
             { value: 'void' },
             { value: 'ether' },
-            { value: 'hell', restrictedTo: [EVIL] },
-            { value: 'grave' },
-            { value: 'crypt' },
+            { value: 'near' },
+            { value: 'close' },
+            //{ value: 'heaven', restrictedTo: [EVIL] },
+            //{ value: 'hell', restrictedTo: [EVIL] },
+            //{ value: 'grave' },
+            //{ value: 'crypt' },
         ]
     },
     {
@@ -355,23 +403,23 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^where are you$/,
+        trigger: /^(where are you|where in|where .* (house|home)|where exactly|where specifically|whose home|whos home).*/, // e.g. where in {userCity}
         options: [
-            { value: '{location}' }
+            { value: '!LOCATION' }
         ]
     },
     {
-        trigger: /^where.*/, // where were you killed? where will i die? where am i?
+        trigger: /^where.*/, // where? where were you killed? where will i die? where am i?
         options: [
             { value: 'indarkness' },
             { value: 'inthelight' },
             { value: 'home' },
             { value: 'house' },
-            { value: 'tavern' },
-            { value: 'cabin' },
-            { value: 'forest' },
-            { value: 'desert' },
-            { value: 'swamp' },
+            //{ value: 'tavern' },
+            //{ value: 'cabin' },
+            //{ value: 'forest' },
+            //{ value: 'desert' },
+            //{ value: 'swamp' },
         ]
     },
     {
@@ -385,7 +433,7 @@ const scriptedExperience = [
     {
         trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over).*/,
         options: [
-            { value: '{location}' }
+            { value: '!LOCATION' }
         ]
     },
     {
@@ -486,7 +534,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^who.*/,
+        trigger: /^who .*/,
         options: [
             { value: 'lord' },
             { value: 'angel' },
@@ -699,7 +747,7 @@ const pickRandom = function(arr) {
     return arr[Math.floor(Math.random() * arr.length)]
 }
 
-const pickSuitableOption = function(options, spirit) {
+const pickSuitableOption = function(options, currentSpirit) {
     const filteredOptions = options
         .map((option) => ({
             value: option.value,
@@ -707,7 +755,7 @@ const pickSuitableOption = function(options, spirit) {
             // Priority: base priority, random as tiebreaker, penalty for repeating previousOutputs
             priority: (option.priority ? option.priority : 0) + Math.random() + (previousOutputs.has(option.value) ? -10 : 0)
         }))
-        .filter((option) => !option.restrictedTo || option.restrictedTo.includes(spirit.type))
+        .filter((option) => !option.restrictedTo || option.restrictedTo.includes(currentSpirit.type))
     filteredOptions.sort((a, b) => b.priority - a.priority)
     const v = filteredOptions[0].value
     if (!v.startsWith('!') && !v.startsWith('{')) {
@@ -717,18 +765,26 @@ const pickSuitableOption = function(options, spirit) {
     return v
 }
 
-const resolveQueryWithSimpleChatbot = function(query, spirit) {
+const resolveQueryWithSimpleChatbot = function(query) {
     // Special cases
     if (query === previousInput) {
-        // TODO increase rage state?
-        return resolveQueryWithSimpleChatbot('{insult}')
+        return resolveQueryWithSimpleChatbot('{clarification}')
+    }
+    if (query.startsWith('!LOCATION')) {
+        if (questGoals.where === 3) {
+            questGoals.where -= 1
+            return userCity || resolveQueryWithSimpleChatbot('{location0}')
+        }
+        if (questGoals.where === 2) return resolveQueryWithSimpleChatbot(`{location2}`)
+        if (questGoals.where === 1) return resolveQueryWithSimpleChatbot(`{location1}`)
+        return resolveQueryWithSimpleChatbot('{location0}')
     }
     if (query.startsWith('!DEFINE')) {
         scriptedExperience.forEach((node) => node.options = node.options.filter((option) => !option.value.startsWith('!DEFINE')))
         return 'define' + query.split(" ")[1]
     }
     if (query.startsWith('!NAME')) {
-        return spirit.name
+        return currentSpirit.name
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {
         return '' + (2 + Math.floor(Math.random() * 13))
@@ -737,7 +793,7 @@ const resolveQueryWithSimpleChatbot = function(query, spirit) {
         return '' + (2 + Math.floor(Math.random() * 600))
     }
     if (query.startsWith('!RANDOM_COUNT_YEARS')) {
-        return resolveQueryWithSimpleChatbot('!RANDOM_COUNT', spirit) + 'years'
+        return resolveQueryWithSimpleChatbot('!RANDOM_COUNT', currentSpirit) + 'years'
     }
     if (query.startsWith('!RANDOM_YEAR_PAST')) {
         return '' + (1500 + Math.floor(Math.random() * 522))
@@ -764,9 +820,14 @@ const resolveQueryWithSimpleChatbot = function(query, spirit) {
 
         // Resolve matchingNode
         if (matchingNode) {
-            const v = pickSuitableOption(matchingNode.options, spirit)
+            const v = pickSuitableOption(matchingNode.options, currentSpirit)
             if (v.startsWith('!') || v.startsWith('{')) {
-                return resolveQueryWithSimpleChatbot(v, spirit)
+                return resolveQueryWithSimpleChatbot(v)
+            }
+            if (matchingNode.questGoals) {
+                if (matchingNode.questGoals.who) questGoals.who -= matchingNode.questGoals.who
+                if (matchingNode.questGoals.where) questGoals.where -= matchingNode.questGoals.where
+                if (matchingNode.questGoals.rage) questGoals.rage -= matchingNode.questGoals.rage
             }
             return v
         }
@@ -778,7 +839,7 @@ const resolveQueryWithSimpleChatbot = function(query, spirit) {
     // ScriptedExperience must have fallback regex /^$/ for empty strings.
     const splitted = query.split(" ")
     splitted.shift() // Remove first word
-    return resolveQueryWithSimpleChatbot(splitted.join(" "), spirit)
+    return resolveQueryWithSimpleChatbot(splitted.join(" "))
 }
 
 const SCRIPTED_TOOLTIPS = [
@@ -810,15 +871,15 @@ const SCRIPTED_TOOLTIPS = [
 ]
 
 const initializeSpirit = function() {
-    const spiritType = Math.random() > 0.5 ? EVIL : FRIENDLY
+    const spiritType = EVIL // Math.random() > 0.5 ? EVIL : FRIENDLY
     return {
         type: spiritType,
-        name: pickSuitableOption(names, { 'type': spiritType })
+        name: pickSuitableOption(names, { type: spiritType })
     }
 }
 currentSpirit = initializeSpirit()
 
-const respondWithSimpleChatbot = function(rawInput, currentSpirit, callback) {
+const respondWithSimpleChatbot = function(rawInput, callback) {
     const input = rawInput
         .toLocaleLowerCase()
         .split(" ")
@@ -833,7 +894,7 @@ const respondWithSimpleChatbot = function(rawInput, currentSpirit, callback) {
         })
         .join(' ')
 
-    const spiritResponse = resolveQueryWithSimpleChatbot(input, currentSpirit).toLocaleLowerCase()
+    const spiritResponse = resolveQueryWithSimpleChatbot(input).toLocaleLowerCase()
     
     previousInput = input
     previousOutput = spiritResponse
@@ -842,8 +903,8 @@ const respondWithSimpleChatbot = function(rawInput, currentSpirit, callback) {
 
 const dispatchToSpirit = function(rawInput, callback) {
     try {
-        if (using_GPT3) respondWithOpenAI(rawInput, currentSpirit, callback)
-        else respondWithSimpleChatbot(rawInput, currentSpirit, callback)
+        if (using_GPT3) respondWithOpenAI(rawInput, callback)
+        else respondWithSimpleChatbot(rawInput, callback)
     } catch (ex) {
         alert('Internal error, sorry!')
         console.log(ex)

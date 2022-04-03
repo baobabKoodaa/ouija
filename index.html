@@ -1219,9 +1219,11 @@
             }
             if (speedMode && remainingGoals.length > 0) {
                 turn = TURN_USER
+                revealedSpiritLetters += remainingGoals
+                console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
                 const container = document.getElementById('spiritMessageContainer')
-                container.innerText = revealedSpiritLetters + remainingGoals
-                container.setAttribute('data-text', revealedSpiritLetters + remainingGoals)
+                container.innerText = revealedSpiritLetters
+                container.setAttribute('data-text', revealedSpiritLetters)
                 document.getElementById('userMessagePre').innerText = ''
                 document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
                 document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
@@ -1658,15 +1660,6 @@
         if (window.innerWidth < 1200) {
             document.getElementById('mobileWarning').style.display = 'block';
         }
-
-        // fetch('http://ip-api.com/json')
-        //     .then(res => res.json())
-        //     .then(response => {
-        //         console.log("City: ", response.city);
-        //     })
-        //     .catch((data, status) => {
-        //         console.log('Request failed');
-        //     })
 
     </script>
 
