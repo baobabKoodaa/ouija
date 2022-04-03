@@ -1,6 +1,6 @@
 ## Ouija Online
 
-A web horror experience where the player you can talk with spirits using a Ouija board.
+A web horror experience where you can talk with spirits using a Ouija board.
 
 Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
 
