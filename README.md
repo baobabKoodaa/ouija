@@ -1,15 +1,17 @@
 ## Ouija Online
 
-A web horror experience where you can talk with spirits using a Ouija board.
+A web horror experience where you communicate with spirits using a Ouija board.
 
 Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
 
-![Screenshot of Ouija Online](assets/screenshot.jpg)
+![Screenshot of Ouija Online](assets/screenshot2.jpg)
 
 #### Notable features:
 
 - Despite existing only as a web page, the spirits have the ability to __move the player's mouse__ towards letters on the board.
 - Two different chatbots available: a __scripted experience__ is available for all, and for players who have OpenAI API keys, there is a more versatile __GPT-3 mode__.
+- Questline for the scripted experience has two potential endings. (TODO)
+- Contains a fun easter egg! Can you find it?
 
 #### How does it work
 
