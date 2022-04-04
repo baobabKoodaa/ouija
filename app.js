@@ -299,6 +299,21 @@ const stoppedHoverOnTooltip = function () {
 }
 
 let easterEggVisible = false
+const displayEasterEgg = function() {
+    if (!easterEggVisible) {
+        easterEggVisible = true
+        document.getElementById('boardEasterEggHelper').style.display = 'block'
+        setTimeout(() => {
+            document.getElementById('boardEasterEggHelper').style.opacity = 1
+        }, 0)
+        setTimeout(() => {
+            document.getElementById('board').src = 'assets/ouija_bg_face_outline.jpg'
+            document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg_face_stare.jpg'
+            document.getElementById('boardEasterEggHelper').style.display = 'none'
+        }, 4000)
+    }
+}
+
 const questLineTick = function() {
     if (!showTips) {
         return
@@ -313,11 +328,7 @@ const questLineTick = function() {
         //setTimeout(() => createTooltip(5), 2500)
     }
     // Easter egg face on board
-    if (currentTooltip >= 3 && !easterEggVisible && turn === TURN_SPIRIT) {
-        easterEggVisible = true
-        document.getElementById('board').src = 'assets/ouija_bg_face_outline.jpg'
-        document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg_face_stare.jpg'
-    }
+    if (currentTooltip >= 3 && turn === TURN_SPIRIT) displayEasterEgg()
 }
 
 const mouseMoved = function (event, onObject) {
