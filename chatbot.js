@@ -207,8 +207,8 @@ const scriptedExperience = [
         trigger: /^hello.*/,
         options: [
             { value: 'greetings' },
+            { value: 'mylove' },
             { value: 'mylord' },
-            { value: 'myliege' },
         ],
     },
     {

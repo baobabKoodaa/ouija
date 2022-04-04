@@ -107,10 +107,25 @@ const tooltipHoverArea = {
 
 const loadAnalyticsScript = function() {
     // We need DOMContentLoaded to execute fast, that's why we insert analytics scripts only AFTER the first 'load' event has fired.
-    const script = document.createElement("script");
+    const script = document.createElement("script")
     script.setAttribute('data-domain', 'ouija.attejuvonen.fi')
     script.src = "https://plausible.io/js/plausible.js"
     document.getElementsByTagName("head")[0].appendChild(script)
+}
+
+const preloadImage = function(url) {
+    const img = document.createElement("img")
+    img.src = url
+    img.style = "display: none;"
+    img.alt = ""
+    document.body.appendChild(img)
+}
+
+const preloadSomeImages = function() {
+    // Preloading these images prevents a flicker issue with magnifying glass. This preload is delayed on purpose to improve initial load time.
+    preloadImage("assets/ouija_bg_face_stare.jpg")
+    preloadImage("assets/ouija_bg_face_no_eyes.jpg")
+    preloadImage("assets/ouija_bg_face_outline.jpg")
 }
 
 // Memoize some values to reduce reflows (improve performance).
@@ -158,7 +173,10 @@ const resizeUpdates = function () {
 // Call resizeUpdates after the first complete render and after each resize
 window.addEventListener('load', function (event) {
     resizeUpdates()
-    loadAnalyticsScript()
+    setTimeout(() => {
+        loadAnalyticsScript()
+        preloadSomeImages()
+    }, 500)
 });
 window.addEventListener('resize', function (event) {
     resizeUpdates()
@@ -280,10 +298,12 @@ const stoppedHoverOnTooltip = function () {
     document.getElementById('animateRemoveFocus').beginElement()
 }
 
-const maybeUpdateTooltip = function() {
+let easterEggVisible = false
+const questLineTick = function() {
     if (!showTips) {
         return
     }
+    // Maybe update tooltip
     if (currentTooltip === 0) delayedCreateTooltip(1)
     else if (currentTooltip === 1) delayedCreateTooltip(2)
     else if (currentTooltip === 2 && questGoals.who <= 0) delayedCreateTooltip(3)
@@ -291,6 +311,12 @@ const maybeUpdateTooltip = function() {
     else if (currentTooltip === 4 && questGoals.rage <= 0) {
         //TODO win/lose conditions?
         //setTimeout(() => createTooltip(5), 2500)
+    }
+    // Easter egg face on board
+    if (currentTooltip >= 3 && !easterEggVisible && turn === TURN_SPIRIT) {
+        easterEggVisible = true
+        document.getElementById('board').src = 'assets/ouija_bg_face_outline.jpg'
+        document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg_face_stare.jpg'
     }
 }
 
@@ -389,6 +415,7 @@ const startDraggingPlanchette = function (event) {
     if (turn === TURN_SPIRIT) {
         draggingPlanchette = true
         cursor.src = "assets/grabbing.cur"
+        if (easterEggVisible) document.getElementById('magnifying-glass').style.backgroundImage = "url('assets/ouija_bg_face_stare.jpg')"
     }
 }
 const stopDraggingPlanchette = function (event, source) {
@@ -397,6 +424,7 @@ const stopDraggingPlanchette = function (event, source) {
     cursor.src = newCursor
     const x = planchetteTransformX + offsetX
     const y = planchetteTransformY + offsetY
+    if (easterEggVisible) document.getElementById('magnifying-glass').style.backgroundImage = "url('assets/ouija_bg_face_no_eyes.jpg')"
     if (source === ON_PLANCHETTE) {
         if (debug[RECORDING]) {
             const chars = ALLOWED_CHARS
@@ -433,7 +461,7 @@ const stopDraggingPlanchette = function (event, source) {
                         document.getElementById('userMessagePre').innerText = ''
                         turn = TURN_USER
                         currentExchangeNumber++
-                        maybeUpdateTooltip()
+                        questLineTick()
                     }
                 }
             }
@@ -467,7 +495,7 @@ const switchTurnToSpirit = function () {
     document.getElementById('userMessagePre').classList = ['unselectable orangey-text']
 
     // Maybe update tooltip
-    maybeUpdateTooltip()
+    questLineTick()
 }
 
 const spiritIsReadyToCommunicate = function (rawMessage) {
@@ -486,7 +514,7 @@ const spiritIsReadyToCommunicate = function (rawMessage) {
         document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
         document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
         currentExchangeNumber++
-        maybeUpdateTooltip()
+        questLineTick()
         return
     }
     remainingGoals = message // Set incoming message as new goals
@@ -620,7 +648,7 @@ const toggleSpeedMode = function () {
         document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
         remainingGoals = ''
         currentExchangeNumber++
-        maybeUpdateTooltip()
+        questLineTick()
     }
 }
 

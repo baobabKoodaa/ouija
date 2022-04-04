@@ -35,3 +35,4 @@ Assets and effects:
 - Font 'Kingthings Trypewriter 2' was created by Kevin King and was downloaded from [1001fonts](https://www.1001fonts.com/kingthings-trypewriter-2-font.html), which provide permission for both personal and commercial use.
 - Background pattern used in first-visit popup is from [Hero Patterns](https://heropatterns.com/), which provide permission for use under CC BY 4.0 license.
 - Icons for settings and external links are from [FontAwesome](https://fontawesome.com/icons/gear?s=solid) with permission for both personal and commercial use.
+- Creepy old photo used in easter egg is from [Vintage Everyday](https://www.vintag.es/2016/11/these-50-creepy-photographs-early-20th.html), copyright expired.
