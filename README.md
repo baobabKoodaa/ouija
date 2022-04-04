@@ -4,6 +4,8 @@ A web horror experience where you can talk with spirits using a Ouija board.
 
 Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
 
+![Screenshot of Ouija Online](assets/screenshot.jpg)
+
 #### Notable features:
 
 - Despite existing only as a web page, the spirits have the ability to __move the player's mouse__ towards letters on the board.

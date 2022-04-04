@@ -2,18 +2,35 @@
 <html lang="en">
 
 <head>
+
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="preload" href="assets/CarnivaleeFreakshow.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="assets/Feral-Regular.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="assets/KingthingsTrypewriter2.woff2" as="font" type="font/woff2" crossorigin>
     <meta name="theme-color" content="#d35400" />
     <title>Ouija Online - A horror experience</title>
     <link href="styles.css" rel="stylesheet" type="text/css">
+
+    <!-- Preload fonts to prevent flashing unstyled text. -->
+    <link rel="preload" href="assets/CarnivaleeFreakshow.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/Feral-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="assets/KingthingsTrypewriter2.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Social sharing meta tags. -->
+    <meta property="og:title" content="Ouija Online">
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://ouija.attejuvonen.fi/assets/screenshot.jpg">
+    <meta property="og:url" content="https://ouija.attejuvonen.fi/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:description"
+        content="A web horror experience - communicate with spirits using a Ouija board (powered by evil chatbots).">
+    <meta property="og:site_name" content="Ouija Online">
+    <meta name="twitter:image:alt" content="Ouija Online">
+
 </head>
 
 <body>
+
     <!-- Background element for mousemove events -->
-    <div id="bg" class="unselectable"></div>
+    <div id=" bg" class="unselectable">
+    </div>
 
     <!-- Warning: dont move elements outside boardContainer, otherwise browser resizing will cause inconsistencies in positioning! -->
     <div id="boardContainer" class="unselectable">
