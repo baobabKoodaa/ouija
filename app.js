@@ -105,6 +105,14 @@ const tooltipHoverArea = {
     right: 0.96
 }
 
+const loadAnalyticsScript = function() {
+    // We need DOMContentLoaded to execute fast, that's why we insert analytics scripts only AFTER the first 'load' event has fired.
+    const script = document.createElement("script");
+    script.setAttribute('data-domain', 'ouija.attejuvonen.fi')
+    script.src = "https://plausible.io/js/plausible.js"
+    document.getElementsByTagName("head")[0].appendChild(script)
+}
+
 // Memoize some values to reduce reflows (improve performance).
 let boardWidth = 0
 let boardHeight = 0
@@ -150,6 +158,7 @@ const resizeUpdates = function () {
 // Call resizeUpdates after the first complete render and after each resize
 window.addEventListener('load', function (event) {
     resizeUpdates()
+    loadAnalyticsScript()
 });
 window.addEventListener('resize', function (event) {
     resizeUpdates()
@@ -312,7 +321,6 @@ const mouseMoved = function (event, onObject) {
         const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
         if (dist < SPIRIT_MAX_DIST) {
             // Modify cursor offset to guide the user towards goal
-            // TODO Even if we are dragging we sometimes have to reduce offset to prevent the real cursor from escaping window.
             spiritGuidanceToOffset(x, y, diffX, diffY, goalX, goalY, dist)
         } else {
             // User dragging planchette but is not near goal, use this opportunity to
@@ -862,8 +870,4 @@ if (!window.localStorage.getItem(OUIJA_USER_ID)) {
     openConsentPopup()
 } else {
     setTimeout(() => createTooltip(0), 1000)
-}
-
-if (window.innerWidth < 1200) {
-    document.getElementById('mobileWarning').style.display = 'block';
 }

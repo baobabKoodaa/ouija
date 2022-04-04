@@ -1,14 +1,14 @@
 // State
-let using_GPT3 = false // otherwise using simple chatbot
-let previousInput = '-666'
+let using_GPT3 = false // otherwise using scripted experience
+let previousInput = ''
 let previousOutput = ''
 let previousOutputs = new Set()
 let currentSpirit = null
 let questGoals = {
-    // How many QAs of a certain tag the user must go through before progressing in the quest.
+    // How many QAs of a certain tag the user must go through before progressing in the questline.
     who: 2,
     where: 3,
-    rage: 5
+    rage: 6
 }
 
 // Snoop user city from IP in order to provide creepy location for spirit.
@@ -219,6 +219,14 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^is (anyone|anybody) (there|here)$/,
+        options: [
+            { value: 'justme' },
+            { value: 'manyofus' },
+            { value: 'hereiam' },
+        ]
+    },
+    {
         trigger: '{introduction}',
         options: [
             { value: 'hellodear' },
@@ -249,9 +257,10 @@ const scriptedExperience = [
         trigger: '{clarification}',
         options: [
             { value: 'itoldyou', priority: 1 },
+            { value: 'stop' },
+            { value: 'youboreme' },
             { value: 'youknow' },
             { value: 'leavemebe' },
-            { value: '{insult}' },
         ],
         questGoals: {
             rage: 1
@@ -262,7 +271,7 @@ const scriptedExperience = [
         options: [
             { value: 'bitch', priority: 0.5 },
             { value: 'imbecil', priority: 0.5 },
-            { value: 'fool', priority: 0.5 },
+            { value: 'fool', },
             { value: 'harlot' },
             { value: 'idiot' },
             { value: 'stupid' },
@@ -620,7 +629,7 @@ const scriptedExperience = [
     {
         trigger: /^what.* mean.*/,
         options: [
-            { value: 'iamnotmean' },
+            { value: 'iamnotmean', priority: 1.0 },
             { value: 'yourchoice' },
             { value: 'interpret' },
             { value: '{clarification}' },
@@ -741,14 +750,35 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up)($| ).*/,
+        trigger: '{insultedSoft}',
         options: [
             { value: 'ohplease' },
             { value: 'manners' },
+            { value: 'knowyourplace' },
+            { value: 'leavemebe' },
+            { value: 'dontplaywithme' },
+        ],
+        questGoals: {
+            rage: 1
+        }
+    },
+    {
+        trigger: '{insultedHard}',
+        options: [
             { value: 'youwillpayforthis' },
             { value: 'howdareyou' },
-            { value: 'insolentcreature' },
-            { value: '{insult}' },
+            { value: 'die' },
+            { value: 'youshallperish' },
+            { value: 'youwilldie' },
+        ],
+        questGoals: {
+            rage: 1
+        }
+    },
+    {
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker)($| ).*/,
+        options: [
+            { value: '!INSULTED' },
         ]
     },
     {
@@ -763,7 +793,6 @@ const scriptedExperience = [
             { value: 'watchyourtone' },
             { value: 'believeme' },
             { value: 'trustme' },
-            { value: 'youwillsee', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -774,13 +803,10 @@ const scriptedExperience = [
         options: [
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
-            { value: 'youthinkso', restrictedTo: [FRIENDLY] },
-            { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: 'youshallperish', restrictedTo: [EVIL] },
-            { value: 'youwilldie', restrictedTo: [EVIL] },
             { value: 'itisknown' },
+            { value: 'lies' },
             { value: 'liar' },
             { value: 'indeed' },
             { value: 'false' },
@@ -837,6 +863,11 @@ const resolveQueryWithSimpleChatbot = function(query) {
             questGoals.who -= 1
         }
         return currentSpirit.name
+    }
+    if (query.startsWith('!INSULTED')) {
+        if (questGoals.rage >= 6) return resolveQueryWithSimpleChatbot('{insultedSoft}')
+        if (questGoals.rage == 4) return resolveQueryWithSimpleChatbot('{insult}')
+        if (questGoals.rage <= 2) return resolveQueryWithSimpleChatbot('{insultedHard}')
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {
         return '' + (2 + Math.floor(Math.random() * 13))
