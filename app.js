@@ -3,6 +3,7 @@ const ON_PLANCHETTE = 'onPlanchette'
 const ON_USER_MESSAGE = 'onUserMessage'
 const ON_BUTTON = 'onButton'
 const ON_TEXT_INPUT = 'onTextInput'
+const EASTER_EGG_ACHIEVEMENT = 'easterEggAchievement'
 const SHUT_UP = 'shutUp'
 const RECORDING = 'recording'
 const TURN_SPIRIT = 'turnSpirit'
@@ -95,6 +96,12 @@ const goalCoords = {
     "x": { "x": 111.63, "y": -37.72 },
     "y": { "x": 134.21, "y": -24.18 },
     "z": { "x": 147.65, "y": -9.44 }
+}
+
+// Easter egg coordinates (relative to planchette's size).
+const easterEggLocation = {
+    x: -200.78,
+    y: 41.95
 }
 
 // Tooltip hovering area. Coordinates are relative to planchette's size.
@@ -435,7 +442,14 @@ const stopDraggingPlanchette = function (event, source) {
     cursor.src = newCursor
     const x = planchetteTransformX + offsetX
     const y = planchetteTransformY + offsetY
-    if (easterEggVisible) document.getElementById('magnifying-glass').style.backgroundImage = "url('assets/ouija_bg_face_no_eyes.jpg')"
+    if (easterEggVisible) { 
+        document.getElementById('magnifying-glass').style.backgroundImage = "url('assets/ouija_bg_face_no_eyes.jpg')"
+        const c = easterEggLocation
+        const dist = Math.sqrt((x - c.x) * (x - c.x) + (y - c.y) * (y - c.y))
+        if (dist < CHAR_SELECT_MAX_DIST) {
+            unlockAchievement(EASTER_EGG_ACHIEVEMENT)
+        }
+    }
     if (source === ON_PLANCHETTE) {
         if (debug[RECORDING]) {
             const chars = ALLOWED_CHARS
@@ -816,6 +830,12 @@ const stopSmokeAnimation = function () {
         document.getElementById('tooltipSymbol').classList.remove('disable-transitions')
         document.getElementById('animateRemoveFocus').beginElement()
     }, 2000)
+}
+
+const unlockAchievement = function(achievement) {
+    if (achievement === EASTER_EGG_ACHIEVEMENT) {
+        console.log('You found the easter egg!')
+    }
 }
 
 const shakeBoard = function() {
