@@ -249,6 +249,40 @@ h1 {
     opacity: 0.5;
 }
 
+#achievement-hoverboard {
+    position: absolute;
+    bottom: 0vw;
+    right: 0vw;
+    width: 15vw;
+    height: 6vw;
+    z-index: 998;
+}
+
+#achievement-row {
+    position: absolute;
+    bottom: 2vw;
+    right: 2vw;
+    fill: #d35400;
+    z-index: 999;
+}
+
+#achievement-row svg {
+    margin-left: 1vw;
+    vertical-align: middle;
+    width: 2vw;
+    opacity: 0.3;
+    fill: #d35400;
+}
+
+#achievement-row svg.achieved {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+#achievement-row svg.achieved:hover {
+    opacity: 1;
+}
+
 #popupSettings {
     z-index: 996;
 }

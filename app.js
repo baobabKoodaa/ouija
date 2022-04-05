@@ -910,6 +910,7 @@ document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
 // Switches from fake cursor to normal cursor
 document.body.addEventListener('mouseleave', e => { switchToNormalCursor(e) })
 document.getElementById('settingsGearHoverboard').addEventListener('mousemove', e => { switchToNormalCursor(e) })
+document.getElementById('achievement-hoverboard').addEventListener('mousemove', e => { switchToNormalCursor(e) })
 document.getElementById('textInputAPIKey').addEventListener('mousemove', e => { switchToNormalCursor(e) })
 
 // Keydown events
