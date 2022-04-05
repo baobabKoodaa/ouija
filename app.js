@@ -321,6 +321,16 @@ const displayEasterEgg = function() {
     }
 }
 
+const flyBanshee = function() {
+    easterEggVisible = false
+    // Clear easter egg from board
+    document.getElementById('board').src = 'assets/ouija_bg.jpg'
+    document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg.jpg'
+    // Fly, banshee, fly
+    document.getElementById('banshee').style.opacity = 0.7
+    document.getElementById('banshee').style.animationName = 'banshee-flying'
+}
+
 const questLineTick = function() {
     if (!showTips) {
         return
