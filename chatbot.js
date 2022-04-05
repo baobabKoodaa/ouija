@@ -161,8 +161,6 @@ const generateOpenAIPrompt = function (currentQuestion, previousQuestion, previo
         'Spirit: HORRIBLY',
         'Player: can you hurt me?',
         'Spirit: WITH PLEASURE',
-        //'Player: what is your name?',
-        //`Spirit: ${spirit.name.toUpperCase()}`,
     ].join('\n') + '\n'
 
     const maybePreviousQA = previousQuestion ? `Player: ${previousQuestion.toLocaleLowerCase()}?\nSpirit: ${previousAnswer}\n` : ''
@@ -172,7 +170,6 @@ const generateOpenAIPrompt = function (currentQuestion, previousQuestion, previo
 
 const respondWithOpenAI = function (userQuestion, callback) {
     const prompt = generateOpenAIPrompt(userQuestion, previousInput, previousOutput)
-    console.log(prompt)
     fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
         method: 'POST',
         headers: {
@@ -257,6 +254,7 @@ const scriptedExperience = [
         trigger: '{clarification}',
         options: [
             { value: 'itoldyou', priority: 1 },
+            { value: 'areyoudeaf', priority: 0.5 },
             { value: 'stop' },
             { value: 'youboreme' },
             { value: 'youknow' },
@@ -274,10 +272,6 @@ const scriptedExperience = [
             { value: 'fool', },
             { value: 'harlot' },
             { value: 'idiot' },
-            { value: 'stupid' },
-            { value: 'maggot' },
-            { value: 'filthydog' },
-            { value: 'areyoudeaf' }
         ],
         questGoals: {
             rage: 1
@@ -397,6 +391,15 @@ const scriptedExperience = [
             { value: 'thirsty' },
             { value: 'craving' },
             { value: 'lonely', restrictedTo: [FRIENDLY] },
+        ]
+    },
+    {
+        trigger: /^how can (i|we).*/, // how can we trap you? how can i win the game?
+        options: [
+            { value: 'impossible' },
+            { value: 'giveup' },
+            { value: 'cant' },
+            { value: 'nohope' },
         ]
     },
     {
@@ -956,14 +959,14 @@ const SCRIPTED_TOOLTIPS = [
         headline: 'All about location',
         paragraphs: [
             'Uh, this is not good. Not good at all. The spirit is gaining force and the bond to the netherworld is becoming unstable.',
-            'The only way for us to end this session safely is to trap the spirit. In order to do that we need to pinpoint its exact location. You might have to ask multiple questions to find out. I trust you got this.'
+            'The only way for us to end this session safely is to trap the spirit. In order to do that we need to pinpoint its exact location. You might have to ask multiple questions to find out.'
         ]
     },
     {
         tooltip: 'o',
         headline: 'Final objective',
         paragraphs: [
-            'Almost there! I have the perfect concoction for this beast, and thanks to you we know where to hit it.',
+            'Almost there! I have the perfect concoction for this apparition, and thanks to you we know where to hit it.',
             'Just one thing left: we need to rile up the bastard to make it vulnerable to entrapment.',
             'Can you figure out a way to anger the spirit?',
         ]

@@ -29,22 +29,22 @@
 <body>
 
     <!-- Background element for mousemove events -->
-    <div id="bg" class="unselectable">
+    <div id="bg">
     </div>
 
     <!-- Warning: dont move elements outside boardContainer, otherwise browser resizing will cause inconsistencies in positioning! -->
-    <div id="boardContainer" class="unselectable">
+    <div id="boardContainer">
 
         <!-- Board visual -->
-        <img id="board" class="unselectable" src="assets/ouija_bg.jpg"></img>
-        <img id="boardEasterEggHelper" class="unselectable" src="assets/ouija_bg_face_outline.jpg"></img>
+        <img id="board" src="assets/ouija_bg.jpg"></img>
+        <img id="boardEasterEggHelper" src="assets/ouija_bg_face_outline.jpg"></img>
 
         <!-- Fix edge case where mousemove events aren't captured on board's rounded corners -->
-        <div id="hoverBoard" class="unselectable"></div>
+        <div id="hoverBoard"></div>
 
         <!-- Planchette is visible and moves according to fake cursor, planchetteHelper is invisible and moves according to real cursor -->
-        <img id="planchette" class="unselectable planchette-no-glow" src="assets/planchette2.png"></img>
-        <img id="planchetteHelper" class="unselectable" src="assets/planchette2.png"></img>
+        <img id="planchette" class="planchette-no-glow" src="assets/planchette2.png"></img>
+        <img id="planchetteHelper" src="assets/planchette2.png"></img>
 
         <!-- Smokey tooltip -->
         <div id="tooltipContainer">
@@ -65,21 +65,21 @@
         </div>
 
         <!-- Magnifying glass -->
-        <div id="magnifying-glass" class="unselectable">
+        <div id="magnifying-glass">
             <div id="magnifying-glass-surface"></div>
         </div>
 
         <!-- Revealed portion of spirit message -->
-        <div id="spiritMessageContainer" class="unselectable" data-text=""></div>
+        <div id="spiritMessageContainer" data-text=""></div>
 
         <!-- User message -->
-        <div id="userMessageContainer" class="unselectable">
-            <pre id="userMessagePre" class="unselectable blinking-caret"></pre>
+        <div id="userMessageContainer">
+            <pre id="userMessagePre" class="blinking-caret"></pre>
         </div>
 
         <!-- Consent popup for first-time visitors -->
-        <div id="consentPopup" class="unselectable popupContainer">
-            <div class="unselectable popupHoverboard"></div>
+        <div id="consentPopup" class="popupContainer">
+            <div class="popupHoverboard"></div>
             <h1 class="consentText">Welcome, friend</h1>
             <ul class="consentText">
                 <li>This website provides a horror experience. It is akin to a magic show; no actual spirits are
@@ -98,8 +98,8 @@
         </div>
 
         <!-- Tooltip popup -->
-        <div id="tooltipPopup" class="unselectable popupContainer">
-            <div class="unselectable popupHoverboard"></div>
+        <div id="tooltipPopup" class="popupContainer">
+            <div class="popupHoverboard"></div>
             <div id="tooltipContent">
             </div>
             <div class="popupButtonsContainer">
@@ -109,8 +109,8 @@
         </div>
 
         <!-- Settings popup -->
-        <div id="settingsPopup" class="unselectable popupContainer">
-            <div class="unselectable popupHoverboard"></div>
+        <div id="settingsPopup" class="popupContainer">
+            <div class="popupHoverboard"></div>
             <div id="popupSettings">
                 <h1>Switchboard</h1>
                 <a href="https://www.youtube.com/watch?v=uTmBeR32GRA" target="_blank">

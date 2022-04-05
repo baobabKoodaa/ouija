@@ -1,5 +1,17 @@
 * {
     box-sizing: border-box;
+
+    /* Nothing should be selectable. */
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+
+    /* Nothing should be draggable. */
+    user-drag: none;
+    -webkit-user-drag: none;
 }
 
 p,
@@ -608,18 +620,6 @@ h1 {
     visibility: hidden;
     pointer-events: none;
     z-index: 1000;
-}
-
-.unselectable {
-    user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
-    -ms-user-select: none;
-
-    user-drag: none;
-    -webkit-user-drag: none;
 }
 
 .disable-transitions {

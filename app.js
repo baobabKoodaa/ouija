@@ -467,8 +467,8 @@ const stopDraggingPlanchette = function (event, source) {
                     remainingGoals = remainingGoals.substring(1)
                     if (remainingGoals.length === 0) {
                         console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
-                        document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
-                        document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
+                        document.getElementById('planchette').classList = [' planchette-no-glow']
+                        document.getElementById('userMessagePre').classList = [' blinking-caret']
                         document.getElementById('userMessagePre').innerText = ''
                         turn = TURN_USER
                         currentExchangeNumber++
@@ -495,7 +495,7 @@ const switchTurnToSpirit = function () {
     revealedSpiritLetters = ''
 
     // Indicate to user that planchette can be dragged
-    document.getElementById('planchette').classList = ['unselectable planchette-active-glow']
+    document.getElementById('planchette').classList = [' planchette-active-glow']
 
     // Clear previously revealed answer from visuals
     const container = document.getElementById('spiritMessageContainer')
@@ -503,7 +503,7 @@ const switchTurnToSpirit = function () {
     container.setAttribute('data-text', '')
 
     // Stop blinking caret
-    document.getElementById('userMessagePre').classList = ['unselectable orangey-text']
+    document.getElementById('userMessagePre').classList = [' orangey-text']
 
     // Maybe update tooltip
     questLineTick()
@@ -522,8 +522,8 @@ const spiritIsReadyToCommunicate = function (rawMessage) {
         container.innerText = message
         container.setAttribute('data-text', message)
         document.getElementById('userMessagePre').innerText = ''
-        document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
-        document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
+        document.getElementById('userMessagePre').classList = [' blinking-caret']
+        document.getElementById('planchette').classList = [' planchette-no-glow']
         currentExchangeNumber++
         questLineTick()
         return
@@ -655,8 +655,8 @@ const toggleSpeedMode = function () {
         container.innerText = revealedSpiritLetters
         container.setAttribute('data-text', revealedSpiritLetters)
         document.getElementById('userMessagePre').innerText = ''
-        document.getElementById('userMessagePre').classList = ['unselectable blinking-caret']
-        document.getElementById('planchette').classList = ['unselectable planchette-no-glow']
+        document.getElementById('userMessagePre').classList = [' blinking-caret']
+        document.getElementById('planchette').classList = [' planchette-no-glow']
         remainingGoals = ''
         currentExchangeNumber++
         questLineTick()
