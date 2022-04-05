@@ -253,12 +253,11 @@ const scriptedExperience = [
     {
         trigger: '{clarification}',
         options: [
-            { value: 'itoldyou', priority: 1 },
-            { value: 'areyoudeaf', priority: 0.5 },
-            { value: 'stop' },
-            { value: 'youboreme' },
-            { value: 'youknow' },
-            { value: 'leavemebe' },
+            { value: 'itoldyou', priority: 2 },
+            { value: 'areyoudeaf', priority: 1.5 },
+            { value: 'fuckoff', priority: 1.0 },
+            { value: 'leavemebe', priority: 1.0 },
+            { value: '{insult}' },
         ],
         questGoals: {
             rage: 1
@@ -269,6 +268,7 @@ const scriptedExperience = [
         options: [
             { value: 'bitch', priority: 0.5 },
             { value: 'imbecil', priority: 0.5 },
+            { value: 'die' },
             { value: 'fool', },
             { value: 'harlot' },
             { value: 'idiot' },
@@ -911,9 +911,16 @@ const resolveQueryWithSimpleChatbot = function(query) {
                 return resolveQueryWithSimpleChatbot(v)
             }
             if (matchingNode.questGoals) {
-                if (matchingNode.questGoals.who) questGoals.who -= matchingNode.questGoals.who
-                if (matchingNode.questGoals.where) questGoals.where -= matchingNode.questGoals.where
-                if (matchingNode.questGoals.rage) questGoals.rage -= matchingNode.questGoals.rage
+                if (matchingNode.questGoals.who) {
+                    questGoals.who -= matchingNode.questGoals.who
+                }
+                if (matchingNode.questGoals.where) {
+                    questGoals.where -= matchingNode.questGoals.where
+                }
+                if (matchingNode.questGoals.rage) {
+                    randomRageEffect()
+                    questGoals.rage -= matchingNode.questGoals.rage
+                }
             }
             return v
         }

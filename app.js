@@ -818,6 +818,35 @@ const stopSmokeAnimation = function () {
     }, 2000)
 }
 
+const shakeBoard = function() {
+    const element = document.getElementById('boardContainer')
+    element.classList.remove("shake-board")
+    element.offsetWidth // Trigger reflow.
+    element.classList.add("shake-board")
+}
+
+const shakeMouse = function() {
+    let step = 0
+    let recursiveTimerReplay = function () {
+        const rec = mouse_recordings
+        if (step >= rec.length) return
+        const diffX = rec[step][1] / planchetteWidth * 100
+        const diffY = rec[step][2] / planchetteHeight * 100
+        offsetX += diffX
+        planchetteTransformX -= diffX
+        offsetY += diffY
+        planchetteTransformY -= diffY
+        step = step + 1
+        paintCursorWithOffset(document.getElementById("cursor"), prevX, prevY)
+        setTimeout(() => { recursiveTimerReplay() }, 0)
+    }
+    recursiveTimerReplay()
+}
+
+const randomRageEffect = function() {
+    Math.random() > 0.5 ? shakeBoard() : shakeMouse()
+}
+
 const switchToNormalCursor = function (e) {
     stopDraggingPlanchette(e)
     document.getElementById("cursor").style.visibility = "hidden"

@@ -388,6 +388,34 @@ h1 {
     z-index: 10;
 }
 
+.shake-board {
+    animation-name: board-shake;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+}
+
+@keyframes board-shake {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+    20% {
+        transform: translate(-47%, -47%) rotate3d(1, 1, 1, 5deg);
+    }
+    40% {
+        transform: translate(-53%, -47%) rotate3d(1, 1, 1, -5deg);
+    }
+    60% {
+        transform: translate(-47%, -47%) rotate3d(1, 1, 1, 5deg);
+    }
+    80% {
+        transform: translate(-53%, -47%) rotate3d(1, 1, 1, -5deg);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
 #board {
     position: relative;
     width: 100%;
