@@ -300,6 +300,7 @@ const startedHoverOnTooltip = function () {
 }
 
 const stoppedHoverOnTooltip = function () {
+    if (!isBlackSmokeClickable) return
     document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
     document.getElementById('animateRemoveFocus').setAttributeNS(null, 'from', document.getElementById('smokeFilterMap').scale.animVal)
     document.getElementById('animateRemoveFocus').beginElement()
@@ -323,12 +324,25 @@ const displayEasterEgg = function() {
 
 const flyBanshee = function() {
     easterEggVisible = false
-    // Clear easter egg from board
+    // Clear easter egg from board (because it flies into the screen)
     document.getElementById('board').src = 'assets/ouija_bg.jpg'
     document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg.jpg'
     // Fly, banshee, fly
     document.getElementById('banshee').style.opacity = 0.7
     document.getElementById('banshee').style.animationName = 'banshee-flying'
+    setTimeout(() => {
+        if (!pauseSmokeAnimation && !timerToPauseSmokeAnimation) {
+            document.getElementById('tooltipSymbol').innerText = ''
+            document.getElementById('tooltipSymbol').innerHTML = '<span>&#9786;</span>' // shape smoke into smiley emoticon
+            startedHoverOnTooltip() // make smoke focus so smiley emoticon is easier to notice
+            isBlackSmokeClickable = false
+        }
+    }, 700)
+    setTimeout(() => {
+        if (!pauseSmokeAnimation && !timerToPauseSmokeAnimation) {
+            stopSmokeAnimation()
+        }
+    }, 2500)
 }
 
 const questLineTick = function() {
@@ -600,7 +614,9 @@ const closeTooltipPopup = function (shutUp) {
     document.getElementById('userMessageContainer').style.visibility = `visible`;
 }
 
+let isBlackSmokeClickable = true
 const toggleTooltipPopup = function (e, shutUp) {
+    if (!isBlackSmokeClickable) return
     popupIsOpen = !popupIsOpen
     popupIsOpen ? openTooltipPopup(e) : closeTooltipPopup(shutUp)
 }
