@@ -309,11 +309,11 @@ const stoppedHoverOnTooltip = function () {
 let easterEggVisible = false
 const displayEasterEgg = function() {
     if (!easterEggVisible) {
+        console.log('hello')
         easterEggVisible = true
         document.getElementById('boardEasterEggHelper').style.display = 'block'
-        setTimeout(() => {
-            document.getElementById('boardEasterEggHelper').style.opacity = 1
-        }, 0)
+        document.getElementById('boardEasterEggHelper').offsetHeight // Trigger reflow.
+        document.getElementById('boardEasterEggHelper').style.opacity = 1
         setTimeout(() => {
             document.getElementById('board').src = 'assets/ouija_bg_face_outline.jpg'
             document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg_face_stare.jpg'
