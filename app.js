@@ -887,6 +887,9 @@ const unlockAchievement = function(achievement) {
         // Only unlock once per achievement
         return
     }
+    if (achievement === EASTER_EGG_ACHIEVEMENT) {
+        document.getElementById('audio-drum1').play()
+    }
     window.localStorage.setItem(`ouija-${achievement}`, 'true')
     logToSumoLogic(`!ACHIEVEMENT_${achievement}`)
     document.getElementById(achievement).classList.add('achieved')
