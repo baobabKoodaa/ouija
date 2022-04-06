@@ -1,3 +1,7 @@
+// This web app is designed for Chrome, some animations are disabled in Firefox due to performance issues in Firefox.
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+const reduceAnimations = isFirefox
+
 // String literals
 const ON_PLANCHETTE = 'onPlanchette'
 const ON_USER_MESSAGE = 'onUserMessage'
@@ -466,6 +470,8 @@ const mouseMoved = function (event, onObject) {
     if (cursor.src !== newCursorSrc) cursor.src = newCursorSrc
     cursor.style.visibility = "visible";
     paintCursorWithOffset(cursor, prevX, prevY)
+
+    event.preventDefault()
 }
 
 const startDraggingPlanchette = function (event) {
@@ -473,6 +479,7 @@ const startDraggingPlanchette = function (event) {
         draggingPlanchette = true
         cursor.src = "assets/grabbing.cur"
         if (easterEggVisible) document.getElementById('magnifying-glass').style.backgroundImage = "url('assets/ouija_bg_face_stare.jpg')"
+        event.preventDefault() // Fixes issue in Firefox that made dragging immediately stop.
     }
 }
 const stopDraggingPlanchette = function (event, source) {
@@ -850,12 +857,20 @@ const startSmokeAnimation = function () {
         // Use requestIdleBallback instead of requestAnimationFrame, because 
         // we want our mouse move event listener callbacks to be prioritized
         // higher than this low-prio animation in the queue for event loop.
-        window.requestIdleCallback(tickSmokeAnimation);
+
+        // Due to performance reasons we disable this animation on Firefox.
+        if (!reduceAnimations) window.requestIdleCallback(tickSmokeAnimation);
     }
     window.requestIdleCallback(tickSmokeAnimation);
 }
 
 const stopSmokeAnimation = function () {
+    if (reduceAnimations) {
+        document.getElementById('tooltipSymbol').style.transform = 'scale(0.0)'
+        document.getElementById('tooltipSymbol').style.filter = 'blur(11px)'
+        document.getElementById('tooltipSymbol').style.opacity = '0.0'
+        return
+    }
     document.getElementById('tooltipSymbol').style.transform = 'scale(3.0)'
     document.getElementById('tooltipSymbol').style.filter = 'blur(13px)'
     document.getElementById('tooltipSymbol').style.opacity = '0.0'
@@ -1032,3 +1047,8 @@ if (!window.localStorage.getItem(OUIJA_USER_ID)) {
         document.getElementById(achievement).classList.add('achieved')
     }
 })
+
+if (reduceAnimations) {
+    document.getElementById('board').style.animationName = 'no-animation'
+    document.getElementById('board').style.boxShadow = '0 0 50px 20px #d35400'
+}

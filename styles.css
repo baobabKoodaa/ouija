@@ -8,6 +8,7 @@
     -webkit-user-select: none;
     -o-user-select: none;
     -ms-user-select: none;
+    -webkit-touch-callout: none;
 
     /* Nothing should be draggable. */
     user-drag: none;
