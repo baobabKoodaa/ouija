@@ -3,7 +3,8 @@ const ON_PLANCHETTE = 'onPlanchette'
 const ON_USER_MESSAGE = 'onUserMessage'
 const ON_BUTTON = 'onButton'
 const ON_TEXT_INPUT = 'onTextInput'
-const EASTER_EGG_ACHIEVEMENT = 'easterEggAchievement'
+const FALSE_PROPHETS_ACHIEVEMENT = 'achievementFalseProphets'
+const EASTER_EGG_ACHIEVEMENT = 'achievementEasterEgg'
 const SHUT_UP = 'shutUp'
 const RECORDING = 'recording'
 const TURN_SPIRIT = 'turnSpirit'
@@ -309,7 +310,6 @@ const stoppedHoverOnTooltip = function () {
 
 const displayEasterEgg = function() {
     if (!easterEggVisible) {
-        console.log('hello')
         easterEggVisible = true
         document.getElementById('boardEasterEggHelper').style.display = 'block'
         document.getElementById('boardEasterEggHelper').offsetHeight // Trigger reflow.
@@ -343,6 +343,9 @@ const flyBanshee = function() {
             stopSmokeAnimation()
         }
     }, 2500)
+    setTimeout(() => {
+        unlockAchievement(FALSE_PROPHETS_ACHIEVEMENT)
+    }, 3000)
 }
 
 const questLineTick = function() {
@@ -870,12 +873,24 @@ const stopSmokeAnimation = function () {
     }, 2000)
 }
 
+const displayNotification = function(achievement) {
+    document.getElementById(`${achievement}-notification`).style.bottom = '-3px'
+    document.getElementById(`${achievement}-notification`).style.transition = 'bottom 2s cubic-bezier(.12, 1, .96, .97)'
+    setTimeout(() => {
+        document.getElementById(`${achievement}-notification`).style.bottom = '-12vw'
+        document.getElementById(`${achievement}-notification`).style.transition = 'bottom 2s ease-in'
+    }, 4000)
+}
+
 const unlockAchievement = function(achievement) {
-    if (achievement === EASTER_EGG_ACHIEVEMENT && !window.localStorage.getItem(`ouija-${achievement}`)) {
-        logToSumoLogic('!ACHIEVEMENT_EASTER_EGG')
-        window.localStorage.setItem(`ouija-${achievement}`, 'true')
-        console.log('You found the easter egg!')
+    if (window.localStorage.getItem(`ouija-${achievement}`)) {
+        // Only unlock once per achievement
+        return
     }
+    window.localStorage.setItem(`ouija-${achievement}`, 'true')
+    logToSumoLogic(`!ACHIEVEMENT_${achievement}`)
+    document.getElementById(achievement).classList.add('achieved')
+    displayNotification(achievement)
 }
 
 const shakeBoard = function() {
@@ -914,6 +929,12 @@ const switchToNormalCursor = function (e) {
     updatePlanchettePosition()
 }
 
+const trophyClicked = function(achievement) {
+    if (window.localStorage.getItem(`ouija-${achievement}`)) {
+        displayNotification(achievement)
+    }
+}
+
 // Mouse move events
 document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
 document.getElementById('hoverBoard').addEventListener('mousemove', e => { mouseMoved(e) })
@@ -939,6 +960,8 @@ document.getElementById('revealMouseSlider').addEventListener('click', e => { to
 document.getElementById('speedModeSlider').addEventListener('click', e => { toggleSpeedMode() })
 document.getElementById('openAISlider').addEventListener('click', e => { toggleOpenAI() })
 document.getElementById('settingsGear').addEventListener('click', e => { toggleSettingsPopup() })
+document.getElementById(FALSE_PROPHETS_ACHIEVEMENT).addEventListener('click', e => { trophyClicked(FALSE_PROPHETS_ACHIEVEMENT) })
+document.getElementById(EASTER_EGG_ACHIEVEMENT).addEventListener('click', e => { trophyClicked(EASTER_EGG_ACHIEVEMENT) })
 
 // Activating planchetteDragging
 document.getElementById('planchetteHelper').addEventListener('mousedown', e => { startDraggingPlanchette(e) })
@@ -1000,3 +1023,9 @@ if (!window.localStorage.getItem(OUIJA_USER_ID)) {
 } else {
     setTimeout(() => createTooltip(0), 1000)
 }
+
+[EASTER_EGG_ACHIEVEMENT, FALSE_PROPHETS_ACHIEVEMENT].forEach((achievement) => {
+    if (window.localStorage.getItem(`ouija-${achievement}`)) {
+        document.getElementById(achievement).classList.add('achieved')
+    }
+})

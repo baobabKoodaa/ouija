@@ -279,9 +279,9 @@ h1 {
     position: absolute;
     bottom: 0vw;
     right: 0vw;
-    width: 15vw;
+    width: 9vw;
     height: 6vw;
-    z-index: 998;
+    z-index: 7;
 }
 
 #achievement-row {
@@ -289,14 +289,14 @@ h1 {
     bottom: 2vw;
     right: 2vw;
     fill: #d35400;
-    z-index: 999;
+    z-index: 8;
 }
 
 #achievement-row svg {
     margin-left: 1vw;
     vertical-align: middle;
     width: 2vw;
-    opacity: 0.3;
+    opacity: 0;
     fill: #d35400;
 }
 
@@ -307,6 +307,48 @@ h1 {
 
 #achievement-row svg.achieved:hover {
     opacity: 1;
+}
+
+.achievement-notification {
+    position: absolute;
+    bottom: -12vw;
+    right: -3px;
+    width: 25vw;
+    height: 10vw;
+    border-radius: 5px;
+    background-color: #2c2722;
+    border: 2px solid #d354009d;
+    pointer-events: none;
+    z-index: 9;
+}
+
+.achievement-notification svg {
+    position: absolute;
+    top: -1.2vw;
+    left: -1.2vw;
+    width: 4vw;
+    fill: #d35400;
+}
+
+.achievementText {
+    font-family: 'Kingthings Trypewriter 2';
+    margin-left: 4vw;
+    margin-right: 1vw;
+    top: 50%;
+    position: absolute;
+    transform: translateY(-50%);
+}
+
+.achievementText h1 {
+    color: white;
+    font-size: 1.8vw;
+    font-style: italic;
+}
+
+.achievementText p {
+    color: white;
+    margin-top: 1vw;
+    font-size: 1vw;
 }
 
 #popupSettings {
@@ -387,7 +429,7 @@ h1 {
     width: 100%;
     height: 100%;
     cursor: none;
-    z-index: 9;
+    z-index: 1;
 }
 
 @keyframes board-glow {
