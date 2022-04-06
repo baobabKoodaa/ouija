@@ -351,15 +351,27 @@ const questLineTick = function() {
     }
     // Maybe update tooltip
     if (currentTooltip === 0) delayedCreateTooltip(1)
-    else if (currentTooltip === 1) delayedCreateTooltip(2)
-    else if (currentTooltip === 2 && questGoals.who <= 0) delayedCreateTooltip(3)
-    else if (currentTooltip === 3 && questGoals.where <= 0) delayedCreateTooltip(4)
+    else if (currentTooltip === 1) {
+        logToSumoLogic('!REVEALED_FIRST_SPIRIT_MESSAGE')
+        delayedCreateTooltip(2)
+    }
+    else if (currentTooltip === 2 && questGoals.who <= 0) {
+        logToSumoLogic('!SOLVED_QUEST_1')
+        delayedCreateTooltip(3)
+    }
+    else if (currentTooltip === 3 && questGoals.where <= 0) {
+        logToSumoLogic('!SOLVED_QUEST_2')
+        delayedCreateTooltip(4)
+    }
     else if (currentTooltip === 4 && questGoals.rage <= 0) {
+        logToSumoLogic('!SOLVED_QUEST_3')
         //TODO win/lose conditions?
         //setTimeout(() => createTooltip(5), 2500)
     }
     // Easter egg face on board
-    if (currentTooltip >= 3 && turn === TURN_SPIRIT) displayEasterEgg()
+    if (currentTooltip >= 3 && turn === TURN_SPIRIT) {
+        displayEasterEgg()
+    }
 }
 
 const mouseMoved = function (event, onObject) {
@@ -745,7 +757,6 @@ const openConsentPopup = function () {
 }
 
 const closeConsentPopup = function () {
-    if (!mouseCheck()) return
     popupIsOpen = false
     window.localStorage.setItem(OUIJA_USER_ID, 'user' + Math.round(1000000000 * Math.random()))
     document.getElementById('consentPopup').style.opacity = '0'
@@ -771,6 +782,7 @@ const closeConsentPopup = function () {
 }
 
 const consentYes = function () {
+    if (!mouseCheck()) return
     logToSumoLogic('!CONSENT_YES')
     closeConsentPopup()
 }
@@ -859,7 +871,9 @@ const stopSmokeAnimation = function () {
 }
 
 const unlockAchievement = function(achievement) {
-    if (achievement === EASTER_EGG_ACHIEVEMENT) {
+    if (achievement === EASTER_EGG_ACHIEVEMENT && !window.localStorage.getItem(`ouija-${achievement}`)) {
+        logToSumoLogic('!ACHIEVEMENT_EASTER_EGG')
+        window.localStorage.setItem(`ouija-${achievement}`, 'true')
         console.log('You found the easter egg!')
     }
 }
