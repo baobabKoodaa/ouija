@@ -13,6 +13,7 @@ const OUIJA_USER_ID = 'ouija-user-id'
 // Global state
 let popupIsOpen = false
 let showTips = true
+let easterEggVisible = false
 let draggingPlanchette = false
 let planchetteTransformX = 0 // In % relative to planchette's own size (to support browser resizing)
 let planchetteTransformY = 0 // In % relative to planchette's own size (to support browser resizing)
@@ -306,7 +307,6 @@ const stoppedHoverOnTooltip = function () {
     document.getElementById('animateRemoveFocus').beginElement()
 }
 
-let easterEggVisible = false
 const displayEasterEgg = function() {
     if (!easterEggVisible) {
         console.log('hello')
@@ -331,7 +331,7 @@ const flyBanshee = function() {
     document.getElementById('banshee').style.opacity = 0.7
     document.getElementById('banshee').style.animationName = 'banshee-flying'
     setTimeout(() => {
-        if (!pauseSmokeAnimation && !timerToPauseSmokeAnimation) {
+        if (!pauseSmokeAnimation) {
             document.getElementById('tooltipSymbol').innerText = ''
             document.getElementById('tooltipSymbol').innerHTML = '<span>&#9786;</span>' // shape smoke into smiley emoticon
             startedHoverOnTooltip() // make smoke focus so smiley emoticon is easier to notice
@@ -339,7 +339,7 @@ const flyBanshee = function() {
         }
     }, 700)
     setTimeout(() => {
-        if (!pauseSmokeAnimation && !timerToPauseSmokeAnimation) {
+        if (!pauseSmokeAnimation) {
             stopSmokeAnimation()
         }
     }, 2500)
