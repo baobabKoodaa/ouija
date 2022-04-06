@@ -8,7 +8,7 @@ let questGoals = {
     // How many QAs of a certain tag the user must go through before progressing in the questline.
     who: 2,
     where: 3,
-    rage: 6
+    rage: 5
 }
 
 // Snoop user city from IP in order to provide creepy location for spirit.
@@ -269,7 +269,7 @@ const scriptedExperience = [
             { value: 'bitch', priority: 0.5 },
             { value: 'imbecil', priority: 0.5 },
             { value: 'die' },
-            { value: 'fool', },
+            { value: 'fool' },
             { value: 'harlot' },
             { value: 'idiot' },
         ],
@@ -804,6 +804,7 @@ const scriptedExperience = [
          * until finally we end up here with empty string. */
         trigger: /^$/,
         options: [
+            { value: 'temp', priority: 100000 },
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
@@ -868,8 +869,9 @@ const resolveQueryWithSimpleChatbot = function(query) {
         return currentSpirit.name
     }
     if (query.startsWith('!INSULTED')) {
-        if (questGoals.rage >= 6) return resolveQueryWithSimpleChatbot('{insultedSoft}')
-        if (questGoals.rage == 4) return resolveQueryWithSimpleChatbot('{insult}')
+        console.log('!insulted')
+        if (questGoals.rage > 3) return resolveQueryWithSimpleChatbot('{insultedSoft}')
+        if (questGoals.rage <= 3) return resolveQueryWithSimpleChatbot('{insult}')
         if (questGoals.rage <= 2) return resolveQueryWithSimpleChatbot('{insultedHard}')
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {

@@ -16,6 +16,7 @@ const TURN_USER = 'turnUser'
 const OUIJA_USER_ID = 'ouija-user-id'
 
 // Global state
+let gameOver = false
 let popupIsOpen = false
 let showTips = true
 let easterEggVisible = false
@@ -328,6 +329,10 @@ const displayEasterEgg = function() {
 
 const flyBanshee = function() {
     easterEggVisible = false
+    gameOver = true
+    document.getElementById('audio-scream1').play()
+    // Stop blinking caret
+    document.getElementById('userMessagePre').classList = ['orangey-text']
     // Clear easter egg from board (because it flies into the screen)
     document.getElementById('board').src = 'assets/ouija_bg.jpg'
     document.getElementById('magnifying-glass').style.backgroundImage = 'assets/ouija_bg.jpg'
@@ -352,6 +357,17 @@ const flyBanshee = function() {
     }, 3000)
 }
 
+const preloadAudio = function(id) {
+    const a = document.getElementById(id)
+    a.volume = 0.0
+    a.play()
+    setTimeout(() => {
+        a.pause()
+        a.currentTime = 0
+        a.volume = 1.0
+    }, 100)
+}
+
 const questLineTick = function() {
     if (!showTips) {
         return
@@ -369,15 +385,16 @@ const questLineTick = function() {
     else if (currentTooltip === 3 && questGoals.where <= 0) {
         logToSumoLogic('!SOLVED_QUEST_2')
         delayedCreateTooltip(4)
+        preloadAudio('audio-scream1')
     }
     else if (currentTooltip === 4 && questGoals.rage <= 0) {
         logToSumoLogic('!SOLVED_QUEST_3')
-        //TODO win/lose conditions?
-        //setTimeout(() => createTooltip(5), 2500)
+        flyBanshee()
     }
     // Easter egg face on board
     if (currentTooltip >= 3 && turn === TURN_SPIRIT) {
         displayEasterEgg()
+        preloadAudio('audio-drum1')
     }
 }
 
@@ -527,8 +544,8 @@ const stopDraggingPlanchette = function (event, source) {
                     remainingGoals = remainingGoals.substring(1)
                     if (remainingGoals.length === 0) {
                         console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
-                        document.getElementById('planchette').classList = [' planchette-no-glow']
-                        document.getElementById('userMessagePre').classList = [' blinking-caret']
+                        document.getElementById('planchette').classList = ['planchette-no-glow']
+                        document.getElementById('userMessagePre').classList = ['blinking-caret']
                         document.getElementById('userMessagePre').innerText = ''
                         turn = TURN_USER
                         currentExchangeNumber++
@@ -563,7 +580,7 @@ const switchTurnToSpirit = function () {
     container.setAttribute('data-text', '')
 
     // Stop blinking caret
-    document.getElementById('userMessagePre').classList = [' orangey-text']
+    document.getElementById('userMessagePre').classList = ['orangey-text']
 
     // Maybe update tooltip
     questLineTick()
@@ -582,8 +599,8 @@ const spiritIsReadyToCommunicate = function (rawMessage) {
         container.innerText = message
         container.setAttribute('data-text', message)
         document.getElementById('userMessagePre').innerText = ''
-        document.getElementById('userMessagePre').classList = [' blinking-caret']
-        document.getElementById('planchette').classList = [' planchette-no-glow']
+        document.getElementById('userMessagePre').classList = ['blinking-caret']
+        document.getElementById('planchette').classList = ['planchette-no-glow']
         currentExchangeNumber++
         questLineTick()
         return
@@ -997,7 +1014,7 @@ document.getElementById('textInputAPIKey').addEventListener('mousemove', e => { 
 // Keydown events
 document.body.addEventListener('keydown', e => {
     const lowerCasedChar = e.key.toLocaleLowerCase()
-    if (turn === TURN_USER && !popupIsOpen) {
+    if (turn === TURN_USER && !popupIsOpen && !gameOver) {
         const m = document.getElementById('userMessagePre')
         if (ALLOWED_CHARS.includes(lowerCasedChar) || lowerCasedChar == ' ') {
             if (m.innerText.length < USER_MESSAGE_MAX_LENGTH) {
