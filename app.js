@@ -16,6 +16,7 @@ const TURN_USER = 'turnUser'
 const OUIJA_USER_ID = 'ouija-user-id'
 
 // Global state
+let loadingOverlayDisabled = false
 let gameOver = false
 let popupIsOpen = false
 let showTips = true
@@ -142,6 +143,15 @@ const preloadSomeImages = function() {
     preloadImage("assets/ouija_bg_face_outline.jpg")
 }
 
+const disableLoadingOverlay = function() {
+    if (loadingOverlayDisabled) return
+    loadingOverlayDisabled = true
+    document.getElementById('loadingOverlay').style.opacity = 0
+    setTimeout(() => {
+        document.getElementById('loadingOverlay').style.display = 'none'
+    }, 1000)
+}
+
 // Memoize some values to reduce reflows (improve performance).
 let boardWidth = 0
 let boardHeight = 0
@@ -177,6 +187,9 @@ const resizeUpdates = function () {
         visibility: 'visible'
     })
     updateMagnifyingGlassPosition()
+
+    // Disable loading overlay
+    disableLoadingOverlay()
 
     // Fix edge case where user sees 2 cursors when using keyboard shortcut to resize browser
     const cursor = document.getElementById("cursor")

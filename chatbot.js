@@ -779,7 +779,7 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker)($| ).*/,
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar)($| ).*/,
         options: [
             { value: '!INSULTED' },
         ]
