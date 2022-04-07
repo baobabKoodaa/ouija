@@ -630,7 +630,7 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^what.* mean.*/,
+        trigger: /^what do.* mean.*/, // what does that mean? what does it mean? what do you mean?
         options: [
             { value: 'iamnotmean', priority: 1.0 },
             { value: 'yourchoice' },
@@ -681,7 +681,6 @@ const scriptedExperience = [
             { value: 'feverdream' },
             { value: 'nirvana' },
             { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: '{clarification}' },
         ]
     },
     {
@@ -804,11 +803,11 @@ const scriptedExperience = [
          * until finally we end up here with empty string. */
         trigger: /^$/,
         options: [
-            { value: 'temp', priority: 100000 },
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: 'noted' },
             { value: 'itisknown' },
             { value: 'lies' },
             { value: 'liar' },

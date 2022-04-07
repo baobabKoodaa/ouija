@@ -411,6 +411,34 @@ const questLineTick = function() {
     }
 }
 
+// When the player picks up the planchette, the spirit tugs slightly in the direction of the goal.
+// This tug is different from spiritGuidance, because guidance only accelerates or decelerates movements
+// that the player makes. This tug is independent of the player's movements. As such, it provides
+// a different sensation and variation to the "feel" of the game. However, the main purpose of this tug
+// is to allow the player to discover goals faster. Without the tug players have to slowly and painfully
+// hover over all the letters. With the tug players can immediately go in the right direction (once they
+// learn to flow along with the mechanic).
+const beginSpiritTug = function() {
+    const TUG_STRENGTH = 1/15 // Note that if TUG_STRENGTH is high it will be possible to overshoot the target.
+    let maxMovesLeft = 20
+    let recursiveTimerSpiritTug = function () {
+        if (remainingGoals.length === 0) return
+        if (maxMovesLeft <= 0) return
+        const goalX = goalCoords[remainingGoals[0]].x
+        const goalY = goalCoords[remainingGoals[0]].y
+        const diffX = goalX - (planchetteTransformX + offsetX)
+        const diffY = goalY - (planchetteTransformY + offsetY)
+        const dist = Math.sqrt(diffX * diffX + diffY * diffY)
+        offsetX += diffX * maxMovesLeft * TUG_STRENGTH / dist
+        offsetY += diffY * maxMovesLeft * TUG_STRENGTH / dist
+        maxMovesLeft -= 1
+        updatePlanchettePosition()
+        paintCursorWithOffset(document.getElementById("cursor"), prevX, prevY)
+        setTimeout(() => { recursiveTimerSpiritTug() }, 10)
+    }
+    recursiveTimerSpiritTug()
+}
+
 const mouseMoved = function (event, onObject) {
     const currX = event.clientX
     const currY = event.clientY
@@ -509,6 +537,7 @@ const startDraggingPlanchette = function (event) {
         draggingPlanchette = true
         cursor.src = "assets/grabbing.cur"
         if (easterEggVisible) document.getElementById('magnifying-glass').style.backgroundImage = "url('assets/ouija_bg_face_stare.jpg')"
+        beginSpiritTug()
         event.preventDefault() // Fixes issue in Firefox that made dragging immediately stop.
     }
 }
