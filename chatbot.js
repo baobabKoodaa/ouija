@@ -44,7 +44,7 @@ const names = [
     { value: 'Bartholomew' },
     { value: 'Beelzebub', restrictedTo: [EVIL] },
     { value: 'Bethel' },
-    { value: 'Caleb', restrictedTo: [FRIENDLY] },
+    { value: 'Caleb' },
     { value: 'Damien', restrictedTo: [EVIL] },
     { value: 'Deborah' },
     { value: 'Dora' },
@@ -55,8 +55,7 @@ const names = [
     { value: 'Esther' },
     { value: 'Eunice' },
     { value: 'Ezekiel' },
-    { value: 'Gabriel', restrictedTo: [FRIENDLY] },
-    { value: 'Herod' },
+    { value: 'Gabriel' },
     { value: 'Hosanna' },
     { value: 'Ishmael' },
     { value: 'Jeremiah' },
@@ -84,7 +83,6 @@ const names = [
     { value: 'Simeon' },
     { value: 'Tabatha' },
     { value: 'Uri' },
-    { value: 'Yacob', restrictedTo: [FRIENDLY] },
     { value: 'Zozo', restrictedTo: [EVIL] },
 ]
 
@@ -229,6 +227,7 @@ const scriptedExperience = [
         options: [
             { value: 'hellodear' },
             { value: 'hellothere' },
+            { value: 'knockknock' },
             { value: 'run', restrictedTo: [FRIENDLY]  },
             { value: 'danger', restrictedTo: [FRIENDLY] }, 
             { value: 'notsafe', restrictedTo: [FRIENDLY] },
