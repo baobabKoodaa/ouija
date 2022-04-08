@@ -354,6 +354,8 @@ const flyBanshee = function() {
     setTimeout(() => {
         document.getElementById('glassCrack').style.display = 'block'
         document.getElementById('audio-crack1').play()
+    }, 300)
+    setTimeout(() => {
         if (!pauseSmokeAnimation) {
             document.getElementById('tooltipSymbol').innerText = ''
             document.getElementById('tooltipSymbol').innerHTML = '<span>&#9786;</span>' // shape smoke into smiley emoticon
