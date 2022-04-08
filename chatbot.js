@@ -662,7 +662,8 @@ const scriptedExperience = [
         options: [
             { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: '{clarification}' },
+            { value: 'darkness' },
+            { value: 'punishment' },
         ]
     },
     {
@@ -682,6 +683,16 @@ const scriptedExperience = [
             { value: 'feverdream' },
             { value: 'nirvana' },
             { value: 'dontworry', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^what do you think about.*/,
+        options: [
+            { value: 'fun' },
+            { value: 'iloveit' },
+            { value: 'despicable' },
+            { value: 'awful' },
+            { value: 'great' },
         ]
     },
     {
