@@ -218,7 +218,7 @@ const logToSumoLogic = function (message) {
     const augmentedMessage = `${window.localStorage.getItem(OUIJA_USER_ID)}:${Date.now()}:${using_GPT3 ? "GPT-3" : "Simple"}:${message}`
     fetch(`${LOG_ENDPOINT}?${augmentedMessage}`)
         .catch((error => {
-            console.log('Logging to Sumo Logic failed', ex)
+            console.log('Logging to Sumo Logic failed', error)
         }))
 }
 
