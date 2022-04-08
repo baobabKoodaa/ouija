@@ -215,12 +215,11 @@ const logToSumoLogic = function (message) {
         // Exclude debug testing messages from logs (use incognito if you need to test logging)
         return
     }
-    try {
-        const augmentedMessage = `${window.localStorage.getItem(OUIJA_USER_ID)}:${Date.now()}:${using_GPT3 ? "GPT-3" : "Simple"}:${message}`
-        fetch(`${LOG_ENDPOINT}?${augmentedMessage}`)
-    } catch (ex) {
-        console.log('Logging to Sumo Logic failed', ex)
-    }
+    const augmentedMessage = `${window.localStorage.getItem(OUIJA_USER_ID)}:${Date.now()}:${using_GPT3 ? "GPT-3" : "Simple"}:${message}`
+    fetch(`${LOG_ENDPOINT}?${augmentedMessage}`)
+        .catch((error => {
+            console.log('Logging to Sumo Logic failed', ex)
+        }))
 }
 
 const paintCursorWithOffset = function (cursor, realX, realY) {
