@@ -269,6 +269,17 @@ h1 {
     animation-fill-mode: forwards;
 }
 
+#glassCrack {
+    display: none;
+    pointer-events: none;
+    position: absolute;
+    width: 80%;
+    left: -64px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10000;
+}
+
 @keyframes banshee-flying {
     0% {
         transform: scale(1.0);

@@ -8,7 +8,7 @@ let questGoals = {
     // How many QAs of a certain tag the user must go through before progressing in the questline.
     who: 2,
     where: 3,
-    rage: 5
+    rage: 3
 }
 
 // Snoop user city from IP in order to provide creepy location for spirit.
@@ -293,7 +293,7 @@ const scriptedExperience = [
             { value: 'lookup' },
             { value: 'aboveyou' },
             { value: 'yourleft' },
-            { value: 'inyourbedroom', restrictedTo: [EVIL] },
+            { value: 'bed' },
             { value: 'ceilingbehindyou' },
             { value: 'behindthedoor' },
             { value: 'insidethewalls' },
@@ -432,9 +432,9 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^where is home$/,
+        trigger: /^where is .*/, // where is home? where is darkness?
         options: [
-            { value: '{clarification}' }
+            { value: '!LOCATION' }
         ]
     },
     {
@@ -446,8 +446,9 @@ const scriptedExperience = [
     {
         trigger: /^where$/,
         options: [
-            { value: 'indarkness' },
-            { value: 'inthelight' },
+            { value: '!LOCATION' }
+            // { value: 'indarkness' },
+            // { value: 'inthelight' },
         ]
     },
     {
@@ -790,12 +791,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(ok|okay|i see|aha|sure|no|yes|really|right|yeah|whatever)( .*|$)/,
+        trigger: /^(ok|okay|i see|aha|sure|no|really|right|yeah|whatever|i dont believe|lies)( .*|$)/,
         options: [
             { value: 'watchyourtone' },
             { value: 'believeme' },
             { value: 'trustme' },
-        ]
+        ],
+        questGoals: {
+            rage: 1
+        }
     },
     {
         /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
@@ -807,6 +811,7 @@ const scriptedExperience = [
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: 'repent' },
             { value: 'noted' },
             { value: 'itisknown' },
             { value: 'lies' },
@@ -868,10 +873,9 @@ const resolveQueryWithSimpleChatbot = function(query) {
         return currentSpirit.name
     }
     if (query.startsWith('!INSULTED')) {
-        console.log('!insulted')
-        if (questGoals.rage > 3) return resolveQueryWithSimpleChatbot('{insultedSoft}')
-        if (questGoals.rage <= 3) return resolveQueryWithSimpleChatbot('{insult}')
-        if (questGoals.rage <= 2) return resolveQueryWithSimpleChatbot('{insultedHard}')
+        if (questGoals.rage <= 1) return resolveQueryWithSimpleChatbot('{insultedHard}')
+        if (questGoals.rage <= 2) return resolveQueryWithSimpleChatbot('{insult}')
+        return resolveQueryWithSimpleChatbot('{insultedSoft}')
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {
         return '' + (2 + Math.floor(Math.random() * 13))
@@ -919,8 +923,12 @@ const resolveQueryWithSimpleChatbot = function(query) {
                     questGoals.where -= matchingNode.questGoals.where
                 }
                 if (matchingNode.questGoals.rage) {
-                    randomRageEffect()
                     questGoals.rage -= matchingNode.questGoals.rage
+                    if (questGoals.rage > 0) randomRageEffect()
+                    else {
+                        logToSumoLogic('!SOLVED_QUEST_3')
+                        flyBanshee()
+                    }
                 }
             }
             return v
@@ -949,7 +957,7 @@ const SCRIPTED_TOOLTIPS = [
         headline: 'A message from beyond',
         paragraphs: [
             'The planchette is glowing! That means a spirit is trying to communicate.',
-            'The spirit needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers on the board. When you are close to the mark, you will feel it. The spirit will pull you in.',
+            'The spirit needs your help to move the planchette. Drag the planchette with your mouse over the letters and numbers on the board. The spirit will guide your hand. You will feel it.',
             'Drop the planchette on the correct letters to reveal the message.',
             'If you are having trouble, try hovering slowly with different patterns.'
         ]

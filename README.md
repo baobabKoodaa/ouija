@@ -37,4 +37,6 @@ Assets and effects:
 - Icons for settings and external links are from [FontAwesome](https://fontawesome.com/icons/gear?s=solid) with permission for both personal and commercial use.
 - Creepy old photo used in easter egg is from [Vintage Everyday](https://www.vintag.es/2016/11/these-50-creepy-photographs-early-20th.html), copyright expired.
 - Easter egg jumpscare audio is from [Mixkit](https://mixkit.co/free-sound-effects/horror/), which provide permission for both personal and commercial use.
-- Banshee fly jumpscare audio is from [Pixabay](https://pixabay.com), which provide permission for both personal and commercial use.
+- Banshee scream jumpscare audio is from [Pixabay](https://pixabay.com), which provide permission for both personal and commercial use.
+- Glass crack PNG image is from [SeekPNG](https://www.seekpng.com/ipng/u2q8i1y3r5i1t4a9_the-gallery-for-broken-glass-transparent-png-broken/), which provide permission for personal use.
+- Glass crack audio was recorded in-house.

@@ -28,13 +28,16 @@
 
     <!-- Loading overlay exists to prevent mousemagic when page is loading, because mousemagic mouse movements during load would be sluggish and erratic. -->
     <div id="loadingOverlay">
-        <!-- Error message for users who have disabled JavaScript -->
         <noscript>
             <h1>
+                <!-- This is just a good place for this warning; loadingOverlay exists for unrelated reasons. -->
                 This web app can't run without JavaScript. Please enable JavaScript and refresh.
             </h1>
         </noscript>
     </div>
+
+    <!-- Glass crack overlay for banshee ending. -->
+    <img id="glassCrack" src="assets/glass-crack.png"></img>
 
     <!-- Background element for mousemove events -->
     <div id="bg">
@@ -43,7 +46,7 @@
     <!-- Warning: dont move elements outside boardContainer, otherwise browser resizing will cause inconsistencies in positioning! -->
     <div id="boardContainer">
 
-        <!-- Board visual -->
+        <!-- Board visual. -->
         <img id="board" src="assets/ouija_bg.jpg"></img>
         <img id="boardEasterEggHelper" src="assets/ouija_bg_face_outline.jpg"></img>
 
@@ -235,14 +238,6 @@
     <script async src="chatbot.js"></script>
     <script async src="assets/mouse_recordings.js"></script>
 
-    <!--     <audio autoplay controls>
-        <source src="assets/dk-atmosphere.mp3" type="audio/mpeg">
-    </audio> -->
-
-    <!-- <iframe width="361" height="25" src="https://www.youtube.com/embed/F0Jk80wDw2w" title="YouTube video player"
-        frameborder="0" allowfullscreen="false"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe> -->
-
     <!-- Preload fonts to prevent flashing unstyled text. -->
     <div class="font_preload" style="opacity: 0; width: 0; height: 0;">
         <span style="font-family: 'Feral'"></span>
@@ -254,6 +249,9 @@
         style="visibility: none; position: absolute; bottom: -300px"></audio>
 
     <audio id="audio-scream1" preload="auto" src="assets/demonic-woman-scream-6333.mp3"
+        style="visibility: none; position: absolute; bottom: -300px"></audio>
+
+    <audio id="audio-crack1" preload="auto" src="assets/ice-cracking.mp3"
         style="visibility: none; position: absolute; bottom: -300px"></audio>
 
 </body>

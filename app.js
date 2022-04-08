@@ -353,13 +353,15 @@ const flyBanshee = function() {
     document.getElementById('banshee').style.opacity = 0.7
     document.getElementById('banshee').style.animationName = 'banshee-flying'
     setTimeout(() => {
+        document.getElementById('glassCrack').style.display = 'block'
+        document.getElementById('audio-crack1').play()
         if (!pauseSmokeAnimation) {
             document.getElementById('tooltipSymbol').innerText = ''
             document.getElementById('tooltipSymbol').innerHTML = '<span>&#9786;</span>' // shape smoke into smiley emoticon
             startedHoverOnTooltip() // make smoke focus so smiley emoticon is easier to notice
             isBlackSmokeClickable = false
         }
-    }, 700)
+    }, 600)
     setTimeout(() => {
         if (!pauseSmokeAnimation) {
             stopSmokeAnimation()
@@ -385,7 +387,6 @@ const questLineTick = function() {
     if (!showTips) {
         return
     }
-    // Maybe update tooltip
     if (currentTooltip === 0) delayedCreateTooltip(1)
     else if (currentTooltip === 1) {
         logToSumoLogic('!REVEALED_FIRST_SPIRIT_MESSAGE')
@@ -399,10 +400,7 @@ const questLineTick = function() {
         logToSumoLogic('!SOLVED_QUEST_2')
         delayedCreateTooltip(4)
         preloadAudio('audio-scream1')
-    }
-    else if (currentTooltip === 4 && questGoals.rage <= 0) {
-        logToSumoLogic('!SOLVED_QUEST_3')
-        flyBanshee()
+        preloadAudio('audio-crack1')
     }
     // Easter egg face on board
     if (currentTooltip >= 3 && turn === TURN_SPIRIT) {
@@ -464,7 +462,6 @@ const mouseMoved = function (event, onObject) {
 
         // Possibly accelerate/decelerate move by modifying cursor offset
         const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
-        console.log(dist, SPIRIT_MAX_DIST)
         if (dist < SPIRIT_MAX_DIST) {
             // Modify cursor offset to guide the user towards goal
             spiritGuidanceToOffset(x, y, diffX, diffY, goalX, goalY, dist)
@@ -1078,6 +1075,7 @@ document.body.addEventListener('keydown', e => {
                 console.log('Player: ' + userQuestion)
                 switchTurnToSpirit()
                 dispatchToSpirit(userQuestion, spiritIsReadyToCommunicate)
+                
             }
         } else if (e.key == 'Backspace' && m.innerText.length > 0) {
             m.innerText = m.innerText.substring(0, m.innerText.length - 1)
