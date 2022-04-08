@@ -45,7 +45,7 @@ const MAG_LEFT = 0.465
 const MAG_TOP = 0.58
 
 // Offset constants
-const SPIRIT_MAX_DIST = 60.0
+const SPIRIT_MAX_DIST = 43.0 // Values above 43 will cause confusing UX when target is on different "row" of letters than the player is!
 const SPIRIT_STOCHASTIC_STR = 0.6
 const SPIRIT_ACCEL_STR = 1.4
 const OFFSET_CANCELLATION_STR = 0.3
@@ -464,6 +464,7 @@ const mouseMoved = function (event, onObject) {
 
         // Possibly accelerate/decelerate move by modifying cursor offset
         const dist = Math.sqrt((x - goalX) * (x - goalX) + (y - goalY) * (y - goalY))
+        console.log(dist, SPIRIT_MAX_DIST)
         if (dist < SPIRIT_MAX_DIST) {
             // Modify cursor offset to guide the user towards goal
             spiritGuidanceToOffset(x, y, diffX, diffY, goalX, goalY, dist)
