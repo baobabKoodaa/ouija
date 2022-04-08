@@ -15,10 +15,9 @@ Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://o
 #### How does it work
 
 - Ouija Online is built as a static website with vanilla JS, HTML, and CSS. No frameworks, no libraries, no generators, no bundlers, no servers. You can fork this repo and simply open `index.html` in your browser.
-- We use WebRTCSeanceChannel to communicate with the spirit world.
-- Control of the user's mouse is achieved via spirits, which merely accelerate and decelerate mouse movements (to make the user feel as if no-one else is moving the mouse except them).
-- Chatbot in scripted mode utilizes state-of-the-art if-else technology.
+- Control of the user's mouse is an illusion (settings have a toggle to reveal the trick visually).
 - Chatbot in GPT-3 mode constructs a prompt with verbal instructions, question-answer examples, previous question and answer, and current question. We request 5 completions for the prompt, and then heuristically choose one of them (considering length, repetition, dullness, etc.).
+- Chatbot in scripted mode utilizes state-of-the-art if-else technology.
 
 #### Attribution
 

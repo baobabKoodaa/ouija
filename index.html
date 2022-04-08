@@ -27,7 +27,14 @@
 <body>
 
     <!-- Loading overlay exists to prevent mousemagic when page is loading, because mousemagic mouse movements during load would be sluggish and erratic. -->
-    <div id="loadingOverlay"></div>
+    <div id="loadingOverlay">
+        <!-- Error message for users who have disabled JavaScript -->
+        <noscript>
+            <h1>
+                This web app can't run without JavaScript. Please enable JavaScript and refresh.
+            </h1>
+        </noscript>
+    </div>
 
     <!-- Background element for mousemove events -->
     <div id="bg">
@@ -230,11 +237,6 @@
             </p>
         </div>
     </div>
-
-    <!-- Error message for users who have disabled JavaScript -->
-    <noscript>
-        <h1>This website requires JavaScript in order to do some tricks. Please enable JavaScript and refresh.</h1>
-    </noscript>
 
     <script async src="app.js"></script>
     <script async src="chatbot.js"></script>

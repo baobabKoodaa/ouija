@@ -419,7 +419,7 @@ const questLineTick = function() {
 // hover over all the letters. With the tug players can immediately go in the right direction (once they
 // learn to flow along with the mechanic).
 const beginSpiritTug = function() {
-    const TUG_STRENGTH = 1/15 // Note that if TUG_STRENGTH is high it will be possible to overshoot the target.
+    const TUG_STRENGTH = 1/15
     let maxMovesLeft = 20
     let recursiveTimerSpiritTug = function () {
         if (remainingGoals.length === 0) return

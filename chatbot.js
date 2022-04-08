@@ -49,6 +49,7 @@ const names = [
     { value: 'Deborah' },
     { value: 'Dora' },
     { value: 'Doris' },
+    { value: 'Earendel' },
     { value: 'Ethel' },
     { value: 'Esmeralda' },
     { value: 'Esther' },
