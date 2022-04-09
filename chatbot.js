@@ -1084,7 +1084,7 @@ const augmentedResolveQueryWithSimpleChatbot = function(input) {
     if (input === previousInput) {
         return resolveQueryWithSimpleChatbot('{clarification}')
     }
-    if (input.length <= 3 && !['ok', 'gay', 'yes', 'no', 'nah', 'yea', 'aye', 'fun', 'fat', 'aha', 'ahh', 'ye', 'yup'].includes(input)) {
+    if (input.length <= 3 && !['ok', 'gay', 'yes', 'no', 'nah', 'yea', 'aye', 'fun', 'fat', 'aha', 'ahh', 'ye', 'yup', 'hi', 'hey'].includes(input)) {
         return resolveQueryWithSimpleChatbot('{speakEnglish}')
     }
     return resolveQueryWithSimpleChatbot(input)
