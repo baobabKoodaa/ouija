@@ -826,6 +826,12 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^does .*/, // does she love me?
+        options: [
+            { value: '{boolean}' },
+        ]
+    },   
+    {
         trigger: /^(do|did) you.*/, // do sleep? do like me? do you kill people? do you have a favorite color?
         options: [
             { value: 'sometimes' },
