@@ -394,11 +394,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how many.*/, // how many humans have you killed? how many of you are here?
+        trigger: /^how many.*/, // how many humans have you killed? how many of you are here? how many fingers am i holding up?
         options: [
-            { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: 'legion', restrictedTo: [EVIL] },
-            { value: 'horde', restrictedTo: [EVIL] },
+            { value: 'many' },
+            { value: 'toomany' },
+            { value: 'few' },
             { value: '!RANDOM_SMALL_COUNT' }
         ]
     },
@@ -502,7 +502,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^where (are you|in|.* (house|home)|exactly|specifically).*/, // where in {userCity}, where inside the house
+        trigger: /^where (are you|in|.* (house|home)|exactly|specifically|do you live).*/, // where in {userCity}, where inside the house
         options: [
             { value: '!LOCATION' }
         ]
@@ -1031,7 +1031,7 @@ const SCRIPTED_TOOLTIPS = [
         tooltip: '?',
         headline: 'And so it begins',
         paragraphs: [
-            'You can use the ouija board to communicate with the spirit world. To send a message, type on your keyboard and press enter.'
+            'You can use the ouija board to communicate with the spirit world. To send a message, type on your keyboard and press enter. You can use spaces to separate words.'
         ]
     },
     {
@@ -1080,11 +1080,38 @@ const initializeSpirit = function() {
 }
 currentSpirit = initializeSpirit()
 
+const looksLikeNonsense = function(text) {
+    // Relative percentage of consonants: detect inputs like "fdf" as nonsense
+    let count = 0;
+    const consonants = 'bcdfghjklmnpqrstvwxz'
+    for (let i=0; i<text.length; i++) {
+        if (consonants.includes(text[i])) count += 1
+    }
+    const consonantPercentage = count * 1.0 / text.length
+    if (consonantPercentage > 0.9) return true
+    
+    // Absolute number of consecutive consonants or vowels: detect inputs like "screeeeeee" as nonsense
+    let maxCount = 1
+    let currentCount = 0
+    let prevCharType = 'nothing'
+    for (let i=0; i<text.length; i++) {
+        const currCharType = consonants.includes(text[i]) ? 'consonant' : 'vowel'
+        if (currCharType === prevCharType) {
+            currentCount += 1
+            maxCount = Math.max(maxCount, currentCount)
+        } else {
+            currentCount = 1
+        }
+        prevCharType = currCharType
+    }
+    return maxCount >= 5
+}
+
 const augmentedResolveQueryWithSimpleChatbot = function(input) {
     if (input === previousInput) {
         return resolveQueryWithSimpleChatbot('{clarification}')
     }
-    if (input.length <= 3 && !['ok', 'gay', 'yes', 'no', 'nah', 'yea', 'aye', 'fun', 'fat', 'aha', 'ahh', 'ye', 'yup', 'hi', 'hey', 'bye'].includes(input)) {
+    if (looksLikeNonsense(input)) {
         return resolveQueryWithSimpleChatbot('{speakEnglish}')
     }
     return resolveQueryWithSimpleChatbot(input)
