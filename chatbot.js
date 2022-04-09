@@ -1121,15 +1121,16 @@ const looksLikeNonsense = function(text) {
     for (let i=0; i<text.length; i++) {
         if (text[i] === ' ') {
             currentCount = 0
+            prevCharType = 'nothing'
             continue
         }
         const currCharType = consonants.includes(text[i]) ? 'consonant' : 'vowel'
         if (currCharType === prevCharType) {
             currentCount += 1
-            maxCount = Math.max(maxCount, currentCount)
         } else {
             currentCount = 1
         }
+        maxCount = Math.max(maxCount, currentCount)
         prevCharType = currCharType
     }
     return maxCount >= 5
