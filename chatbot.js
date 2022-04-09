@@ -215,12 +215,54 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
+        options: [
+            { value: 'dontgo' },
+            { value: 'iwontgo' },
+            { value: 'istay' },
+            { value: 'notgoing' },
+            { value: 'illbehere' },
+        ]
+    },
+    {
+        trigger: /^nice to meet you$/,
+        options: [
+            { value: 'andyou' },
+            { value: 'myfriend' },
+            { value: 'youtoo' },
+            { value: 'niceforme' },
+        ]
+    },
+    {
+        trigger: /^(help|help me)$/,
+        options: [
+            { value: 'blacksmoke' },
+            { value: 'iwont' },
+            { value: 'helpyourself' },
+            { value: 'notgoingto' },
+            { value: 'nohope' },
+        ]
+    },
+    {
         trigger: /^is (anyone|anybody) (there|here)$/,
         options: [
             { value: 'justme' },
             { value: 'manyofus' },
             { value: 'hereiam' },
         ]
+    },
+    {
+        trigger: '{speakEnglish}',
+        options: [
+            { value: 'what' },
+            { value: 'language' },
+            { value: 'speakproperly' },
+            { value: 'speakup' },
+            { value: 'english' },
+        ],
+        questGoals: {
+            rage: 1
+        }
     },
     {
         trigger: '{introduction}',
@@ -333,6 +375,16 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /(^|.* )(are|is|will) .* (or|between) .*/, // are you demon or angel? are you alive or dead? who will win between superman and batman?
+        options: [
+            { value: 'former' },
+            { value: 'latter' },
+            { value: 'both' },
+            { value: 'neither' },
+            // TODO 50/50 x or y
+        ]
+    },
+    {
         trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
         options: [
             { value: '!DEFINE people' },
@@ -357,6 +409,17 @@ const scriptedExperience = [
             { value: 'ages' },
             { value: 'centuries' },
             { value: '!RANDOM_COUNT_YEARS' }
+        ]
+    },
+    {
+        trigger: /^how old am i$/,
+        options: [
+            { value: 'young' },
+            { value: 'youknowbetter' },
+            { value: 'donttestme' },
+            { value: 'whyaskme' },
+            { value: 'freshmeat' },
+            { value: 'notveryold' },
         ]
     },
     {
@@ -394,8 +457,9 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how can (i|we).*/, // how can we trap you? how can i win the game?
+        trigger: /^how (do|can) (i|we).*/, // how can we trap you? how can i win the game? how do i win?
         options: [
+            { value: 'blacksmoke' },
             { value: 'impossible' },
             { value: 'giveup' },
             { value: 'cant' },
@@ -468,15 +532,8 @@ const scriptedExperience = [
     {
         trigger: /^can (i|you|we) .*/,
         options: [
+            { value: 'cant' },
             { value: '{boolean}' }
-        ]
-    },
-    {
-        trigger: /^(are |is |will ).* or .*/, // are you demon or angel? are you alive or dead? will... is...
-        options: [
-            { value: 'both' },
-            { value: 'neither' },
-            // TODO 50/50 x or y
         ]
     },
     {
@@ -667,13 +724,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is my.*/, // name? birthdate? location?
+        trigger: /^what is my.*/, // name? birthdate? location? age?
         options: [
-            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
-            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
-            { value: 'youknow', restrictedTo: [FRIENDLY] },
+            { value: 'youknow', priority: 1 },
+            { value: 'whyaskme', priority: 1 },
+            { value: 'donttestme', priority: 1 },
+            { value: 'areyoutestingme', priority: 1 },
             { value: '{clarification}' },
-            { value: '{insult}' },
         ]
     },
     {
@@ -716,6 +773,14 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what should (i|we|you).*/,
+        options: [
+            { value: 'giveup' },
+            { value: 'blacksmoke' },
+            { value: 'surrender' },
+        ]
+    },
+    {
         trigger: /^what.*year.* (where|did|was) .*/, // were->where substituted
         options: [
             { value: '!RANDOM_YEAR_PAST' },
@@ -730,9 +795,9 @@ const scriptedExperience = [
     {
         trigger: /^what$/,
         options: [
-            { value: 'youheardme' },
-            { value: 'whatisaid' },
-            { value: 'areyoudeaf' },
+            { value: 'youheardme', priority: 1 },
+            { value: 'whatisaid', priority: 1 },
+            { value: 'areyoudeaf', priority: 1 },
             { value: '{clarification}' },
         ]
     },
@@ -746,11 +811,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(do|did) you.*/, // sleep? like me? kill people?
+        trigger: /^(do|did) you.*/, // do sleep? do like me? do you kill people? do you have a favorite color?
         options: [
             { value: 'sometimes' },
             { value: 'fun' },
             { value: 'imust' },
+            { value: 'ihaveto' },
             { value: '{boolean}' },
         ]
     },
@@ -828,6 +894,11 @@ const scriptedExperience = [
             { value: 'lies' },
             { value: 'liar' },
             { value: 'indeed' },
+            { value: 'unfathomable' },
+            { value: 'horrid' },
+            { value: 'gasp' },
+            { value: 'ahh' },
+            { value: 'lovely' },
             { value: 'false' },
             { value: 'true' },
             
@@ -1009,6 +1080,16 @@ const initializeSpirit = function() {
 }
 currentSpirit = initializeSpirit()
 
+const augmentedResolveQueryWithSimpleChatbot = function(input) {
+    if (input === previousInput) {
+        return resolveQueryWithSimpleChatbot('{clarification}')
+    }
+    if (input.length <= 3 && !['ok', 'gay', 'yes', 'no', 'nah', 'yea', 'aye', 'fun', 'fat', 'aha', 'ahh', 'ye', 'yup'].includes(input)) {
+        return resolveQueryWithSimpleChatbot('{speakEnglish}')
+    }
+    return resolveQueryWithSimpleChatbot(input)
+}
+
 const respondWithSimpleChatbot = function(rawInput, callback) {
     const input = rawInput
         .toLocaleLowerCase()
@@ -1016,6 +1097,7 @@ const respondWithSimpleChatbot = function(rawInput, callback) {
         .filter((word) => !['the', 'a', 'an'].includes(word)) // Normalize common grammar typos
         .map((word) => {
             // Normalize common word typos
+            if (word === 'whats') return 'what is'
             if (word === 'were') return 'where'
             if (word === 'u') return 'you'
             if (word === 'r') return 'are'
@@ -1023,8 +1105,9 @@ const respondWithSimpleChatbot = function(rawInput, callback) {
             return word
         })
         .join(' ')
+        .replace('may i know', 'what is')
 
-    const spiritResponse = (input !== previousInput ? resolveQueryWithSimpleChatbot(input) : resolveQueryWithSimpleChatbot('{clarification}')).toLocaleLowerCase()
+    const spiritResponse = augmentedResolveQueryWithSimpleChatbot(input).toLocaleLowerCase()
     
     previousInput = input
     previousOutput = spiritResponse
