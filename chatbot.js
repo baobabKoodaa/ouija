@@ -1120,6 +1120,7 @@ const looksLikeNonsense = function(text) {
     let prevCharType = 'nothing'
     for (let i=0; i<text.length; i++) {
         if (text[i] === ' ') {
+            currentCount = 0
             continue
         }
         const currCharType = consonants.includes(text[i]) ? 'consonant' : 'vowel'
