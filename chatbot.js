@@ -925,7 +925,6 @@ const scriptedExperience = [
             { value: 'lovely' },
             { value: 'great' },
             { value: 'fantastic' },
-            { value: 'fantastic' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
@@ -1120,6 +1119,9 @@ const looksLikeNonsense = function(text) {
     let currentCount = 0
     let prevCharType = 'nothing'
     for (let i=0; i<text.length; i++) {
+        if (text[i] === ' ') {
+            continue
+        }
         const currCharType = consonants.includes(text[i]) ? 'consonant' : 'vowel'
         if (currCharType === prevCharType) {
             currentCount += 1
