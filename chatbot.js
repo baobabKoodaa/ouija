@@ -385,6 +385,18 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^(what|how) .* (anger|angry).*/, // what makes you angry? (make it easier to complete the anger quest)
+        options: [
+            { value: 'vulgarity' },
+            { value: 'badmanners' },
+            { value: 'nastywords' },
+            { value: 'cursewords' },
+            { value: 'insults' },
+            { value: 'repetition' },
+            { value: 'stupidquestions' },
+        ]
+    },
+    {
         trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
         options: [
             { value: '!DEFINE people' },
@@ -750,16 +762,19 @@ const scriptedExperience = [
             { value: 'despicable' },
             { value: 'awful' },
             { value: 'great' },
+            { value: 'horrid' },
         ]
     },
     {
-        trigger: /^what do you.*/, // want? feel?
+        trigger: /^what do you.*/, // what do you want? what do you feel?
         options: [
             { value: 'peace', restrictedTo: [FRIENDLY] },
             { value: 'despair' },
             { value: 'grief' },
             { value: 'fortune' },
             { value: 'regret' },
+            { value: 'misery' },
+            { value: 'sorrow' },
             { value: 'dontworry', restrictedTo: [EVIL] },
         ],
         questGoals: {
@@ -802,12 +817,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.*/,
+        trigger: /^what.*/, // what do you think
         options: [
             { value: 'cantsee' },
-            { value: 'dontknow', restrictedTo: [FRIENDLY] },
-            { value: 'careful', restrictedTo: [FRIENDLY] },
             { value: 'darkness' },
+            { value: 'misery' },
+            { value: 'sorrow' },
         ]
     },
     {
@@ -856,6 +871,12 @@ const scriptedExperience = [
         }
     },
     {
+        trigger: /^(repent|atone)$/,
+        options: [
+            { value: '!INSULTED' },
+        ]
+    },
+    {
         trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar)($| ).*/,
         options: [
             { value: '!INSULTED' },
@@ -889,6 +910,7 @@ const scriptedExperience = [
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'repent' },
+            { value: 'atone' },
             { value: 'noted' },
             { value: 'itisknown' },
             { value: 'lies' },
@@ -896,11 +918,14 @@ const scriptedExperience = [
             { value: 'indeed' },
             { value: 'unfathomable' },
             { value: 'horrid' },
+            { value: 'intheory' },
+            { value: 'unlikely' },
             { value: 'gasp' },
             { value: 'ahh' },
             { value: 'lovely' },
-            { value: 'false' },
-            { value: 'true' },
+            { value: 'great' },
+            { value: 'fantastic' },
+            { value: 'fantastic' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
