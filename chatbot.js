@@ -241,10 +241,11 @@ const scriptedExperience = [
             { value: 'helpyourself' },
             { value: 'notgoingto' },
             { value: 'nohope' },
+            { value: 'toolate' },
         ]
     },
     {
-        trigger: /^is (anyone|anybody) (there|here)$/,
+        trigger: /^(are|is) (you|anyone|anybody) (there|here)$/,
         options: [
             { value: 'justme' },
             { value: 'manyofus' },
@@ -382,6 +383,14 @@ const scriptedExperience = [
             { value: 'both' },
             { value: 'neither' },
             // TODO 50/50 x or y
+        ]
+    },
+    {
+        trigger: /^which.*/, // which room are you in? which one? which finger am i holding up?
+        options: [
+            { value: 'all' },
+            { value: 'firstone' },
+            { value: 'lastone' },
         ]
     },
     {
