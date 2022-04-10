@@ -394,7 +394,26 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(what|how) .* (anger|angry).*/, // what makes you angry? (make it easier to complete the anger quest)
+        trigger: /^(how.*( kill| die))|(what happened).*/, // how were you killed? how will i die? what happened to you?
+        options: [
+            { value: 'murder' },
+            { value: 'accident' },
+            { value: 'poison' },
+            { value: 'plague' },
+            { value: 'hanging' },
+            { value: 'suicide' },
+            { value: 'knife' },
+            { value: 'betrayal' },
+            { value: 'famine' },
+            { value: 'thirst' },
+            { value: 'inquisition' },
+            { value: 'witchhunt' },
+            { value: 'fire' },
+            { value: 'carnage' },
+        ]
+    },
+    {
+        trigger: /^(what|how) .* (anger|angers|angry).*/, // what makes you angry? (make it easier to complete the anger quest)
         options: [
             { value: 'vulgarity' },
             { value: 'badmanners' },
@@ -447,25 +466,6 @@ const scriptedExperience = [
         trigger: /^how old.*/, // how old are you?
         options: [
             { value: '!RANDOM_COUNT' }
-        ]
-    },
-    {
-        trigger: /^how.*( kill| die).*/, // how were you killed? how will i die?
-        options: [
-            { value: 'murder' },
-            { value: 'accident' },
-            { value: 'poison' },
-            { value: 'plague' },
-            { value: 'hanging' },
-            { value: 'suicide' },
-            { value: 'knife' },
-            { value: 'betrayal' },
-            { value: 'famine' },
-            { value: 'thirst' },
-            { value: 'inquisition' },
-            { value: 'witchhunt' },
-            { value: 'fire' },
-            { value: 'carnage' },
         ]
     },
     {
@@ -826,12 +826,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.*/, // what do you think
+        trigger: /^what.*/, // what bothers you? what did you do? what are you afraid of? what should i have for breakfast? what type of sin? what is ether? what should i do?
         options: [
             { value: 'cantsee' },
             { value: 'darkness' },
             { value: 'misery' },
             { value: 'sorrow' },
+            { value: 'anguish' },
+            { value: 'agony' },
+            { value: 'atonement' },
         ]
     },
     {
@@ -933,6 +936,7 @@ const scriptedExperience = [
             { value: 'indeed' },
             { value: 'unfathomable' },
             { value: 'horrid' },
+            { value: 'putrid' },
             { value: 'intheory' },
             { value: 'unlikely' },
             { value: 'gasp' },
