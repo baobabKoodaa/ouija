@@ -376,7 +376,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )(are|is|will) .* (or|between) .*/, // are you demon or angel? are you alive or dead? who will win between superman and batman?
+        trigger: /.* (or|between) .*/, // are you demon or angel? for what me or you? who will win between superman and batman?
         options: [
             { value: 'former' },
             { value: 'latter' },
@@ -422,6 +422,8 @@ const scriptedExperience = [
             { value: 'insults' },
             { value: 'repetition' },
             { value: 'stupidquestions' },
+            { value: 'doubts' },
+            { value: 'attitude' },
         ]
     },
     {
@@ -844,12 +846,18 @@ const scriptedExperience = [
         ]
     },   
     {
-        trigger: /^(do|did) you.*/, // do sleep? do like me? do you kill people? do you have a favorite color?
+        trigger: /^(do|did) you.*/, // do you sleep? do you like me? do you kill people? do you have a favorite color?
         options: [
             { value: 'sometimes' },
             { value: 'fun' },
             { value: 'imust' },
             { value: 'ihaveto' },
+            { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^(do|did) i .*/, // do i have a soul? do i have a chance to win? did i die?
+        options: [
             { value: '{boolean}' },
         ]
     },
@@ -895,7 +903,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar)($| ).*/,
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore)($| ).*/,
         options: [
             { value: '!INSULTED' },
         ]
