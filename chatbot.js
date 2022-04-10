@@ -40,15 +40,12 @@ const EVIL = 'evil'
 const names = [
     { value: 'Abel' },
     { value: 'Abigail' },
-    { value: 'Anna' },
     { value: 'Bartholomew' },
     { value: 'Beelzebub', restrictedTo: [EVIL] },
     { value: 'Bethel' },
     { value: 'Caleb' },
     { value: 'Damien', restrictedTo: [EVIL] },
     { value: 'Deborah' },
-    { value: 'Dora' },
-    { value: 'Doris' },
     { value: 'Earendel' },
     { value: 'Ethel' },
     { value: 'Esmeralda' },
@@ -60,7 +57,6 @@ const names = [
     { value: 'Ishmael' },
     { value: 'Jeremiah' },
     { value: 'Joanna' },
-    { value: 'John' },
     { value: 'Kezia' },
     { value: 'Lazarus' },
     { value: 'Lucifer', restrictedTo: [EVIL] },
@@ -222,6 +218,10 @@ const scriptedExperience = [
             { value: 'istay' },
             { value: 'notgoing' },
             { value: 'illbehere' },
+            { value: 'seeyouinyourdreams' },
+            { value: 'illbeinyournightmares' },
+            { value: 'illcomebackatnight' },
+            { value: 'ifollowyouhome' },
         ]
     },
     {
@@ -391,6 +391,7 @@ const scriptedExperience = [
             { value: 'all' },
             { value: 'firstone' },
             { value: 'lastone' },
+            { value: 'youchoose' },
         ]
     },
     {
@@ -496,7 +497,6 @@ const scriptedExperience = [
             { value: 'supernatural' },
             { value: 'voodoo' },
             { value: 'blackmagic' },
-            { value: 'hack' },
         ]
     },
     {
@@ -819,7 +819,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what$/,
+        trigger: /^what$/, // note that due to the way we resolve queries, we often hit this path from inputs such as "hungry for what"
         options: [
             { value: 'youheardme', priority: 1 },
             { value: 'whatisaid', priority: 1 },
@@ -915,7 +915,18 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(ok|okay|i see|aha|sure|no|really|right|yeah|whatever|i dont believe|lies)( .*|$)/,
+        trigger: /^(i see|really|right)$/,
+        options: [
+            { value: 'watchyourtone' },
+            { value: 'believeme' },
+            { value: 'trustme' },
+        ],
+        questGoals: {
+            rage: 1
+        }
+    },
+    {
+        trigger: /^(ok|okay|aha|sure|no|whatever|i dont believe|lies)( .*|$)/,
         options: [
             { value: 'watchyourtone' },
             { value: 'believeme' },
@@ -939,6 +950,7 @@ const scriptedExperience = [
             { value: 'atone' },
             { value: 'noted' },
             { value: 'itisknown' },
+            { value: 'herecy' },
             { value: 'lies' },
             { value: 'liar' },
             { value: 'indeed' },
@@ -952,6 +964,8 @@ const scriptedExperience = [
             { value: 'lovely' },
             { value: 'great' },
             { value: 'fantastic' },
+            { value: 'youwilldie' },
+            { value: 'iwillhurtyou' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
