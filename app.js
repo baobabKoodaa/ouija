@@ -262,7 +262,7 @@ const spiritGuidanceToOffset = function (x, y, diffX, diffY, goalX, goalY, dist)
     // TODO kokeile vaihtoehtosta kiihdytysta missa on vaan 1 paatos et kiihdytetaanko/hidastetaanko MAALIN SUUNTAISESTI (seka x etta y akseleilla) 
     if (diffX != 0 && Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
         if (dist > 5) { // reduce jittery accels on top of goal
-            offsetX += diffX * SPIRIT_ACCEL_STR * 1.1 * 100.0 / planchetteWidth // accelerate
+            offsetX += diffX * SPIRIT_ACCEL_STR * 1.3 * 100.0 / planchetteWidth // accelerate
         }
     } else if (diffX != 0) { // X axis move is in undesired direction
         if (dist < 10) { // sharp cutoff for deceleration to reinforce feeling of "magnetic force" and to reduce unnecessary offsetting
@@ -271,7 +271,7 @@ const spiritGuidanceToOffset = function (x, y, diffX, diffY, goalX, goalY, dist)
     }
     if (diffY != 0 && Math.sign(goalY - y) == Math.sign(diffY)) { // Y axis move is in preferable direction
         if (dist > 5) {
-            offsetY += diffY * SPIRIT_ACCEL_STR * 1.1 * 100.0 / planchetteHeight // accelerate
+            offsetY += diffY * SPIRIT_ACCEL_STR * 1.3 * 100.0 / planchetteHeight // accelerate
         }
     } else if (diffY != 0) {
         if (dist < 10) {
