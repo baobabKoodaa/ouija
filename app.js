@@ -355,6 +355,8 @@ const flyBanshee = function() {
     setTimeout(() => {
         document.getElementById('glassCrack').style.display = 'block'
         document.getElementById('audio-crack1').play()
+        turn = 'no-one'
+        document.getElementById('planchette').classList = ['planchette-no-glow']
     }, 300)
     setTimeout(() => {
         if (!pauseSmokeAnimation) {
