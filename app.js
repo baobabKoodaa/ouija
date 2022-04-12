@@ -417,8 +417,16 @@ const questLineTick = function() {
 // is to allow the player to discover goals faster. Without the tug players have to slowly and painfully
 // hover over all the letters. With the tug players can immediately go in the right direction (once they
 // learn to flow along with the mechanic).
+//
+// Problem: many players ONLY noticed spirit tug, never noticed guidance effects, so they played
+// the game by just doing click-click-click. Boring! In order to encourage players to discover all
+// mouse effects, a 15-second timer was added, so this tug can not be initiated consecutively.
+const TUG_STRENGTH = 1/15
+let lastTugTime = 0
 const beginSpiritTug = function() {
-    const TUG_STRENGTH = 1/15
+    const currTugTime = Date.now()
+    if (lastTugTime + 15000 > currTugTime) return
+    lastTugTime = currTugTime
     let maxMovesLeft = 20
     let recursiveTimerSpiritTug = function () {
         if (remainingGoals.length === 0) return
