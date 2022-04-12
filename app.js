@@ -20,6 +20,7 @@ let loadingOverlayDisabled = false
 let gameOver = false
 let popupIsOpen = false
 let showTips = true
+let easyMode = true
 let easterEggVisible = false
 let draggingPlanchette = false
 let planchetteTransformX = 0 // In % relative to planchette's own size (to support browser resizing)
@@ -424,6 +425,10 @@ const questLineTick = function() {
 const TUG_STRENGTH = 1/15
 let lastTugTime = 0
 const beginSpiritTug = function() {
+    if (easyMode) {
+        easyModeRecursiveTimerSpiritTug()
+        return
+    }
     const currTugTime = Date.now()
     if (lastTugTime + 15000 > currTugTime) return
     lastTugTime = currTugTime
@@ -444,6 +449,24 @@ const beginSpiritTug = function() {
         setTimeout(() => { recursiveTimerSpiritTug() }, 10)
     }
     recursiveTimerSpiritTug()
+}
+
+const EASY_MODE_TUG_STRENGTH = 1/25
+let easyModeRecursiveTimerSpiritTug = function () {
+    if (remainingGoals.length === 0) return
+    const goalX = goalCoords[remainingGoals[0]].x
+    const goalY = goalCoords[remainingGoals[0]].y
+    const diffX = goalX - (planchetteTransformX + offsetX)
+    const diffY = goalY - (planchetteTransformY + offsetY)
+    offsetX += diffX * EASY_MODE_TUG_STRENGTH
+    offsetY += diffY * EASY_MODE_TUG_STRENGTH
+    updatePlanchettePosition()
+    paintCursorWithOffset(document.getElementById("cursor"), prevX, prevY)
+    setTimeout(() => {
+        if (draggingPlanchette) {
+            easyModeRecursiveTimerSpiritTug() 
+        }
+    }, 10)
 }
 
 const mouseMoved = function (event, onObject) {
@@ -600,6 +623,8 @@ const stopDraggingPlanchette = function (event, source) {
                         currentExchangeNumber++
                         questLineTick()
                     }
+                    // Reset tug timer (if player is not on easy mode, when they pick up the planchette, there will be a small tug available again)
+                    lastTugTime = 0
                 }
             }
         }
@@ -733,6 +758,16 @@ const closeSettingsPopup = function () {
 const toggleSettingsPopup = function () {
     popupIsOpen = !popupIsOpen
     popupIsOpen ? openSettingsPopup() : closeSettingsPopup()
+}
+
+const toggleEasyMode = function() {
+    easyMode = !easyMode
+    const slider = document.getElementById('easyModeSliderSlider')
+    if (easyMode) {
+        slider.classList.add(['checked'])
+    } else {
+        slider.classList.remove(['checked'])
+    }
 }
 
 const toggleShowTips = function () {
@@ -1053,6 +1088,7 @@ document.getElementById('hoverBoard').addEventListener('click', e => { if (hover
 document.getElementById('tooltipContinueButton').addEventListener('click', e => { toggleTooltipPopup(e) })
 document.getElementById('tooltipShutUpButton').addEventListener('click', e => { toggleTooltipPopup(e, SHUT_UP) })
 document.getElementById('saveSettings').addEventListener('click', e => { toggleSettingsPopup() })
+document.getElementById('easyModeSlider').addEventListener('click', e => { toggleEasyMode() })
 document.getElementById('showTipsSlider').addEventListener('click', e => { toggleShowTips() })
 document.getElementById('revealMouseSlider').addEventListener('click', e => { toggleRevealMouse() })
 document.getElementById('speedModeSlider').addEventListener('click', e => { toggleSpeedMode() })
