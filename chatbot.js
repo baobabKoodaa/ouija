@@ -643,7 +643,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(whose|whos) home$/,
+        trigger: /^whose home$/,
         options: [
             { value: 'yours' },
         ]
@@ -937,6 +937,18 @@ const scriptedExperience = [
         }
     },
     {
+        trigger: /^i am not afraid*/,
+        options: [
+            { value: 'youshouldbe' },
+            { value: 'bigmistake' },
+            { value: 'iwillmakeyou' },
+            { value: 'youwillbe' },
+        ],
+        questGoals: {
+            rage: 1
+        }
+    },
+    {
         /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
          * We might end up here after recursively resolving the query such that we always drop the first word,
          * until finally we end up here with empty string. */
@@ -950,11 +962,13 @@ const scriptedExperience = [
             { value: 'atone' },
             { value: 'noted' },
             { value: 'itisknown' },
-            { value: 'herecy' },
+            { value: 'blasphemy' },
+            { value: 'heresy' },
             { value: 'lies' },
             { value: 'liar' },
             { value: 'indeed' },
             { value: 'unfathomable' },
+            { value: 'unthinkable' },
             { value: 'horrid' },
             { value: 'putrid' },
             { value: 'intheory' },
@@ -1160,7 +1174,7 @@ const looksLikeNonsense = function(text) {
     let currentCount = 0
     let prevCharType = 'nothing'
     for (let i=0; i<text.length; i++) {
-        if (text[i] === ' ') {
+        if ('0123456789 '.includes(text[i])) {
             currentCount = 0
             prevCharType = 'nothing'
             continue
@@ -1195,6 +1209,9 @@ const respondWithSimpleChatbot = function(rawInput, callback) {
         .map((word) => {
             // Normalize common word typos
             if (word === 'whats') return 'what is'
+            if (word === 'whos') return 'who is'
+            if (word === 'wheres') return 'where is'
+            if (word === 'im') return 'i am'
             if (word === 'were') return 'where'
             if (word === 'u') return 'you'
             if (word === 'r') return 'are'
