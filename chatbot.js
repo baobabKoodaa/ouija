@@ -1037,7 +1037,7 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^i am not (afraid|scared)*/,
+        trigger: /^i am not.*/, // im not afraid (as a response to "dontworry" or "dontbeafraid")
         options: [
             { value: 'youshouldbe' },
             { value: 'bigmistake' },
