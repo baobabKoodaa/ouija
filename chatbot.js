@@ -527,7 +527,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^when.*( did | where ).*/, // when did you die? when were you born (with were->where subsitution)
+        trigger: /^when.*( did | where | was ).*/, // when did you die? when was washington born? when were you born (with were->where subsitution)
         options: [
             { value: '!RANDOM_YEAR_PAST' },
             { value: 'longago' },
@@ -863,6 +863,24 @@ const scriptedExperience = [
         trigger: /^what.* year.*/,
         options: [
             { value: '!RANDOM_YEAR_FUTURE' },
+        ]
+    },
+    {
+        trigger: /^what time is it$/,
+        options: [
+            { value: 'timetodie' },
+            { value: 'timetostop' },
+            { value: 'timetorun' },
+            { value: 'timetoleave' },
+        ]
+    },
+    {
+        trigger: /^what (day|month|year) is it( today)?$/,
+        options: [
+            { value: 'nocalendar' },
+            { value: 'yourlastone' },
+            { value: 'thefinalone' },
+            { value: 'donttestme' },
         ]
     },
     {
