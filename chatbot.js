@@ -509,7 +509,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how are you$/,
+        trigger: /^how are you.*/,
         options: [
             { value: 'hungry' },
             { value: 'thirsty' },
@@ -792,6 +792,15 @@ const scriptedExperience = [
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'darkness' },
             { value: 'punishment' },
+        ]
+    },
+    {
+        trigger: /^what is up$/, // whats up (grammar-corrected), pretend to misunderstand question
+        options: [
+            { value: 'heaven' },
+            { value: 'stars' },
+            { value: 'sky' },
+            { value: 'gasprice' },
         ]
     },
     {
