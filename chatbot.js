@@ -225,6 +225,16 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /.*sorry.*/,
+        options: [
+            { value: 'youbetterbe' },
+            { value: 'idontforgive' },
+            { value: 'unforgivable' },
+            { value: 'notforgiven' },
+            { value: 'youwillpay' },
+        ],
+    },
+    {
         trigger: /^nice to meet you$/,
         options: [
             { value: 'andyou' },
@@ -321,6 +331,18 @@ const scriptedExperience = [
         }
     },
     {
+        trigger: '{parrot}',
+        options: [
+            { value: 'thatswhatisaid', priority: 1.0 },
+            { value: 'dontparrotme', priority: 1.0 },
+            { value: 'stoprepeating', priority: 1.0 },
+            { value: '{insult}' },
+        ],
+        questGoals: {
+            rage: 1
+        }
+    },
+    {
         trigger: '{location2}',
         options: [
             { value: 'home' },
@@ -382,7 +404,7 @@ const scriptedExperience = [
             { value: 'latter' },
             { value: 'both' },
             { value: 'neither' },
-            // TODO 50/50 x or y
+            { value: 'either' },
         ]
     },
     {
@@ -392,6 +414,38 @@ const scriptedExperience = [
             { value: 'firstone' },
             { value: 'lastone' },
             { value: 'youchoose' },
+        ]
+    },
+    {
+        trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
+        options: [
+            { value: '!DEFINE people' },
+            { value: 'justyou' },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: '2', restrictedTo: [FRIENDLY] },
+        ]
+    },
+    {
+        trigger: /^how long.*/, // how long ago did you die? how long have you been dead? how long since ... how long until ...
+        options: [
+            { value: 'toolong', priority: 0.5 },
+            { value: 'years' },
+            { value: 'generations' },
+            { value: 'eons' },
+            { value: 'ages' },
+            { value: 'centuries' },
+            { value: '!RANDOM_COUNT_YEARS' }
+        ]
+    },
+    {
+        trigger: /^how many.*/, // how many humans have you killed? how many of you are here? how many fingers am i holding up?
+        options: [
+            { value: 'notcounting' },
+            { value: 'somany' },
+            { value: 'many' },
+            { value: 'toomany' },
+            { value: 'few' },
+            { value: '!RANDOM_SMALL_COUNT' }
         ]
     },
     {
@@ -428,30 +482,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
+        trigger: /(^|.* )(do|can) (i|we) .*/, // can i trap you? how can we trap you? how do i win?
         options: [
-            { value: '!DEFINE people' },
-            { value: 'justyou' },
-            { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: '2', restrictedTo: [FRIENDLY] },
-        ]
-    },
-    {
-        trigger: /^how many.*/, // how many humans have you killed? how many of you are here? how many fingers am i holding up?
-        options: [
-            { value: 'many' },
-            { value: 'toomany' },
-            { value: 'few' },
-            { value: '!RANDOM_SMALL_COUNT' }
-        ]
-    },
-    {
-        trigger: /^how long.*/, // how long ago did you die? how long have you been dead? how long since ... how long until ...
-        options: [
-            { value: 'toolong' },
-            { value: 'ages' },
-            { value: 'centuries' },
-            { value: '!RANDOM_COUNT_YEARS' }
+            { value: 'cant', priority: 1},
+            { value: 'blacksmoke' },
+            { value: 'impossible' },
+            { value: 'giveup' },
+            { value: 'nohope' },
         ]
     },
     {
@@ -478,16 +515,6 @@ const scriptedExperience = [
             { value: 'thirsty' },
             { value: 'craving' },
             { value: 'lonely', restrictedTo: [FRIENDLY] },
-        ]
-    },
-    {
-        trigger: /^how (do|can) (i|we).*/, // how can we trap you? how can i win the game? how do i win?
-        options: [
-            { value: 'blacksmoke' },
-            { value: 'impossible' },
-            { value: 'giveup' },
-            { value: 'cant' },
-            { value: 'nohope' },
         ]
     },
     {
@@ -550,13 +577,6 @@ const scriptedExperience = [
             //{ value: 'forest' },
             //{ value: 'desert' },
             //{ value: 'swamp' },
-        ]
-    },
-    {
-        trigger: /^can (i|you|we) .*/,
-        options: [
-            { value: 'cant' },
-            { value: '{boolean}' }
         ]
     },
     {
@@ -672,6 +692,9 @@ const scriptedExperience = [
         options: [
             { value: 'lord' },
             { value: 'angel' },
+            { value: 'ghost' },
+            { value: 'spirit' },
+            { value: 'master' },
             { value: 'demon' },
             { value: 'savior' },
             { value: 'messiah' },
@@ -680,11 +703,13 @@ const scriptedExperience = [
     {
         trigger: /^why.*/,
         options: [
+            { value: 'because', priority: 0.3 },
             { value: 'youknowwhy' },
+            { value: 'dontaskwhy' },
             { value: 'sin' },
-            { value: 'greed' },
-            { value: 'money' },
-            { value: 'love' },
+            { value: 'outofgreed' },
+            { value: 'formoney' },
+            { value: 'forlove' },
             { value: 'lust' },
             { value: 'mistake', restrictedTo: [FRIENDLY] },
             { value: 'noreason', restrictedTo: [FRIENDLY] },
@@ -695,7 +720,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what are you$/,
+        trigger: /^what (form )?are you$/,
         options: [
             { value: 'human' },
             { value: 'lostsoul', restrictedTo: [FRIENDLY] },
@@ -709,6 +734,16 @@ const scriptedExperience = [
         questGoals: {
             who: 1
         }
+    },
+    {
+        trigger: /^what is my.*/, // name? birthdate? location? age?
+        options: [
+            { value: 'youknow', priority: 1 },
+            { value: 'whyaskme', priority: 1 },
+            { value: 'donttestme', priority: 1 },
+            { value: 'areyoutestingme', priority: 1 },
+            { value: '{clarification}' },
+        ]
     },
     {
         trigger: /^what do.* mean.*/, // what does that mean? what does it mean? what do you mean?
@@ -738,22 +773,25 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what .*colou?r.*/, // what is your favorite color? what color are my shoes?
+        options: [
+            { value: 'crimsonred' },
+            { value: 'bloodred' },
+            { value: 'carmine' },
+            { value: 'ruby' },
+            { value: 'sanguine' },
+            { value: 'pitchblack' },
+            { value: 'sanguine' },
+            { value: 'imcolorblind' },
+        ]
+    },
+    {
         trigger: /^what is your.*/, // goal? motivation? favorite food?
         options: [
             { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'darkness' },
             { value: 'punishment' },
-        ]
-    },
-    {
-        trigger: /^what is my.*/, // name? birthdate? location? age?
-        options: [
-            { value: 'youknow', priority: 1 },
-            { value: 'whyaskme', priority: 1 },
-            { value: 'donttestme', priority: 1 },
-            { value: 'areyoutestingme', priority: 1 },
-            { value: '{clarification}' },
         ]
     },
     {
@@ -813,9 +851,19 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.*year.*/,
+        trigger: /^what.* year.*/,
         options: [
             { value: '!RANDOM_YEAR_FUTURE' },
+        ]
+    },
+    {
+        trigger: /^what.* kind($| .*)/,
+        options: [
+            { value: 'badkind', priority: 1 },
+            { value: 'evilkind', priority: 1 },
+            { value: 'wrongkind', priority: 1 },
+            { value: 'miserable' },
+            { value: 'toxic' },
         ]
     },
     {
@@ -846,12 +894,26 @@ const scriptedExperience = [
         ]
     },   
     {
-        trigger: /^(do|did) you.*/, // do you sleep? do you like me? do you kill people? do you have a favorite color?
+        trigger: /^did you( .*|$)/, // did you poison anyone? did you like living?
         options: [
+            { value: 'ihadto' },
             { value: 'sometimes' },
+            { value: 'forgoodreason' },
             { value: 'fun' },
+            { value: 'obviously' },
+            { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^do you( .*|$)/, // do you sleep? do you like me? do you kill people? do you have a favorite color?
+        options: [
             { value: 'imust' },
             { value: 'ihaveto' },
+            { value: 'sometimes' },
+            { value: 'forgoodreason' },
+            { value: 'fun' },
+            { value: 'nochoice' },
+            { value: 'obviously' },
             { value: '{boolean}' },
         ]
     },
@@ -859,6 +921,17 @@ const scriptedExperience = [
         trigger: /^(do|did) i .*/, // do i have a soul? do i have a chance to win? did i die?
         options: [
             { value: '{boolean}' },
+        ]
+    },
+    {
+        trigger: /^can you .*/, // can you hurt me? can you see me? can you die?
+        options: [
+            { value: 'ican' },
+            { value: 'imust' },
+            { value: 'iwill' },
+            { value: 'imomnipotent' },
+            { value: 'ihavethatpower' },
+            { value: 'wanttosee' },
         ]
     },
     {
@@ -937,7 +1010,7 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^i am not afraid*/,
+        trigger: /^i am not (afraid|scared)*/,
         options: [
             { value: 'youshouldbe' },
             { value: 'bigmistake' },
@@ -975,11 +1048,15 @@ const scriptedExperience = [
             { value: 'unlikely' },
             { value: 'gasp' },
             { value: 'ahh' },
-            { value: 'lovely' },
-            { value: 'great' },
+            { value: 'thatslovely' },
+            { value: 'soundsgreat' },
             { value: 'fantastic' },
             { value: 'youwilldie' },
             { value: 'iwillhurtyou' },
+            { value: 'exaggeration' },
+            { value: 'donotlie' },
+            { value: 'idontthinkso' },
+            { value: 'fabrication' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
@@ -1194,6 +1271,9 @@ const looksLikeNonsense = function(text) {
 const augmentedResolveQueryWithSimpleChatbot = function(input) {
     if (input === previousInput) {
         return resolveQueryWithSimpleChatbot('{clarification}')
+    }
+    if (input.replaceAll(' ', '') === previousOutput) {
+        return resolveQueryWithSimpleChatbot('{parrot}')
     }
     if (looksLikeNonsense(input)) {
         return resolveQueryWithSimpleChatbot('{speakEnglish}')
