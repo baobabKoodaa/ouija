@@ -1129,6 +1129,9 @@ document.body.addEventListener('keydown', e => {
             }
         } else if (e.key == 'Backspace' && m.innerText.length > 0) {
             m.innerText = m.innerText.substring(0, m.innerText.length - 1)
+        } else if (e.key == "'") {
+            // Fix Firefox issue.
+            e.preventDefault()
         }
     }
 
