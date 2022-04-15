@@ -196,19 +196,29 @@ const respondWithOpenAI = function (userQuestion, callback) {
 
 const scriptedExperience = [
     {
-        trigger: /^hello.*/,
+        trigger: /.*meaning of life.*/,
         options: [
-            { value: 'greetings' },
-            { value: 'mylove' },
-            { value: 'mylord' },
+            { value: 'tosuffer' },
+            { value: 'toserve' },
+            { value: 'tosacrifice' },
+            { value: 'nomeaningtoit' },
+            { value: 'pointless' },
         ],
     },
     {
-        trigger: /^(hi|hey)($| .*)/,
+        trigger: /^test(ing)?($| .*)/,
         options: [
-            { value: 'hello' },
-            { value: 'shalom' }
-        ]
+            { value: 'donttestme' },
+            { value: 'notesting' },
+        ],
+    },
+    {
+        trigger: /(^|.* )(rain|weather)($| .*)/,
+        options: [
+            { value: 'icecold' },
+            { value: 'rainingtears' },
+            { value: 'rainingblood' },
+        ],
     },
     {
         trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
@@ -509,7 +519,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how are you.*/,
+        trigger: /(^|.* )how are you.*/, // hello how are you
         options: [
             { value: 'hungry' },
             { value: 'thirsty' },
@@ -711,12 +721,11 @@ const scriptedExperience = [
             { value: 'formoney' },
             { value: 'forlove' },
             { value: 'lust' },
-            { value: 'mistake', restrictedTo: [FRIENDLY] },
-            { value: 'noreason', restrictedTo: [FRIENDLY] },
+            { value: 'mistake' },
+            { value: 'noreason' },
             { value: 'forced', restrictedTo: [FRIENDLY] },
             { value: 'nochoice', restrictedTo: [FRIENDLY] },
             { value: 'influence' },
-            { value: 'power' },
         ]
     },
     {
@@ -761,7 +770,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your name$/,
+        trigger: /(^|.* )what is your name$/, // hello what is your name
         options: [
             { value: '!NAME' },
         ]
@@ -786,7 +795,17 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your.*/, // goal? motivation? favorite food?
+        trigger: /^what is your favorite .*/, // what is your favorite ice cream? favorite tv show? favorite food?
+        options: [
+            { value: 'nofavorites' },
+            { value: 'whateveryoulike' },
+            { value: 'youchoose' },
+            { value: 'ihatethemall' },
+            { value: 'notmything' },
+        ]
+    },
+    {
+        trigger: /^what is your .*/, // goal? motivation? folly?
         options: [
             { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
@@ -1003,7 +1022,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore)($| ).*/,
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore|dumbass)($| ).*/,
         options: [
             { value: '!INSULTED' },
         ]
@@ -1049,6 +1068,21 @@ const scriptedExperience = [
         }
     },
     {
+        trigger: /^hello.*/, // hello is intentionally down here because inputs like "hello how are you" should preferrably hit "how are you", not "hello"
+        options: [
+            { value: 'greetings' },
+            { value: 'mylove' },
+            { value: 'mylord' },
+        ],
+    },
+    {
+        trigger: /^(hi|hey)($| .*)/,
+        options: [
+            { value: 'hello' },
+            { value: 'shalom' }
+        ]
+    },
+    {
         /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
          * We might end up here after recursively resolving the query such that we always drop the first word,
          * until finally we end up here with empty string. */
@@ -1084,6 +1118,8 @@ const scriptedExperience = [
             { value: 'donotlie' },
             { value: 'idontthinkso' },
             { value: 'fabrication' },
+            { value: 'agreed' },
+            { value: 'disagree' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
