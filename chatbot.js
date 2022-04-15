@@ -1310,6 +1310,7 @@ const augmentedResolveQueryWithSimpleChatbot = function(input) {
 
 const respondWithSimpleChatbot = function(rawInput, callback) {
     const input = rawInput
+        .replaceAll('I', 'i').replaceAll('ı', 'i') // Turkish i character
         .toLocaleLowerCase()
         .split(" ")
         .filter((word) => !['the', 'a', 'an'].includes(word)) // Normalize common grammar typos
