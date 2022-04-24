@@ -206,6 +206,12 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore|dumb|dumbass)($| ).*/,
+        options: [
+            { value: '!INSULTED' },
+        ]
+    },
+    {
         trigger: /^test(ing)?($| .*)/,
         options: [
             { value: 'donttestme' },
@@ -1017,12 +1023,6 @@ const scriptedExperience = [
     },
     {
         trigger: /^(repent|atone)$/,
-        options: [
-            { value: '!INSULTED' },
-        ]
-    },
-    {
-        trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore|dumbass)($| ).*/,
         options: [
             { value: '!INSULTED' },
         ]
