@@ -38,48 +38,48 @@ const FRIENDLY = 'friendly'
 const EVIL = 'evil'
 
 const names = [
-    { value: 'Abel' },
-    { value: 'Abigail' },
-    { value: 'Bartholomew' },
-    { value: 'Beelzebub', restrictedTo: [EVIL] },
-    { value: 'Bethel' },
-    { value: 'Caleb' },
-    { value: 'Damien', restrictedTo: [EVIL] },
-    { value: 'Deborah' },
-    { value: 'Earendel' },
-    { value: 'Ethel' },
-    { value: 'Esmeralda' },
-    { value: 'Esther' },
-    { value: 'Eunice' },
-    { value: 'Ezekiel' },
-    { value: 'Gabriel' },
-    { value: 'Hosanna' },
-    { value: 'Ishmael' },
-    { value: 'Jeremiah' },
-    { value: 'Joanna' },
-    { value: 'Kezia' },
-    { value: 'Lazarus' },
-    { value: 'Lucifer', restrictedTo: [EVIL] },
-    { value: 'Magda' },
-    { value: 'Mahali' },
-    { value: 'Micah' },
-    { value: 'Miriam' },
-    { value: 'Moriah' },
-    { value: 'Obadiah' },
-    { value: 'Olaf' },
-    { value: 'Oswald' },
-    { value: 'Pazuzu', restrictedTo: [EVIL] },
-    { value: 'Rafael' },
-    { value: 'Rasputin' },
-    { value: 'Ruth' },
-    { value: 'Sabina' },
-    { value: 'Sapphira' },
-    { value: 'Shamir' },
-    { value: 'Sheba' },
-    { value: 'Simeon' },
-    { value: 'Tabatha' },
-    { value: 'Uri' },
-    { value: 'Zozo', restrictedTo: [EVIL] },
+    { value: 'Abel', gender: 'man' },
+    { value: 'Abigail', gender: 'male' },
+    { value: 'Bartholomew', gender: 'male' },
+    { value: 'Beelzebub', gender: 'male', restrictedTo: [EVIL] },
+    { value: 'Bethel', gender: 'female' },
+    { value: 'Caleb', gender: 'male' },
+    { value: 'Damien', gender: 'male', restrictedTo: [EVIL] },
+    { value: 'Deborah', gender: 'lady' },
+    { value: 'Earendel', gender: 'male' },
+    { value: 'Ethel', gender: 'female' },
+    { value: 'Esmeralda', gender: 'lady' },
+    { value: 'Esther', gender: 'woman' },
+    { value: 'Eunice', gender: 'male' },
+    { value: 'Ezekiel', gender: 'male' },
+    { value: 'Gabriel', gender: 'male' },
+    { value: 'Hosanna', gender: 'female' },
+    { value: 'Ishmael', gender: 'boy' },
+    { value: 'Jeremiah', gender: 'male' },
+    { value: 'Joanna', gender: 'girl' },
+    { value: 'Kezia', gender: 'girl' },
+    { value: 'Lazarus', gender: 'man' },
+    { value: 'Lucifer', gender: 'male', restrictedTo: [EVIL] },
+    { value: 'Magda', gender: 'woman' },
+    { value: 'Mahali', gender: 'man' },
+    { value: 'Micah', gender: 'boy' },
+    { value: 'Miriam', gender: 'woman' },
+    { value: 'Moriah', gender: 'boy' },
+    { value: 'Obadiah', gender: 'man' },
+    { value: 'Olaf', gender: 'man' },
+    { value: 'Oswald', gender: 'man' },
+    { value: 'Pazuzu', gender: 'male', restrictedTo: [EVIL] },
+    { value: 'Rafael', gender: 'man' },
+    { value: 'Rasputin', gender: 'man' },
+    { value: 'Ruth', gender: 'woman' },
+    { value: 'Sabina', gender: 'girl' },
+    { value: 'Sapphira', gender: 'girl' },
+    { value: 'Shamir', gender: 'man' },
+    { value: 'Sheba', gender: 'female' },
+    { value: 'Simeon', gender: 'boy' },
+    { value: 'Tabatha', gender: 'woman' },
+    { value: 'Uri', gender: 'man' },
+    { value: 'Zozo', gender: 'male', restrictedTo: [EVIL] },
 ]
 
 /**************************************** OPENAI stuff begins ********************************************/
@@ -195,6 +195,12 @@ const respondWithOpenAI = function (userQuestion, callback) {
 /**************************************** OPENAI stuff ends ********************************************/
 
 const scriptedExperience = [
+    {
+        trigger: /(^|.* )gender( .*|$)/,
+        options: [
+            { value: '!GENDER' },
+        ],
+    },
     {
         trigger: /.*meaning of life.*/,
         options: [
@@ -1171,6 +1177,9 @@ const pickSuitableOption = function(options, currentSpirit) {
 
 const resolveQueryWithSimpleChatbot = function(query) {
     // Special cases
+    if (query.startsWith('!GENDER')) {
+        return (currentSpirit.gender || 'male')
+    }
     if (query.startsWith('!LOCATION')) {
         if (questGoals.where === 3) {
             questGoals.where -= 1
@@ -1309,9 +1318,12 @@ const SCRIPTED_TOOLTIPS = [
 
 const initializeSpirit = function() {
     const spiritType = EVIL // Math.random() > 0.5 ? EVIL : FRIENDLY
+    const name = pickSuitableOption(names, { type: spiritType })
+    const gender = names.find((obj) => obj.value == name).gender
     return {
         type: spiritType,
-        name: pickSuitableOption(names, { type: spiritType })
+        name: name,
+        gender: gender
     }
 }
 currentSpirit = initializeSpirit()

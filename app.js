@@ -1157,7 +1157,8 @@ const cleanText = function (rawText) {
     return filtered
 }
 
-[EASTER_EGG_ACHIEVEMENT, FALSE_PROPHETS_ACHIEVEMENT].forEach((achievement) => {
+const achievementsArray = [EASTER_EGG_ACHIEVEMENT, FALSE_PROPHETS_ACHIEVEMENT]
+achievementsArray.forEach((achievement) => {
     if (window.localStorage.getItem(`ouija-${achievement}`)) {
         createAchievementIcon(achievement)
     }
