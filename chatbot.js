@@ -266,6 +266,16 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^my name is .*/,
+        options: [
+            { value: 'nicetomeetyou' },
+            { value: 'stupidname' },
+            { value: 'dumbname' },
+            { value: 'nicename' },
+            { value: 'fancyname' },
+        ]
+    },
+    {
         trigger: /^(help|help me)$/,
         options: [
             { value: 'blacksmoke' },
@@ -1079,6 +1089,17 @@ const scriptedExperience = [
         }
     },
     {
+        trigger: /^you are.*/,
+        options: [
+            { value: 'iam' },
+            { value: 'iamnot' },
+            { value: 'icanbe' },
+            { value: 'icant' },
+            { value: 'itry' },
+            { value: 'noyouare' },
+        ],
+    },
+    {
         trigger: /^i am not.*/, // im not afraid (as a response to "dontworry" or "dontbeafraid")
         options: [
             { value: 'youshouldbe' },
@@ -1142,7 +1163,6 @@ const scriptedExperience = [
             { value: 'idontthinkso' },
             { value: 'fabrication' },
             { value: 'agreed' },
-            { value: 'disagree' },
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
