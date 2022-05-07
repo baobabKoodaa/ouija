@@ -1071,6 +1071,7 @@ const trophyClicked = function(achievement) {
 }
 
 // Mouse move events
+document.getElementById('loadingOverlay').addEventListener('mousemove', e => { userMoveCount += 1 })
 document.getElementById('bg').addEventListener('mousemove', e => { mouseMoved(e) })
 document.getElementById('hoverBoard').addEventListener('mousemove', e => { mouseMoved(e) })
 document.getElementById('planchette').addEventListener('mousemove', e => { mouseMoved(e) })
@@ -1154,12 +1155,6 @@ const cleanText = function (rawText) {
         }
     }
     return filtered
-}
-
-if (!window.localStorage.getItem(OUIJA_USER_ID)) {
-    openConsentPopup()
-} else {
-    setTimeout(() => createTooltip(0), 1000)
 }
 
 [EASTER_EGG_ACHIEVEMENT, FALSE_PROPHETS_ACHIEVEMENT].forEach((achievement) => {

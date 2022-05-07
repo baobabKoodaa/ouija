@@ -308,6 +308,23 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: '{return}',
+        options: [
+            { value: 'finally', priority: 0.3 },
+            { value: 'youagain', priority: 0.3 },
+            { value: 'welcomeback', priority: 0.3 },
+            { value: 'youreback', priority: 0.3 },
+            { value: 'stayaway' },
+            { value: 'imissedyou' },
+            { value: 'wherewereyou' },
+            { value: 'youkeptmewaiting' },
+            { value: 'youleftmealone' },
+            { value: 'youleftmehanging' },
+            { value: 'whydidyouleave' },
+            { value: 'ivebeenwaiting' },
+        ]
+    },
+    {
         trigger: '{identityFudge}',
         options: [
             { value: 'iusedtobelikeyou' },
@@ -1381,5 +1398,22 @@ const dispatchToSpirit = function(rawInput, callback) {
         console.log(ex)
         return 'error'
     }
+}
 
+// Initialize state (after chatbot.js is loaded, everything else is loaded as well)
+if (!window.localStorage.getItem(OUIJA_USER_ID)) {
+    // First time user
+    openConsentPopup()
+} else if (window.localStorage.getItem(`ouija-${FALSE_PROPHETS_ACHIEVEMENT}`)) {
+    // User has previously finished the game, 50/50 if we begin from user's turn or spirit's turn
+    if (Math.random() > 0.5) {
+        setTimeout(() => createTooltip(0), 1000)
+    } else {
+        switchTurnToSpirit()
+        dispatchToSpirit("{return}", spiritIsReadyToCommunicate)
+        setTimeout(() => createTooltip(1), 1000)
+    }
+} else {
+    // User has played before but has not finished the game, begin from user's turn
+    setTimeout(() => createTooltip(0), 1000)
 }
