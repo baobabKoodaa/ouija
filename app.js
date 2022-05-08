@@ -14,6 +14,7 @@ const RECORDING = 'recording'
 const TURN_SPIRIT = 'turnSpirit'
 const TURN_USER = 'turnUser'
 const OUIJA_USER_ID = 'ouija-user-id'
+const OUIJA_PLAYER_NAME = 'ouija-player-name'
 
 // Global state
 let loadingOverlayDisabled = false

@@ -225,6 +225,17 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )([0-9]*) (plus|minus|times) ([0-9]*)( .*|$)/,
+        options: [
+            { value: 'donttestme' },
+            { value: 'askgoogle' },
+            { value: 'ihatemath' },
+            { value: '666' },
+            { value: '42' },
+            { value: '13' },
+        ],
+    },
+    {
         trigger: /(^|.* )(rain|weather)($| .*)/,
         options: [
             { value: 'icecold' },
@@ -336,11 +347,10 @@ const scriptedExperience = [
     {
         trigger: '{return}',
         options: [
-            { value: 'finally', priority: 0.3 },
-            { value: 'youagain', priority: 0.3 },
-            { value: 'welcomeback', priority: 0.3 },
-            { value: 'youreback', priority: 0.3 },
-            { value: 'stayaway' },
+            { value: 'finally' },
+            { value: 'youagain' },
+            { value: 'welcomeback' },
+            { value: 'youreback' },
             { value: 'imissedyou' },
             { value: 'wherewereyou' },
             { value: 'youkeptmewaiting' },
@@ -348,6 +358,12 @@ const scriptedExperience = [
             { value: 'youleftmehanging' },
             { value: 'whydidyouleave' },
             { value: 'ivebeenwaiting' },
+        ]
+    },
+    {
+        trigger: /^finally what$/,
+        options: [
+            { value: 'youreback' },
         ]
     },
     {
@@ -1150,39 +1166,38 @@ const scriptedExperience = [
         ]
     },
     {
-        /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
+        /* Fallback when nothing else matches. Presumably the user made a statement not a question.
          * We might end up here after recursively resolving the query such that we always drop the first word,
          * until finally we end up here with empty string. */
         trigger: /^$/,
         options: [
+
+            /* Plausible responses to a statement */
             { value: 'dontbeafraid' },
             { value: 'dontworry' },
-            { value: 'repent' },
-            { value: 'atone' },
             { value: 'noted' },
             { value: 'itisknown' },
             { value: 'blasphemy' },
             { value: 'heresy' },
             { value: 'lies' },
             { value: 'liar' },
+            { value: 'donotlie' },
             { value: 'indeed' },
             { value: 'unfathomable' },
             { value: 'unthinkable' },
-            { value: 'horrid' },
-            { value: 'putrid' },
             { value: 'intheory' },
             { value: 'unlikely' },
             { value: 'thatslovely' },
             { value: 'soundsgreat' },
             { value: 'fantastic' },
-            { value: 'youwilldie' },
-            { value: 'iwillhurtyou' },
             { value: 'exaggeration' },
-            { value: 'donotlie' },
             { value: 'idontthinkso' },
             { value: 'fabrication' },
             { value: 'agreed' },
 
+            /* Nonsequiturs */
+            { value: 'youwilldie' },
+            { value: 'iwillhurtyou' },
             { value: 'isthisagametoyou' },
             { value: 'thisisnotagame' },
             { value: 'whatdoyouwant' },
@@ -1191,6 +1206,10 @@ const scriptedExperience = [
             { value: 'how' },
             { value: 'when' },
             { value: 'explain' },
+            { value: 'repent' },
+            { value: 'atone' },
+
+            { value: '!PLAYERNAME', priority: 0.3 },
             
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
@@ -1241,6 +1260,11 @@ const resolveQueryWithSimpleChatbot = function(query) {
     if (query.startsWith('!DEFINE')) {
         scriptedExperience.forEach((node) => node.options = node.options.filter((option) => !option.value.startsWith('!DEFINE')))
         return 'define' + query.split(" ")[1]
+    }
+    if (query.startsWith('!PLAYERNAME')) {
+        const name = window.localStorage.getItem(OUIJA_PLAYER_NAME)
+        if (name) return "ok" + name
+        return "whatsyourname"
     }
     if (query.startsWith('!NAME')) {
         if (questGoals.who > 0) {
@@ -1410,6 +1434,13 @@ const looksLikeNonsense = function(text) {
 }
 
 const augmentedResolveQueryWithSimpleChatbot = function(input) {
+    if (input.startsWith("my name is ") && input.length >= 4) {
+        window.localStorage.setItem(OUIJA_PLAYER_NAME, input.split(" ")[3])
+    }
+    if (previousOutput === "whatsyourname" && input.split(" ").length === 1) {
+        window.localStorage.setItem(OUIJA_PLAYER_NAME, input)
+        return resolveQueryWithSimpleChatbot('my name is ' + input)
+    }
     if (input === previousInput) {
         return resolveQueryWithSimpleChatbot('{clarification}')
     }
