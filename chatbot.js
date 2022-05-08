@@ -233,6 +233,16 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )love($| .*)/,
+        options: [
+            { value: 'loveishate' },
+            { value: 'loveisdeath' },
+            { value: 'loveispointless' },
+            { value: 'nolovehere' },
+            { value: 'ihatelove' },
+        ],
+    },
+    {
         trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
         options: [
             { value: 'dontgo' },
@@ -1127,15 +1137,26 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /(^|.* )so .*/, // "so it is true", "so are you single", etc. but not "so" or "thought so"
+        options: [
+            { value: 'gasp' },
+            { value: 'yes' },
+            { value: 'ahhyes' },
+            { value: 'indeed' },
+            { value: 'correct' },
+            { value: 'yougetit' },
+            { value: 'itisknown' },
+            { value: 'fact' },
+        ]
+    },
+    {
         /* Nonsequitur fallback when nothing else matches. Presumably the user made a statement not a question.
          * We might end up here after recursively resolving the query such that we always drop the first word,
          * until finally we end up here with empty string. */
         trigger: /^$/,
         options: [
-            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
-            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
-            { value: 'dontbeafraid', restrictedTo: [EVIL] },
-            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: 'dontbeafraid' },
+            { value: 'dontworry' },
             { value: 'repent' },
             { value: 'atone' },
             { value: 'noted' },
@@ -1151,8 +1172,6 @@ const scriptedExperience = [
             { value: 'putrid' },
             { value: 'intheory' },
             { value: 'unlikely' },
-            { value: 'gasp' },
-            { value: 'ahh' },
             { value: 'thatslovely' },
             { value: 'soundsgreat' },
             { value: 'fantastic' },
@@ -1163,6 +1182,16 @@ const scriptedExperience = [
             { value: 'idontthinkso' },
             { value: 'fabrication' },
             { value: 'agreed' },
+
+            { value: 'isthisagametoyou' },
+            { value: 'thisisnotagame' },
+            { value: 'whatdoyouwant' },
+            { value: 'whyareyouhere' },
+            { value: 'why' },
+            { value: 'how' },
+            { value: 'when' },
+            { value: 'explain' },
+            
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
