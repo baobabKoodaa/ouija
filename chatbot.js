@@ -1209,7 +1209,7 @@ const scriptedExperience = [
             { value: 'repent' },
             { value: 'atone' },
 
-            { value: '!PLAYERNAME', priority: 0.3 },
+            { value: '!PLAYERNAME', priority: 1 },
             
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
@@ -1268,7 +1268,10 @@ const resolveQueryWithSimpleChatbot = function(query) {
     if (query.startsWith('!PLAYERNAME')) {
         const name = window.localStorage.getItem(OUIJA_PLAYER_NAME)
         if (name) return "ok" + name
-        return "whatsyourname"
+        else {
+            previousOutputs.delete('!PLAYERNAME')
+            return "whatsyourname"
+        }
     }
     if (query.startsWith('!NAME')) {
         if (questGoals.who > 0) {
