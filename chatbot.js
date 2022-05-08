@@ -1209,7 +1209,7 @@ const scriptedExperience = [
             { value: 'repent' },
             { value: 'atone' },
 
-            { value: '!PLAYERNAME', priority: 1 },
+            { value: '!PLAYERNAME', priority: 0.3 },
             
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
