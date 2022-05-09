@@ -254,6 +254,17 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /^please.*)/,
+        options: [
+            { value: 'youpleaseme' },
+            { value: 'beg' },
+            { value: 'nochance' },
+            { value: 'nohope' },
+            { value: 'nope' },
+            { value: 'never' },
+        ],
+    },
+    {
         trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
         options: [
             { value: 'dontgo' },
@@ -369,10 +380,14 @@ const scriptedExperience = [
     {
         trigger: '{identityFudge}',
         options: [
+            { value: 'iamgod', restrictedTo: [EVIL], priority: 0.3 },
+            { value: 'iamdust' },
+            { value: 'iamlikeyou' },
             { value: 'iusedtobelikeyou' },
             { value: 'itakemanyforms' },
             { value: 'iammanythings' },
-            { value: 'iamgod', restrictedTo: [EVIL] },
+            { value: 'iamdeath' },
+            { value: 'iampain' },
         ],
         questGoals: {
             who: 0.49
@@ -400,6 +415,7 @@ const scriptedExperience = [
             { value: 'fool' },
             { value: 'harlot' },
             { value: 'idiot' },
+            { value: 'weakling' },
         ],
         questGoals: {
             rage: 1
@@ -697,7 +713,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you.*/, // Are you ghost, spirit, undead, alive
+        trigger: /^are you.*/, // Are you ghost, spirit, undead, alive, still alive
         options: [
             { value: '{identityFudge}' },
         ]
@@ -1209,6 +1225,8 @@ const scriptedExperience = [
 
             /* Nonsequiturs */
             { value: 'youwilldie' },
+            { value: 'youwillcry' },
+            { value: 'youshallweep' },
             { value: 'iwillhurtyou' },
             { value: 'isthisagametoyou' },
             { value: 'thisisnotagame' },
