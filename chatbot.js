@@ -1270,7 +1270,7 @@ const pickSuitableOption = function(options, currentSpirit) {
         // Node is fully resolved to actual output, save it to avoid repeating it in the future
         previousOutputs.add(v)
     }
-    if (v === '!PLAYERNAME') {
+    if (v.startsWith('!PLAYERNAME')) {
         // Special case: treat !PLAYERNAME like any fully resolved actual output.
         previousOutputs.add(v)
     }
