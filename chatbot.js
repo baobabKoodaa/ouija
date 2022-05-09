@@ -810,7 +810,13 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^what is my.*/, // name? birthdate? location? age?
+        trigger: /^what is my name$/,
+        options: [
+            { value: '!PLAYERNAME' },
+        ]
+    },
+    {
+        trigger: /^what is my.*/, // birthdate? location? age?
         options: [
             { value: 'youknow', priority: 1 },
             { value: 'whyaskme', priority: 1 },
@@ -1016,6 +1022,12 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^do you know (me|who i am|my name)$/,
+        options: [
+            { value: '!PLAYERNAME yes' },
+        ]
+    },
+    {
         trigger: /^do you( .*|$)/, // do you sleep? do you like me? do you kill people? do you have a favorite color?
         options: [
             { value: 'imust' },
@@ -1209,7 +1221,7 @@ const scriptedExperience = [
             { value: 'repent' },
             { value: 'atone' },
 
-            { value: '!PLAYERNAME', priority: 0.3 },
+            { value: '!PLAYERNAME ok', priority: 0.3 },
             
             
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
@@ -1265,13 +1277,17 @@ const resolveQueryWithSimpleChatbot = function(query) {
         scriptedExperience.forEach((node) => node.options = node.options.filter((option) => !option.value.startsWith('!DEFINE')))
         return 'define' + query.split(" ")[1]
     }
-    if (query.startsWith('!PLAYERNAME')) {
+    if (query.startsWith('!PLAYERNAME')) { // '!PLAYERNAME ok', '!PLAYERNAME yes', '!PLAYERNAME'
+        const prefix = query.split(' ').length > 1 ? query.split(' ')[1] : ''
         const name = window.localStorage.getItem(OUIJA_PLAYER_NAME)
-        if (name) return "ok" + name
-        else {
-            previousOutputs.delete('!PLAYERNAME')
+        if (name) return prefix + name
+        if (prefix) {
+            // Special case with the previousOutputs, to allow repeating !PLAYERNODE within the fallback resolver (this time "whatsyourname", next time answer with name, so it's not really repetition)
+            previousOutputs.delete(query)
             return "whatsyourname"
         }
+        // If we are here, the user asked "what is my name" and we don't know the name, so we resolve to path "what is my *" (e.g. whyaskme)
+        return resolveQueryWithSimpleChatbot('what is my abracadabra')
     }
     if (query.startsWith('!NAME')) {
         if (questGoals.who > 0) {
