@@ -254,7 +254,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^please.*)/,
+        trigger: /^please.*$/,
         options: [
             { value: 'youpleaseme' },
             { value: 'beg' },
@@ -313,6 +313,7 @@ const scriptedExperience = [
             { value: 'blacksmoke' },
             { value: 'iwont' },
             { value: 'helpyourself' },
+            { value: 'nothelping' },
             { value: 'notgoingto' },
             { value: 'nohope' },
             { value: 'toolate' },
