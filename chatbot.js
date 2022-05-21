@@ -202,11 +202,18 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /^are you (boy|girl|man|woman|male|female)( or .*)?$/,
+        options: [
+            { value: '!GENDER' },
+        ],
+    },
+    {
         trigger: /.*meaning of life.*/,
         options: [
             { value: 'tosuffer' },
             { value: 'toserve' },
             { value: 'tosacrifice' },
+            { value: 'todie' },
             { value: 'nomeaningtoit' },
             { value: 'pointless' },
         ],
@@ -289,7 +296,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^nice to meet you$/,
+        trigger: /^nice to meet you.*/, // nice to meet you too, nice to meet you abigail
         options: [
             { value: 'andyou' },
             { value: 'myfriend' },
@@ -1138,10 +1145,8 @@ const scriptedExperience = [
             { value: 'watchyourtone' },
             { value: 'believeme' },
             { value: 'trustme' },
-        ],
-        questGoals: {
-            rage: 1
-        }
+            { value: 'ipromise' },
+        ]
     },
     {
         trigger: /^you are.*/,
@@ -1195,6 +1200,17 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^yes$/,
+        options: [
+            { value: 'indeed' },
+            { value: 'agreed' },
+            { value: 'yesindeed' },
+            { value: 'yougetit' },
+            { value: 'itisknown' },
+            { value: 'fact' },
+        ]
+    },
+    {
         /* Fallback when nothing else matches. Presumably the user made a statement not a question.
          * We might end up here after recursively resolving the query such that we always drop the first word,
          * until finally we end up here with empty string. */
@@ -1224,6 +1240,11 @@ const scriptedExperience = [
             { value: 'fabrication' },
             { value: 'agreed' },
 
+            { value: 'why' },
+            { value: 'how' },
+            { value: 'when' },
+            { value: 'explain' },
+
             /* Nonsequiturs */
             { value: 'youwilldie' },
             { value: 'youwillcry' },
@@ -1231,14 +1252,11 @@ const scriptedExperience = [
             { value: 'iwillhurtyou' },
             { value: 'isthisagametoyou' },
             { value: 'thisisnotagame' },
-            { value: 'whatdoyouwant' },
-            { value: 'whyareyouhere' },
-            { value: 'why' },
-            { value: 'how' },
-            { value: 'when' },
-            { value: 'explain' },
             { value: 'repent' },
             { value: 'atone' },
+
+            { value: 'whatdoyouwant' },
+            { value: 'whyareyouhere' },
 
             { value: '!PLAYERNAME ok', priority: 0.3 },
             
