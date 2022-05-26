@@ -348,22 +348,6 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: '{introduction}',
-        options: [
-            { value: 'hellodear' },
-            { value: 'hellothere' },
-            { value: 'knockknock' },
-            { value: 'run', restrictedTo: [FRIENDLY]  },
-            { value: 'danger', restrictedTo: [FRIENDLY] }, 
-            { value: 'notsafe', restrictedTo: [FRIENDLY] },
-            // TODO 'imsorry' friendly
-            // TODO tormented: killme, icantsee, sohungry, socold, somuchpain, cantbreathe, helpme, pleasehelp
-            { value: 'hellofriend', restrictedTo: [EVIL] },
-            { value: 'iseeyou', restrictedTo: [EVIL] },
-            { value: 'finally', restrictedTo: [EVIL] },
-        ]
-    },
-    {
         trigger: '{return}',
         options: [
             { value: 'finally' },
@@ -377,6 +361,17 @@ const scriptedExperience = [
             { value: 'youleftmehanging' },
             { value: 'whydidyouleave' },
             { value: 'ivebeenwaiting' },
+
+            { value: 'hellodear' },
+            { value: 'hellothere' },
+            { value: 'run', restrictedTo: [FRIENDLY]  },
+            { value: 'danger', restrictedTo: [FRIENDLY] }, 
+            { value: 'notsafe', restrictedTo: [FRIENDLY] },
+            // TODO 'imsorry' friendly
+            //{ value: 'knockknock' },
+            // TODO tormented: killme, icantsee, sohungry, socold, somuchpain, cantbreathe, helpme, pleasehelp
+            { value: 'hellofriend', restrictedTo: [EVIL] },
+            { value: 'iseeyou', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -679,7 +674,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over).*/,
+        trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over)( .*|$)/,
         options: [
             { value: '!LOCATION' }
         ]
@@ -806,6 +801,7 @@ const scriptedExperience = [
             { value: 'youknowwhy' },
             { value: 'dontaskwhy' },
             { value: 'sin' },
+            { value: 'danger' },
             { value: 'outofgreed' },
             { value: 'formoney' },
             { value: 'forlove' },
@@ -821,6 +817,7 @@ const scriptedExperience = [
         trigger: /^what (form )?are you$/,
         options: [
             { value: 'human' },
+            { value: 'impresario' },
             { value: 'lostsoul', restrictedTo: [FRIENDLY] },
             { value: 'wanderer', restrictedTo: [FRIENDLY] },
             { value: 'demon', restrictedTo: [EVIL] },
@@ -1494,11 +1491,15 @@ const looksLikeNonsense = function(text) {
 }
 
 const augmentedResolveQueryWithSimpleChatbot = function(input) {
-    if (input.startsWith("my name is ") && input.length >= 4) {
-        window.localStorage.setItem(OUIJA_PLAYER_NAME, input.split(" ")[3])
+    if (input.match(/my name is .*/)) {
+        const removedPrefix = input.substring(input.indexOf(input.match(/my name is .*/)))
+        if (removedPrefix.length > "my name is ".length) {
+            window.localStorage.setItem(OUIJA_PLAYER_NAME, removedPrefix.split(" ")[3])
+            return resolveQueryWithSimpleChatbot(removedPrefix)
+        }
     }
-    if (previousOutput === "whatsyourname" && input.split(" ").length === 1) {
-        window.localStorage.setItem(OUIJA_PLAYER_NAME, input)
+    if (previousOutput === "whatsyourname" && input.split(" ").length >= 1) {
+        window.localStorage.setItem(OUIJA_PLAYER_NAME, input.split(" ")[0])
         return resolveQueryWithSimpleChatbot('my name is ' + input)
     }
     if (input === previousInput) {
