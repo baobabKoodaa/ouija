@@ -1,7 +1,9 @@
 addEventListener('fetch', event => {
-    const city = event.request.cf.city;
     const data = {
-      city: city,
+      city:  event.request.cf.city,
+      colo:  event.request.cf.colo,
+      country :  event.request.cf.country,
+      region :  event.request.cf.region,
     };
     const json = JSON.stringify(data, null, 2);
   
