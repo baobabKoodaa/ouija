@@ -258,6 +258,12 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /^(which|what) city.*/,
+        options: [
+            { value: '!CITY' },
+        ],
+    },
+    {
         trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore|dumb|dumbass)($| ).*/,
         options: [
             { value: '!INSULTED' },
@@ -682,19 +688,19 @@ const scriptedExperience = [
     {
         trigger: /^where is .*/, // where is home? where is darkness?
         options: [
-            { value: '!LOCATION' }
+            { value: '!CITY' }
         ]
     },
     {
         trigger: /^where (are you|in|.* (house|home)|exactly|specifically|do you live).*/, // where in {userCity}, where inside the house
         options: [
-            { value: '!LOCATION' }
+            { value: '!CITY' }
         ]
     },
     {
         trigger: /^where$/,
         options: [
-            { value: '!LOCATION' }
+            { value: '!CITY' }
             // { value: 'indarkness' },
             // { value: 'inthelight' },
         ]
@@ -716,7 +722,7 @@ const scriptedExperience = [
     {
         trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over)( .*|$)/,
         options: [
-            { value: '!LOCATION' }
+            { value: '!CITY' }
         ]
     },
     {
@@ -910,7 +916,7 @@ const scriptedExperience = [
     {
         trigger: /^what is your (location|position)$/, 
         options: [
-            { value: '!LOCATION' },
+            { value: '!CITY' },
         ]
     },
     {
@@ -1338,7 +1344,7 @@ const resolveQueryWithSimpleChatbot = function(query) {
     if (query.startsWith('!GENDER')) {
         return (currentSpirit.gender || 'male')
     }
-    if (query.startsWith('!LOCATION')) {
+    if (query.startsWith('!CITY')) {
         if (questGoals.where === 3) {
             questGoals.where -= 1
             return userCity || resolveQueryWithSimpleChatbot('{location0}')
