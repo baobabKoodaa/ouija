@@ -688,19 +688,19 @@ const scriptedExperience = [
     {
         trigger: /^where is .*/, // where is home? where is darkness?
         options: [
-            { value: '!CITY' }
+            { value: '!LOCATIONQUEST' }
         ]
     },
     {
         trigger: /^where (are you|in|.* (house|home)|exactly|specifically|do you live).*/, // where in {userCity}, where inside the house
         options: [
-            { value: '!CITY' }
+            { value: '!LOCATIONQUEST' }
         ]
     },
     {
         trigger: /^where$/,
         options: [
-            { value: '!CITY' }
+            { value: '!LOCATIONQUEST' }
             // { value: 'indarkness' },
             // { value: 'inthelight' },
         ]
@@ -722,7 +722,7 @@ const scriptedExperience = [
     {
         trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over)( .*|$)/,
         options: [
-            { value: '!CITY' }
+            { value: '!LOCATIONQUEST' }
         ]
     },
     {
@@ -916,7 +916,7 @@ const scriptedExperience = [
     {
         trigger: /^what is your (location|position)$/, 
         options: [
-            { value: '!CITY' },
+            { value: '!LOCATIONQUEST' },
         ]
     },
     {
@@ -1267,6 +1267,7 @@ const scriptedExperience = [
             { value: 'itisknown' },
             { value: 'blasphemy' },
             { value: 'heresy' },
+            { value: 'recant' },
             { value: 'lies' },
             { value: 'liar' },
             { value: 'donotlie' },
@@ -1345,6 +1346,9 @@ const resolveQueryWithSimpleChatbot = function(query) {
         return (currentSpirit.gender || 'male')
     }
     if (query.startsWith('!CITY')) {
+        return userCity || resolveQueryWithSimpleChatbot('{location0}')
+    }
+    if (query.startsWith('!LOCATIONQUEST')) {
         if (questGoals.where === 3) {
             questGoals.where -= 1
             return userCity || resolveQueryWithSimpleChatbot('{location0}')
