@@ -360,7 +360,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^my name is .*/,
+        trigger: /^my name is(?! not .*).*/, // matches "my name is mikko", doesnt match "my name is not mikko"
         options: [
             { value: 'nicetomeetyou' },
             { value: 'stupidname' },
@@ -1560,7 +1560,7 @@ const looksLikeNonsense = function(text) {
 }
 
 const augmentedResolveQueryWithSimpleChatbot = function(input) {
-    if (input.match(/my name is .*/)) {
+    if (input.match(/my name is(?! not .*).*/)) {
         const removedPrefix = input.substring(input.indexOf(input.match(/my name is .*/)))
         if (removedPrefix.length > "my name is ".length) {
             window.localStorage.setItem(OUIJA_PLAYER_NAME, removedPrefix.split(" ")[3])
