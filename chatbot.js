@@ -54,7 +54,7 @@ const EVIL = 'evil'
 
 const names = [
     { value: 'Abel', gender: 'man' },
-    { value: 'Abigail', gender: 'male' },
+    { value: 'Abigail', gender: 'genderfluid' },
     { value: 'Bartholomew', gender: 'male' },
     { value: 'Beelzebub', gender: 'male', restrictedTo: [EVIL] },
     { value: 'Bethel', gender: 'female' },
@@ -65,7 +65,7 @@ const names = [
     { value: 'Ethel', gender: 'female' },
     { value: 'Esmeralda', gender: 'lady' },
     { value: 'Esther', gender: 'woman' },
-    { value: 'Eunice', gender: 'male' },
+    { value: 'Eunice', gender: 'nonbinary' },
     { value: 'Ezekiel', gender: 'male' },
     { value: 'Gabriel', gender: 'male' },
     { value: 'Hosanna', gender: 'female' },
@@ -223,12 +223,13 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /.*meaning of life.*/,
+        trigger: /.*(meaning|purpose) of life.*/,
         options: [
             { value: 'tosuffer' },
             { value: 'toserve' },
             { value: 'tosacrifice' },
             { value: 'todie' },
+            { value: 'obedience' },
             { value: 'nomeaningtoit' },
             { value: 'pointless' },
         ],
@@ -315,6 +316,14 @@ const scriptedExperience = [
             { value: 'nope' },
             { value: 'never' },
             { value: 'sorryno', restrictedTo: [FRIENDLY] },
+        ],
+    },
+    {
+        trigger: /^(will you|do it)( .*|$)/,
+        options: [
+            { value: 'nope' },
+            { value: 'no' },
+            { value: 'nottoday' },
         ],
     },
     {
@@ -533,7 +542,6 @@ const scriptedExperience = [
     {
         trigger: /^like what$/,
         options: [
-            { value: 'likediebitch', priority: 100 },
             { value: '{clarification}' },
         ]
     },
@@ -557,12 +565,20 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
+        trigger: /^how old am i$/,
         options: [
-            { value: '!DEFINE people' },
-            { value: 'justyou' },
-            { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: '2', restrictedTo: [FRIENDLY] },
+            { value: 'young' },
+            { value: 'youknowbetter' },
+            { value: 'donttestme' },
+            { value: 'whyaskme' },
+            { value: 'freshmeat' },
+            { value: 'notveryold' },
+        ]
+    },
+    {
+        trigger: /^how old.*/, // how old are you? how old were you when you died
+        options: [
+            { value: '!RANDOM_COUNT' }
         ]
     },
     {
@@ -575,6 +591,15 @@ const scriptedExperience = [
             { value: 'ages' },
             { value: 'centuries' },
             { value: '!RANDOM_COUNT_YEARS' }
+        ]
+    },
+    {
+        trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
+        options: [
+            { value: '!DEFINE people' },
+            { value: 'justyou' },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: '2', restrictedTo: [FRIENDLY] },
         ]
     },
     {
@@ -599,16 +624,19 @@ const scriptedExperience = [
             { value: 'suicide' },
             { value: 'knife' },
             { value: 'betrayal' },
+            { value: 'treachery' },
             { value: 'famine' },
             { value: 'thirst' },
             { value: 'inquisition' },
             { value: 'witchhunt' },
             { value: 'fire' },
             { value: 'carnage' },
+            { value: 'suffocation' },
+            { value: 'exorcism' },
         ]
     },
     {
-        trigger: /^(what|how) .* (anger|angers|angry).*/, // what makes you angry? (make it easier to complete the anger quest)
+        trigger: /^(what|how) .* (anger|angers|angry|mad)( .*|$)/, // what makes you angry? (make it easier to complete the anger quest)
         options: [
             { value: 'vulgarity' },
             { value: 'badmanners' },
@@ -622,30 +650,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )(do|can) (i|we) .*/, // can i trap you? how can we trap you? how do i win?
+        trigger: /(^|.* )(do|can) (i|we) .*/, // can i trap you? how can we trap you? how do i win? TODO: fix "when do i die" so it doesnt land here
         options: [
             { value: 'cant', priority: 1},
             { value: 'blacksmoke' },
             { value: 'impossible' },
             { value: 'giveup' },
             { value: 'nohope' },
-        ]
-    },
-    {
-        trigger: /^how old am i$/,
-        options: [
-            { value: 'young' },
-            { value: 'youknowbetter' },
-            { value: 'donttestme' },
-            { value: 'whyaskme' },
-            { value: 'freshmeat' },
-            { value: 'notveryold' },
-        ]
-    },
-    {
-        trigger: /^how old.*/, // how old are you?
-        options: [
-            { value: '!RANDOM_COUNT' }
         ]
     },
     {
@@ -1117,9 +1128,9 @@ const scriptedExperience = [
         trigger: /^can you .*/, // can you hurt me? can you see me? can you die?
         options: [
             { value: 'ican' },
+            { value: 'icould' },
             { value: 'imust' },
             { value: 'iwill' },
-            { value: 'imomnipotent' },
             { value: 'ihavethatpower' },
             { value: 'wanttosee' },
         ]
@@ -1283,6 +1294,8 @@ const scriptedExperience = [
             { value: 'idontthinkso' },
             { value: 'fabrication' },
             { value: 'agreed' },
+            { value: 'whatever' },
+            { value: 'idontcare' },
 
             { value: 'why' },
             { value: 'how' },
