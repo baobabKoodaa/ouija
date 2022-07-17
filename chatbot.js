@@ -230,6 +230,8 @@ const scriptedExperience = [
             { value: 'tosacrifice' },
             { value: 'todie' },
             { value: 'obedience' },
+            { value: 'devotion' },
+            { value: 'salvation' },
             { value: 'nomeaningtoit' },
             { value: 'pointless' },
         ],
@@ -913,13 +915,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your age$/,
+        trigger: /^(what is your )?age$/,
         options: [
             { value: '!RANDOM_COUNT' }
         ]
     },
     {
-        trigger: /(^|.* )what is your name$/, // hello what is your name
+        trigger: /(^|.*what is your )name$/, // hello what is your name? what is your name? name?
         options: [
             { value: '!NAME' },
         ]
