@@ -53,48 +53,48 @@ const FRIENDLY = 'friendly'
 const EVIL = 'evil'
 
 const names = [
-    { value: 'Abel', gender: 'man' },
-    { value: 'Abigail', gender: 'genderfluid' },
-    { value: 'Bartholomew', gender: 'male' },
-    { value: 'Beelzebub', gender: 'male', restrictedTo: [EVIL] },
-    { value: 'Bethel', gender: 'female' },
-    { value: 'Caleb', gender: 'male' },
-    { value: 'Damien', gender: 'male', restrictedTo: [EVIL] },
-    { value: 'Deborah', gender: 'lady' },
-    { value: 'Earendel', gender: 'male' },
-    { value: 'Ethel', gender: 'female' },
-    { value: 'Esmeralda', gender: 'lady' },
-    { value: 'Esther', gender: 'woman' },
-    { value: 'Eunice', gender: 'nonbinary' },
-    { value: 'Ezekiel', gender: 'male' },
-    { value: 'Gabriel', gender: 'male' },
-    { value: 'Hosanna', gender: 'female' },
-    { value: 'Ishmael', gender: 'boy' },
-    { value: 'Jeremiah', gender: 'male' },
-    { value: 'Joanna', gender: 'girl' },
-    { value: 'Kezia', gender: 'girl' },
-    { value: 'Lazarus', gender: 'man' },
-    { value: 'Lucifer', gender: 'male', restrictedTo: [EVIL] },
-    { value: 'Magda', gender: 'woman' },
-    { value: 'Mahali', gender: 'man' },
-    { value: 'Micah', gender: 'boy' },
-    { value: 'Miriam', gender: 'woman' },
-    { value: 'Moriah', gender: 'boy' },
-    { value: 'Obadiah', gender: 'man' },
-    { value: 'Olaf', gender: 'man' },
-    { value: 'Oswald', gender: 'man' },
-    { value: 'Pazuzu', gender: 'male', restrictedTo: [EVIL] },
-    { value: 'Rafael', gender: 'man' },
-    { value: 'Rasputin', gender: 'man' },
-    { value: 'Ruth', gender: 'woman' },
-    { value: 'Sabina', gender: 'girl' },
-    { value: 'Sapphira', gender: 'girl' },
-    { value: 'Shamir', gender: 'man' },
-    { value: 'Sheba', gender: 'female' },
-    { value: 'Simeon', gender: 'boy' },
-    { value: 'Tabatha', gender: 'woman' },
-    { value: 'Uri', gender: 'man' },
-    { value: 'Zozo', gender: 'male', restrictedTo: [EVIL] },
+    { value: 'Abel',        gender: 'man',          restrictedTo: [FRIENDLY] },
+    { value: 'Abigail',     gender: 'genderfluid',  restrictedTo: [FRIENDLY] },
+    { value: 'Bethel',      gender: 'female',       restrictedTo: [FRIENDLY] },
+    { value: 'Caleb',       gender: 'male',         restrictedTo: [FRIENDLY] },
+    { value: 'Deborah',     gender: 'lady',         restrictedTo: [FRIENDLY] },
+    { value: 'Earendel',    gender: 'male',         restrictedTo: [FRIENDLY] },
+    { value: 'Esther',      gender: 'woman',        restrictedTo: [FRIENDLY] },
+    { value: 'Eunice',      gender: 'nonbinary',    restrictedTo: [FRIENDLY] },
+    { value: 'Gabriel',     gender: 'male',         restrictedTo: [FRIENDLY] },
+    { value: 'Jeremiah',    gender: 'male',         restrictedTo: [FRIENDLY] },
+    { value: 'Joanna',      gender: 'girl',         restrictedTo: [FRIENDLY] },
+    { value: 'Micah',       gender: 'boy',          restrictedTo: [FRIENDLY] },
+    { value: 'Oswald',      gender: 'man',          restrictedTo: [FRIENDLY] },
+    { value: 'Rafael',      gender: 'man',          restrictedTo: [FRIENDLY] },
+    { value: 'Sapphira',    gender: 'girl',         restrictedTo: [FRIENDLY] },
+    { value: 'Simeon',      gender: 'boy',          restrictedTo: [FRIENDLY] },
+    { value: 'Uri',         gender: 'man',          restrictedTo: [FRIENDLY] },
+    { value: 'Bartholomew', gender: 'male',         restrictedTo: [EVIL] },
+    { value: 'Beelzebub',   gender: 'male',         restrictedTo: [EVIL] },
+    { value: 'Damien',      gender: 'male',         restrictedTo: [EVIL] },
+    { value: 'Ethel',       gender: 'female',       restrictedTo: [EVIL] },
+    { value: 'Esmeralda',   gender: 'lady',         restrictedTo: [EVIL] },
+    { value: 'Ezekiel',     gender: 'male',         restrictedTo: [EVIL] },
+    { value: 'Hosanna',     gender: 'female',       restrictedTo: [EVIL] },
+    { value: 'Ishmael',     gender: 'boy',          restrictedTo: [EVIL] },
+    { value: 'Kezia',       gender: 'girl',         restrictedTo: [EVIL] },
+    { value: 'Lazarus',     gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Lucifer',     gender: 'male',         restrictedTo: [EVIL] },
+    { value: 'Magda',       gender: 'woman',        restrictedTo: [EVIL] },
+    { value: 'Mahali',      gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Miriam',      gender: 'woman',        restrictedTo: [EVIL] },
+    { value: 'Moriah',      gender: 'boy',          restrictedTo: [EVIL] },
+    { value: 'Obadiah',     gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Olaf',        gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Pazuzu',      gender: 'male',         restrictedTo: [EVIL] },
+    { value: 'Rasputin',    gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Ruth',        gender: 'woman',        restrictedTo: [EVIL] },
+    { value: 'Sabina',      gender: 'girl',         restrictedTo: [EVIL] },
+    { value: 'Shamir',      gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Sheba',       gender: 'female',       restrictedTo: [EVIL] },
+    { value: 'Tabatha',     gender: 'woman',        restrictedTo: [EVIL] },
+    { value: 'Zozo',        gender: 'male',         restrictedTo: [EVIL] },
 ]
 
 /**************************************** OPENAI stuff begins ********************************************/
@@ -225,13 +225,13 @@ const scriptedExperience = [
     {
         trigger: /.*(meaning|purpose) of life.*/,
         options: [
-            { value: 'tosuffer' },
+            { value: 'tosuffer', restrictedTo: [EVIL] },
             { value: 'toserve' },
-            { value: 'tosacrifice' },
-            { value: 'todie' },
+            { value: 'tosacrifice', restrictedTo: [EVIL] },
+            { value: 'todie', restrictedTo: [EVIL] },
             { value: 'obedience' },
-            { value: 'devotion' },
-            { value: 'salvation' },
+            { value: 'devotion', restrictedTo: [FRIENDLY] },
+            { value: 'salvation', restrictedTo: [FRIENDLY] },
             { value: 'nomeaningtoit' },
             { value: 'pointless' },
         ],
@@ -285,7 +285,7 @@ const scriptedExperience = [
             { value: 'donttestme' },
             { value: 'askgoogle' },
             { value: 'ihatemath' },
-            { value: '666' },
+            { value: '666', restrictedTo: [EVIL] },
             { value: '42' },
             { value: '13' },
         ],
@@ -293,19 +293,25 @@ const scriptedExperience = [
     {
         trigger: /(^|.* )(rain|weather)($| .*)/,
         options: [
-            { value: 'icecold' },
-            { value: 'rainingtears' },
-            { value: 'rainingblood' },
+            { value: 'rainingtears', restrictedTo: [EVIL] },
+            { value: 'rainingblood', restrictedTo: [EVIL] },
+            { value: 'rainingfire', restrictedTo: [EVIL] },
+            { value: 'freezing', restrictedTo: [FRIENDLY] },
+            { value: 'stormiscoming', restrictedTo: [FRIENDLY] },
         ],
     },
     {
         trigger: /(^|.* )love($| .*)/,
         options: [
-            { value: 'loveishate' },
-            { value: 'loveisdeath' },
-            { value: 'loveispointless' },
-            { value: 'nolovehere' },
-            { value: 'ihatelove' },
+            { value: 'loveishate', restrictedTo: [EVIL] },
+            { value: 'loveisdeath', restrictedTo: [EVIL] },
+            { value: 'loveispointless', restrictedTo: [EVIL] },
+            { value: 'nolovehere', restrictedTo: [EVIL] },
+            { value: 'ihatelove', restrictedTo: [EVIL] },
+            { value: 'loveyourself', restrictedTo: [FRIENDLY] },
+            { value: 'findlove', restrictedTo: [FRIENDLY] },
+            { value: 'loveistheanswer', restrictedTo: [FRIENDLY] },
+            { value: 'thatslove', restrictedTo: [FRIENDLY] },
         ],
     },
     {
@@ -331,54 +337,59 @@ const scriptedExperience = [
     {
         trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
         options: [
-            { value: 'dontgo' },
-            { value: 'iwontgo' },
-            { value: 'istay' },
-            { value: 'notgoing' },
-            { value: 'illbehere' },
-            { value: 'seeyouinyourdreams' },
-            { value: 'illbeinyournightmares' },
-            { value: 'illcomebackatnight' },
-            { value: 'ifollowyouhome' },
+            { value: 'dontgo', restrictedTo: [FRIENDLY] },
+            { value: 'iwontgo', restrictedTo: [FRIENDLY] },
+            { value: 'istay', restrictedTo: [FRIENDLY] },
+            { value: 'notgoing', restrictedTo: [FRIENDLY] },
+            { value: 'illbehere', restrictedTo: [FRIENDLY] },
+            { value: 'seeyouinyourdreams', restrictedTo: [EVIL] },
+            { value: 'illbeinyournightmares', restrictedTo: [EVIL] },
+            { value: 'illcomebackatnight', restrictedTo: [EVIL] },
+            { value: 'ifollowyouhome', restrictedTo: [EVIL] },
         ]
     },
     {
         trigger: /.*sorry.*/,
         options: [
-            { value: 'youbetterbe' },
-            { value: 'idontforgive' },
-            { value: 'unforgivable' },
-            { value: 'notforgiven' },
-            { value: 'youwillpay' },
+            { value: 'youbetterbe', restrictedTo: [EVIL] },
+            { value: 'idontforgive', restrictedTo: [EVIL] },
+            { value: 'unforgivable', restrictedTo: [EVIL] },
+            { value: 'notforgiven', restrictedTo: [EVIL] },
+            { value: 'youwillpay', restrictedTo: [EVIL] },
+            { value: 'itsok', restrictedTo: [FRIENDLY] },
+            { value: 'itsfine', restrictedTo: [FRIENDLY] },
+            { value: 'forgiven', restrictedTo: [FRIENDLY] },
+            { value: 'acknowledged', restrictedTo: [FRIENDLY] },
+            { value: 'noted', restrictedTo: [FRIENDLY] },
         ],
     },
     {
         trigger: /^nice to meet you.*/, // nice to meet you too, nice to meet you abigail
         options: [
-            { value: 'andyou' },
-            { value: 'myfriend' },
-            { value: 'youtoo' },
-            { value: 'niceforme' },
+            { value: 'andyou', restrictedTo: [FRIENDLY] },
+            { value: 'youtoo', restrictedTo: [FRIENDLY] },
+            { value: 'myfriend', restrictedTo: [EVIL] },
+            { value: 'niceforme', restrictedTo: [EVIL] },
         ]
     },
     {
         trigger: /^my name is(?! not .*).*/, // matches "my name is mikko", doesnt match "my name is not mikko"
         options: [
             { value: 'nicetomeetyou' },
-            { value: 'stupidname' },
-            { value: 'dumbname' },
-            { value: 'nicename' },
-            { value: 'fancyname' },
+            { value: 'stupidname', restrictedTo: [EVIL] },
+            { value: 'dumbname', restrictedTo: [EVIL] },
+            { value: 'nicename', restrictedTo: [FRIENDLY] },
+            { value: 'fancyname', restrictedTo: [FRIENDLY] },
         ]
     },
     {
         trigger: /^(help|help me)$/,
         options: [
             { value: 'blacksmoke' },
-            { value: 'iwont' },
-            { value: 'helpyourself' },
-            { value: 'nothelping' },
-            { value: 'notgoingto' },
+            { value: 'iwont', restrictedTo: [EVIL] },
+            { value: 'helpyourself', restrictedTo: [EVIL] },
+            { value: 'nothelping', restrictedTo: [EVIL] },
+            { value: 'notgoingto', restrictedTo: [EVIL] },
             { value: 'nohope' },
             { value: 'toolate' },
         ]
@@ -419,9 +430,9 @@ const scriptedExperience = [
             { value: 'whydidyouleave' },
             { value: 'ivebeenwaiting' },
 
-            { value: 'hellodear' },
-            { value: 'hellothere' },
-            { value: 'run', restrictedTo: [FRIENDLY]  },
+            { value: 'hellodear', restrictedTo: [FRIENDLY] },
+            { value: 'hellothere', restrictedTo: [FRIENDLY] },
+            { value: 'run', restrictedTo: [FRIENDLY] },
             { value: 'danger', restrictedTo: [FRIENDLY] }, 
             { value: 'notsafe', restrictedTo: [FRIENDLY] },
             // TODO 'imsorry' friendly
@@ -446,8 +457,8 @@ const scriptedExperience = [
             { value: 'iusedtobelikeyou' },
             { value: 'itakemanyforms' },
             { value: 'iammanythings' },
-            { value: 'iamdeath' },
-            { value: 'iampain' },
+            { value: 'iamdeath', restrictedTo: [EVIL] },
+            { value: 'iampain', restrictedTo: [EVIL] },
         ],
         questGoals: {
             who: 0.49
@@ -469,13 +480,11 @@ const scriptedExperience = [
     {
         trigger: '{insult}',
         options: [
-            { value: 'bitch', priority: 0.5 },
-            { value: 'imbecil', priority: 0.5 },
-            { value: 'die' },
-            { value: 'fool' },
-            { value: 'harlot' },
+            { value: 'bitch', restrictedTo: [EVIL] },
+            { value: 'imbecil', restrictedTo: [EVIL] },
+            { value: 'fool', restrictedTo: [FRIENDLY] },
+            { value: 'weakling', restrictedTo: [FRIENDLY] },
             { value: 'idiot' },
-            { value: 'weakling' },
         ],
         questGoals: {
             rage: 1
@@ -573,7 +582,7 @@ const scriptedExperience = [
             { value: 'youknowbetter' },
             { value: 'donttestme' },
             { value: 'whyaskme' },
-            { value: 'freshmeat' },
+            { value: 'freshmeat', restrictedTo: [EVIL] },
             { value: 'notveryold' },
         ]
     },
@@ -635,6 +644,7 @@ const scriptedExperience = [
             { value: 'carnage' },
             { value: 'suffocation' },
             { value: 'exorcism' },
+            { value: 'purge' },
         ]
     },
     {
@@ -657,7 +667,7 @@ const scriptedExperience = [
             { value: 'cant', priority: 1},
             { value: 'blacksmoke' },
             { value: 'impossible' },
-            { value: 'giveup' },
+            { value: 'giveup', restrictedTo: [EVIL] },
             { value: 'nohope' },
         ]
     },
@@ -845,12 +855,12 @@ const scriptedExperience = [
         options: [
             { value: 'lord' },
             { value: 'angel' },
-            { value: 'ghost' },
-            { value: 'spirit' },
             { value: 'master' },
+            { value: 'father' },
             { value: 'demon' },
             { value: 'savior' },
             { value: 'messiah' },
+            { value: 'impresario' },
         ]
     },
     {
@@ -908,7 +918,7 @@ const scriptedExperience = [
     {
         trigger: /^what do.* mean.*/, // what does that mean? what does it mean? what do you mean?
         options: [
-            { value: 'iamnotmean', priority: 1.0 },
+            { value: 'iamnotmean', priority: 0.3 },
             { value: 'yourchoice' },
             { value: 'interpret' },
             { value: '{clarification}' },
@@ -951,17 +961,20 @@ const scriptedExperience = [
             { value: 'nofavorites' },
             { value: 'whateveryoulike' },
             { value: 'youchoose' },
-            { value: 'ihatethemall' },
             { value: 'notmything' },
         ]
     },
     {
-        trigger: /^what is your .*/, // goal? motivation? folly?
+        trigger: /^what is your .*/, // goal? motivation? folly? secret?
         options: [
             { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: 'darkness' },
-            { value: 'punishment' },
+            { value: 'darkness', restrictedTo: [EVIL] },
+            { value: 'punishment', restrictedTo: [EVIL] },
+            { value: 'peace', restrictedTo: [FRIENDLY] },
+            { value: 'balance', restrictedTo: [FRIENDLY] },
+            { value: 'compassion', restrictedTo: [FRIENDLY] },
+            { value: 'love', restrictedTo: [FRIENDLY] },
         ]
     },
     {
@@ -979,7 +992,6 @@ const scriptedExperience = [
             { value: 'nightmare' },
             { value: 'feverdream' },
             { value: 'nirvana' },
-            { value: 'dontworry', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -1018,7 +1030,7 @@ const scriptedExperience = [
     {
         trigger: /^what should (i|we|you).*/,
         options: [
-            { value: 'giveup' },
+            { value: 'giveup', restrictedTo: [EVIL] },
             { value: 'blacksmoke' },
             { value: 'surrender' },
         ]
@@ -1038,29 +1050,28 @@ const scriptedExperience = [
     {
         trigger: /^what time is it$/,
         options: [
-            { value: 'timetodie' },
-            { value: 'timetostop' },
-            { value: 'timetorun' },
-            { value: 'timetoleave' },
+            { value: 'timetodie', restrictedTo: [EVIL] },
+            { value: 'timetoyield', restrictedTo: [EVIL] },
+            { value: 'timetostop', restrictedTo: [FRIENDLY] },
+            { value: 'timetorun', restrictedTo: [FRIENDLY] },
+            { value: 'timetoleave', restrictedTo: [FRIENDLY] },
         ]
     },
     {
         trigger: /^what (day|month|year) is it( today)?$/,
         options: [
             { value: 'nocalendar' },
-            { value: 'yourlastone' },
-            { value: 'thefinalone' },
+            { value: 'yourlastone', restrictedTo: [EVIL] },
+            { value: 'thefinalone', restrictedTo: [FRIENDLY] },
             { value: 'donttestme' },
         ]
     },
     {
         trigger: /^what.* kind($| .*)/,
         options: [
-            { value: 'badkind', priority: 1 },
-            { value: 'evilkind', priority: 1 },
-            { value: 'wrongkind', priority: 1 },
-            { value: 'miserable' },
-            { value: 'toxic' },
+            { value: 'badkind' },
+            { value: 'evilkind' },
+            { value: 'wrongkind' },
         ]
     },
     {
@@ -1133,8 +1144,7 @@ const scriptedExperience = [
             { value: 'icould' },
             { value: 'imust' },
             { value: 'iwill' },
-            { value: 'ihavethatpower' },
-            { value: 'wanttosee' },
+            { value: 'wanttosee', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -1150,10 +1160,11 @@ const scriptedExperience = [
         trigger: '{insultedSoft}',
         options: [
             { value: 'ohplease' },
+            { value: 'comeon' },
             { value: 'manners' },
-            { value: 'knowyourplace' },
             { value: 'leavemebe' },
             { value: 'dontplaywithme' },
+            { value: 'knowyourplace', restrictedTo: [EVIL] },
         ],
         questGoals: {
             rage: 1
@@ -1162,11 +1173,12 @@ const scriptedExperience = [
     {
         trigger: '{insultedHard}',
         options: [
-            { value: 'youwillpayforthis' },
-            { value: 'howdareyou' },
-            { value: 'die' },
-            { value: 'youshallperish' },
-            { value: 'youwilldie' },
+            { value: 'youwillpayforthis', restrictedTo: [FRIENDLY] },
+            { value: 'howdareyou', restrictedTo: [FRIENDLY] },
+            { value: 'unbelievable', restrictedTo: [FRIENDLY] },
+            { value: 'die', restrictedTo: [EVIL] },
+            { value: 'youshallperish', restrictedTo: [EVIL] },
+            { value: 'youwilldie', restrictedTo: [EVIL] },
         ],
         questGoals: {
             rage: 1
@@ -1202,6 +1214,8 @@ const scriptedExperience = [
             { value: 'believeme' },
             { value: 'trustme' },
             { value: 'ipromise' },
+            { value: 'itisknown' },
+            { value: 'fact' },
         ]
     },
     {
@@ -1216,12 +1230,12 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^i am not.*/, // im not afraid (as a response to "dontworry" or "dontbeafraid")
+        trigger: /^i am not.*/, // im not afraid, im not scared (as a response to "dontworry" or "dontbeafraid")
         options: [
-            { value: 'youshouldbe' },
-            { value: 'bigmistake' },
-            { value: 'iwillmakeyou' },
-            { value: 'youwillbe' },
+            { value: 'youshouldbe', restrictedTo: [FRIENDLY] },
+            { value: 'bigmistake', restrictedTo: [FRIENDLY] },
+            { value: 'iwillmakeyou', restrictedTo: [EVIL] },
+            { value: 'youwillbe', restrictedTo: [EVIL] },
         ],
         questGoals: {
             rage: 1
@@ -1250,9 +1264,6 @@ const scriptedExperience = [
             { value: 'ahhyes' },
             { value: 'indeed' },
             { value: 'correct' },
-            { value: 'yougetit' },
-            { value: 'itisknown' },
-            { value: 'fact' },
         ]
     },
     {
@@ -1261,9 +1272,6 @@ const scriptedExperience = [
             { value: 'indeed' },
             { value: 'agreed' },
             { value: 'yesindeed' },
-            { value: 'yougetit' },
-            { value: 'itisknown' },
-            { value: 'fact' },
         ]
     },
     {
@@ -1274,13 +1282,12 @@ const scriptedExperience = [
         options: [
 
             /* Plausible responses to a statement */
-            { value: 'dontbeafraid' },
-            { value: 'dontworry' },
+            { value: 'dontbeafraid', restrictedTo: [EVIL] },
+            { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'noted' },
-            { value: 'itisknown' },
-            { value: 'blasphemy' },
-            { value: 'heresy' },
-            { value: 'recant' },
+            { value: 'blasphemy', restrictedTo: [FRIENDLY] },
+            { value: 'heresy', restrictedTo: [FRIENDLY] },
+            { value: 'recant', restrictedTo: [FRIENDLY] },
             { value: 'lies' },
             { value: 'liar' },
             { value: 'donotlie' },
@@ -1296,8 +1303,8 @@ const scriptedExperience = [
             { value: 'idontthinkso' },
             { value: 'fabrication' },
             { value: 'agreed' },
-            { value: 'whatever' },
-            { value: 'idontcare' },
+            { value: 'whatever', restrictedTo: [EVIL] },
+            { value: 'idontcare', restrictedTo: [EVIL] },
 
             { value: 'why' },
             { value: 'how' },
@@ -1305,14 +1312,14 @@ const scriptedExperience = [
             { value: 'explain' },
 
             /* Nonsequiturs */
-            { value: 'youwilldie' },
-            { value: 'youwillcry' },
-            { value: 'youshallweep' },
-            { value: 'iwillhurtyou' },
-            { value: 'isthisagametoyou' },
-            { value: 'thisisnotagame' },
-            { value: 'repent' },
-            { value: 'atone' },
+            { value: 'youwilldie', restrictedTo: [EVIL] },
+            { value: 'youwillcry', restrictedTo: [EVIL] },
+            { value: 'youshallweep', restrictedTo: [EVIL] },
+            { value: 'iwillhurtyou', restrictedTo: [EVIL] },
+            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
+            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
+            { value: 'repent', restrictedTo: [FRIENDLY] },
+            { value: 'atone', restrictedTo: [FRIENDLY] },
 
             { value: 'whatdoyouwant' },
             { value: 'whyareyouhere' },
@@ -1518,7 +1525,7 @@ const SCRIPTED_TOOLTIPS = [
 ]
 
 const initializeSpirit = function() {
-    const spiritType = EVIL // Math.random() > 0.5 ? EVIL : FRIENDLY
+    const spiritType = Math.random() > 0.5 ? EVIL : FRIENDLY
     const name = pickSuitableOption(names, { type: spiritType })
     const gender = names.find((obj) => obj.value == name).gender
     return {

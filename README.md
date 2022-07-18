@@ -14,7 +14,7 @@ Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://o
 
 #### How does it work
 
-- Ouija Online is built as a static website with vanilla JS, HTML, and CSS. No frameworks, no libraries, no generators, no bundlers, no servers. You can fork this repo and simply open `index.html` in your browser.
+- Ouija Online is built as a static website with vanilla JS, HTML, and CSS. No frameworks, no libraries, no generators, no bundlers, no servers. You can fork this repo and simply open `index.html` in your browser. (There are a couple of Cloudflare Workers to provide geolocation and logging, but these are supplementary functions and the app works fine even without the workers.)
 - Control of the user's mouse is an illusion (settings have a toggle to reveal the trick visually).
 - Chatbot in GPT-3 mode constructs a prompt with verbal instructions, question-answer examples, previous question and answer, and current question. We request 5 completions for the prompt, and then heuristically choose one of them (considering length, repetition, dullness, etc.).
 - Chatbot in scripted mode utilizes state-of-the-art if-else technology.
@@ -25,7 +25,7 @@ Design and implementation: [Baobab Koodaa](https://github.com/baobabKoodaa)
 
 Assets and effects:
 
-- The particular Ouija board used here is the original Ouija board from 1889, created by Kennard Novelty Company. The JPG image of the board is from [Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), which states that it is in the public domain. Photographer is unknown.
+- The Ouija board image is a photograph of the original Ouija board from 1889, created by Kennard Novelty Company. According to [Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), this image is in the public domain. Photographer is unknown.
 - Planchette PNG image is from [KindPNG](https://www.kindpng.com/imgv/hToiomo_transparent-planchette-png-ouija-board-planchette-png-png/), which provide permission for use in "non-commercial or personal projects". Author is unknown.
 - Smoke effect used in tooltip is adapted from work by [chokcoco](https://segmentfault.com/a/1190000041189786/en). I modified the effect heavily in order to get smoother transitions for dissipation and hover. Those transitions now animate the Perlin turbulence filter by using SVG animate (not CSS!) in addition to some CSS transitions.
 - Text glitch effect used in spirit message was popularized by Tiktok and implementation is adapted from [AmazingCSS](https://amazingcss.com/glitch-text-effect-like-tiktok/).
