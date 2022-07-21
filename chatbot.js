@@ -736,8 +736,6 @@ const scriptedExperience = [
         trigger: /^where$/,
         options: [
             { value: '!LOCATIONQUEST' }
-            // { value: 'indarkness' },
-            // { value: 'inthelight' },
         ]
     },
     {
@@ -747,11 +745,15 @@ const scriptedExperience = [
             { value: 'inthelight' },
             { value: 'home' },
             { value: 'house' },
-            //{ value: 'tavern' },
-            //{ value: 'cabin' },
-            //{ value: 'forest' },
-            //{ value: 'desert' },
-            //{ value: 'swamp' },
+        ]
+    },
+    {
+        trigger: /^are you going to .*/, // are you going to hurt me
+        options: [
+            { value: 'youwillsee' },
+            { value: 'nottoday' },
+            { value: 'yes' },
+            { value: 'dontworry', restrictedTo: [EVIL] },
         ]
     },
     {
