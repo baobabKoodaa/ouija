@@ -266,7 +266,6 @@ const spiritGuidanceToOffset = function (x, y, diffX, diffY, goalX, goalY, dist)
     if (Math.random() > SPIRIT_STOCHASTIC_STR) {
         return
     }
-    // TODO kokeile vaihtoehtosta kiihdytysta missa on vaan 1 paatos et kiihdytetaanko/hidastetaanko MAALIN SUUNTAISESTI (seka x etta y akseleilla) 
     if (diffX != 0 && Math.sign(goalX - x) == Math.sign(diffX)) { // X axis move is in preferable direction
         if (dist > 5) { // reduce jittery accels on top of goal
             offsetX += diffX * SPIRIT_ACCEL_STR * 1.3 * 100.0 / planchetteWidth // accelerate
@@ -815,8 +814,10 @@ const toggleSpeedMode = function () {
     const slider = document.getElementById('speedModeSliderSlider')
     if (speedMode) {
         slider.classList.add(['checked'])
+        localStorage.setItem('ouija-speedmode', true)
     } else {
         slider.classList.remove(['checked'])
+        localStorage.removeItem('ouija-speedmode')
     }
     if (speedMode && remainingGoals.length > 0) {
         turn = TURN_USER
@@ -1169,6 +1170,11 @@ achievementsArray.forEach((achievement) => {
         createAchievementIcon(achievement)
     }
 })
+
+if (window.localStorage.getItem(`ouija-speedmode`)) {
+    console.log(typeof window.localStorage.getItem(`ouija-speedmode`))
+    toggleSpeedMode()
+}
 
 if (reduceAnimations) {
     document.getElementById('board').style.animationName = 'no-animation'
