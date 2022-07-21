@@ -315,6 +315,12 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/, // please tell me your real name demon
+        options: [
+            { value: '!NAME' },
+        ]
+    },
+    {
         trigger: /^please.*$/,
         options: [
             { value: 'youpleaseme' },
@@ -370,6 +376,12 @@ const scriptedExperience = [
             { value: 'youtoo', restrictedTo: [FRIENDLY] },
             { value: 'myfriend', restrictedTo: [EVIL] },
             { value: 'niceforme', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^(what.*|tell me) my name( .*|$)/, // what is my name? what do you think my name is? tell me my name
+        options: [
+            { value: '!PLAYERNAME' },
         ]
     },
     {
@@ -898,12 +910,6 @@ const scriptedExperience = [
         questGoals: {
             who: 1
         }
-    },
-    {
-        trigger: /^what is my name$/,
-        options: [
-            { value: '!PLAYERNAME' },
-        ]
     },
     {
         trigger: /^what is my.*/, // birthdate? location? age?
@@ -1569,8 +1575,11 @@ const looksLikeNonsense = function(text) {
 }
 
 const augmentedResolveQueryWithSimpleChatbot = function(input) {
-    if (input.match(/my name is(?! not .*).*/)) {
+    if (input.match(/my name is (?! not .*).*/)) {
+        // matches: hello my name is mikko
+        // doesnt match: my name is not mikko, what do you think my name is
         const removedPrefix = input.substring(input.indexOf(input.match(/my name is .*/)))
+        console.log(input, removedPrefix)
         if (removedPrefix.length > "my name is ".length) {
             window.localStorage.setItem(OUIJA_PLAYER_NAME, removedPrefix.split(" ")[3])
             return resolveQueryWithSimpleChatbot(removedPrefix)
