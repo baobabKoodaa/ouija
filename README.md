@@ -10,11 +10,11 @@ Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://o
 
 - Despite existing only as a web page, the spirits have the ability to __move the player's mouse__ towards letters on the board.
 - Two different chatbots available: a __scripted experience__ is available for all, and for players who have OpenAI API keys, there is a more versatile __GPT-3 mode__.
-- The scripted experience has 2 achievements to unlock.
+- The scripted experience has 2 achievements to unlock and some special effects.
 
 #### How does it work
 
-- Ouija Online is built as a static website with vanilla JS, HTML, and CSS. No frameworks, no libraries, no generators, no bundlers, no servers. You can fork this repo and simply open `index.html` in your browser. (There are a couple of Cloudflare Workers to provide geolocation and logging, but these are supplementary functions and the app works fine even without the workers.)
+- Ouija Online is built as a static website with vanilla JS, HTML, and CSS. No frameworks, no libraries, no generators, no bundlers, no servers. You can fork this repo and simply open `index.html` in your browser. (There are a couple of Cloudflare Workers to provide geolocation and logging, but these are supplementary functions and the app works fine without the workers.)
 - Control of the user's mouse is an illusion (settings have a toggle to reveal the trick visually).
 - Chatbot in GPT-3 mode constructs a prompt with verbal instructions, question-answer examples, previous question and answer, and current question. We request 5 completions for the prompt, and then heuristically choose one of them (considering length, repetition, dullness, etc.).
 - Chatbot in scripted mode utilizes state-of-the-art if-else technology.
