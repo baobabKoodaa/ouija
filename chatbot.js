@@ -398,19 +398,19 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*not my name.*/, // thats not my name dummy
+        trigger: /.*(not my name|my name is not).*/, // thats not my name dummy, my name is not mikko
         options: [
             { value: 'yesitis' },
         ]
     },
     {
-        trigger: /^(what.*|tell me|say)?my (full )?name( .*|$)/, // what is my name? what do you think my name is? tell me my name? say my name? my name?
+        trigger: /^(what.*|tell me|say)?my (full )?name( is)?$/, // what is my name? what do you think my name is? tell me my name? say my name? my name? // shouldnt match "my name is mikko"
         options: [
             { value: '!PLAYERNAME' },
         ]
     },
     {
-        trigger: /^my name is(?! not .*).*/, // matches "my name is mikko", doesnt match "my name is not mikko"
+        trigger: /^my name is .*/,
         options: [
             { value: 'nicetomeetyou' },
             { value: 'stupidname', restrictedTo: [EVIL] },
@@ -1679,7 +1679,6 @@ const augmentedResolveQueryWithSimpleChatbot = function(input) {
         // matches: hello my name is mikko
         // doesnt match: my name is not mikko, what do you think my name is
         const removedPrefix = input.substring(input.indexOf(input.match(/my name is .*/)))
-        console.log(input, removedPrefix)
         if (removedPrefix.length > "my name is ".length) {
             window.localStorage.setItem(OUIJA_PLAYER_NAME, removedPrefix.split(" ")[3])
             return resolveQueryWithSimpleChatbot(removedPrefix)
