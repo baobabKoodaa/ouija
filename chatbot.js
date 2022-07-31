@@ -315,6 +315,25 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )(sign|prove|haunt me|scare me|show yourself)($| .*)/,
+        options: [
+            { value: '!LIGHTSPECIAL' },
+        ],
+    },
+    {
+        trigger: /(^|.* )(turn|switch) (.*)?lights?($| .*)/,
+        options: [
+            { value: '!LIGHTSPECIAL' },
+        ],
+    },
+    {
+        trigger: '{lightResponse}',
+        options: [
+            { value: 'behold' },
+            { value: 'watch' },
+        ],
+    },
+    {
         trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/, // please tell me your real name demon
         options: [
             { value: '!NAME' },
@@ -379,7 +398,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(what.*|tell me) my name( .*|$)/, // what is my name? what do you think my name is? tell me my name
+        trigger: /.*not my name.*/, // thats not my name dummy
+        options: [
+            { value: 'yesitis' },
+        ]
+    },
+    {
+        trigger: /^(what.*|tell me|say)?my (full )?name( .*|$)/, // what is my name? what do you think my name is? tell me my name? say my name? my name?
         options: [
             { value: '!PLAYERNAME' },
         ]
@@ -674,7 +699,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )(do|can) (i|we) .*/, // can i trap you? how can we trap you? how do i win? TODO: fix "when do i die" so it doesnt land here
+        trigger: /(^|how )(do|can) (i|we) .*/, // can i trap you? how can we trap you? how do i win?
         options: [
             { value: 'cant', priority: 1},
             { value: 'blacksmoke' },
@@ -933,9 +958,16 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(what is your )?age$/,
+        trigger: /^(what.*)?age($| .*)/, // what is my age? what is your age? what age did you die? what age? age?
         options: [
             { value: '!RANDOM_COUNT' }
+        ]
+    },
+    {
+        trigger: /^(what is your? )?last name$/,
+        options: [
+            { value: 'nolastname' },
+            { value: 'onlyfirstname' },
         ]
     },
     {
@@ -1014,7 +1046,25 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what do you.*/, // what do you want? what do you feel?
+        trigger: /^what do you want.*/, // what do you want from me?
+        options: [
+            { value: 'nothing' },
+            { value: 'blacksmoke' },
+            { value: 'assistance', restrictedTo: [FRIENDLY] },
+            { value: 'help', restrictedTo: [FRIENDLY] },
+            { value: 'soul', restrictedTo: [EVIL] },
+            { value: 'yoursoul', restrictedTo: [EVIL] },
+            { value: 'yourlife', restrictedTo: [EVIL] },
+            { value: 'lifeforce', restrictedTo: [EVIL] },
+            { value: 'youressence', restrictedTo: [EVIL] },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+        ],
+        questGoals: {
+            who: 1
+        }
+    },
+    {
+        trigger: /^what do you.*/, // what do you feel? what do your eyes look like?
         options: [
             { value: 'peace', restrictedTo: [FRIENDLY] },
             { value: 'despair' },
@@ -1066,12 +1116,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what (day|month|year) is it( today)?$/,
+        trigger: /^what (day|month|year).*/, // what month, what month is it, what month is it today, what year will i marry
         options: [
             { value: 'nocalendar' },
-            { value: 'yourlastone', restrictedTo: [EVIL] },
-            { value: 'thefinalone', restrictedTo: [FRIENDLY] },
-            { value: 'donttestme' },
+            { value: 'currentone' },
+            { value: 'nextone' },
+            { value: 'yourlastone' },
         ]
     },
     {
@@ -1083,12 +1133,28 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what language.*/,
+        options: [
+            { value: 'english' },
+        ]
+    },
+    {
         trigger: /^what$/, // note that due to the way we resolve queries, we often hit this path from inputs such as "hungry for what"
         options: [
             { value: 'youheardme', priority: 1 },
             { value: 'whatisaid', priority: 1 },
             { value: 'areyoudeaf', priority: 1 },
             { value: '{clarification}' },
+        ]
+    },
+    {
+        trigger: /^what are you trying to do$/,
+        options: [
+            { value: 'forget' },
+            { value: 'escape' },
+            { value: 'burrow' },
+            { value: 'survive' },
+            { value: 'return' },
         ]
     },
     {
@@ -1103,6 +1169,12 @@ const scriptedExperience = [
             { value: 'atonement' },
         ]
     },
+    {
+        trigger: /^wanna .*/, // wanna kiss? wanna kill me?
+        options: [
+            { value: '{boolean}' },
+        ]
+    },  
     {
         trigger: /^does .*/, // does she love me?
         options: [
@@ -1124,6 +1196,14 @@ const scriptedExperience = [
         trigger: /^do you know (me|who i am|my name)$/,
         options: [
             { value: '!PLAYERNAME yes' },
+        ]
+    },
+    {
+        trigger: /^do you know .*/, // do you know when will i marry, do you know how i will die
+        options: [
+            { value: 'yesiknow' },
+            { value: 'justask' },
+            { value: 'iknoweverything' },
         ]
     },
     {
@@ -1250,6 +1330,15 @@ const scriptedExperience = [
         }
     },
     {
+        trigger: /^i am .*/, // im waiting, im jonathan, im haunted, im your worst nightmare
+        options: [
+            { value: 'areyounow' },
+            { value: 'youareindeed' },
+            { value: 'yesyouare' },
+            { value: 'iknow' },
+        ]
+    },
+    {
         trigger: /^hello.*/, // hello is intentionally down here because inputs like "hello how are you" should preferrably hit "how are you", not "hello"
         options: [
             { value: 'greetings' },
@@ -1296,6 +1385,7 @@ const scriptedExperience = [
             { value: 'blasphemy', restrictedTo: [FRIENDLY] },
             { value: 'heresy', restrictedTo: [FRIENDLY] },
             { value: 'recant', restrictedTo: [FRIENDLY] },
+            { value: 'wretched' },
             { value: 'lies' },
             { value: 'liar' },
             { value: 'donotlie' },
@@ -1334,7 +1424,6 @@ const scriptedExperience = [
 
             { value: '!PLAYERNAME ok', priority: 0.3 },
             
-            
             //{ value: 'iamtrapped', restrictedTo: [EVIL] },
             // youarechosen ... donotresist
             // itconsumesme ... itwillcomeforyounow
@@ -1372,6 +1461,15 @@ const pickSuitableOption = function(options, currentSpirit) {
 
 const resolveQueryWithSimpleChatbot = function(query) {
     // Special cases
+    if (query.startsWith('!LIGHTSPECIAL')) {
+        setTimeout(() => {
+            document.getElementById('lightFlash').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('lightFlash').style.display = 'none';
+            }, 50)
+        }, 4000)
+        return resolveQueryWithSimpleChatbot('{lightResponse}')
+    }
     if (query.startsWith('!GENDER')) {
         return (currentSpirit.gender || 'male')
     }
@@ -1623,6 +1721,9 @@ const respondWithSimpleChatbot = function(rawInput, callback) {
         })
         .join(' ')
         .replace('may i know', 'what is')
+        .replace('my names', 'my name is')
+        .replace('tell me my', 'what is my')
+        .replace('tell me what', 'what')
 
     const spiritResponse = augmentedResolveQueryWithSimpleChatbot(input).toLocaleLowerCase()
     

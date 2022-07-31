@@ -88,6 +88,17 @@ h1 {
     transition: opacity 1.0s ease-in;
 }
 
+#lightFlash {
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100001;
+    display: none;
+}
+
 #settingsGearHoverboard {
     position: absolute;
     top: 0vw;

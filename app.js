@@ -1172,7 +1172,6 @@ achievementsArray.forEach((achievement) => {
 })
 
 if (window.localStorage.getItem(`ouija-speedmode`)) {
-    console.log(typeof window.localStorage.getItem(`ouija-speedmode`))
     toggleSpeedMode()
 }
 
