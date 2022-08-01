@@ -70,6 +70,7 @@ const names = [
     { value: 'Sapphira',    gender: 'girl',         restrictedTo: [FRIENDLY] },
     { value: 'Simeon',      gender: 'boy',          restrictedTo: [FRIENDLY] },
     { value: 'Uri',         gender: 'man',          restrictedTo: [FRIENDLY] },
+    { value: 'Annabelle',   gender: 'girl',         restrictedTo: [EVIL] },
     { value: 'Bartholomew', gender: 'male',         restrictedTo: [EVIL] },
     { value: 'Beelzebub',   gender: 'male',         restrictedTo: [EVIL] },
     { value: 'Damien',      gender: 'male',         restrictedTo: [EVIL] },
@@ -209,71 +210,108 @@ const respondWithOpenAI = function (userQuestion, callback) {
 
 /**************************************** OPENAI stuff ends ********************************************/
 
+let testNodeWaitingForActivation
+
 const scriptedExperience = [
     {
         trigger: /(^|.* )gender( .*|$)/,
+        testExpect: [
+            'what is your gender',
+            'what gender are you',
+            'gender'
+        ],
         options: [
             { value: '!GENDER' },
         ],
     },
     {
         trigger: /^are you (boy|girl|man|woman|male|female)( or .*)?$/,
+        testExpect: [
+            'are you a man',
+            'are you male or female',
+        ],
+        testExpectNot: [
+            'are you my woman',
+            'are you woman love'
+        ],
         options: [
             { value: '!GENDER' },
         ],
     },
     {
-        trigger: /.*(meaning|purpose) of life.*/,
+        trigger: /.*(meaning|purpose) (of|in) life.*/,
+        testExpect: [
+            'what is the meaning of life',
+            'purpose of life',
+            'purpose in life',
+        ],
         options: [
             { value: 'tosuffer', restrictedTo: [EVIL] },
-            { value: 'toserve' },
+            { value: 'toserve', restrictedTo: [EVIL] },
             { value: 'tosacrifice', restrictedTo: [EVIL] },
             { value: 'todie', restrictedTo: [EVIL] },
-            { value: 'obedience' },
             { value: 'devotion', restrictedTo: [FRIENDLY] },
             { value: 'salvation', restrictedTo: [FRIENDLY] },
+            { value: 'obedience' },
+            { value: 'ascension' },
+            { value: 'transcendence' },
             { value: 'nomeaningtoit' },
             { value: 'pointless' },
         ],
     },
     {
-        trigger: /^country$/,
+        trigger: /^(which |what )?country.*/,
+        testExpect: [
+            'which country are you from',
+            'what country',
+            'country',
+        ],
         options: [
             { value: '!COUNTRY' },
         ],
     },
     {
-        trigger: /^(which|what) country.*/,
-        options: [
-            { value: '!COUNTRY' },
+        trigger: /^(which |what )?(state|county|region).*/,
+        testExpect: [
+            'which state are you from',
+            'what region',
+            'county',
         ],
-    },
-    {
-        trigger: /^(state|county|region)$/,
-        options: [
-            { value: '!REGION' },
-        ],
-    },
-    {
-        trigger: /^(which|what) (state|county|region).*/,
         options: [
             { value: '!REGION' },
         ],
     },
     {
-        trigger: /^(which|what) city.*/,
+        trigger: /^(which |what )?city.*/,
+        testExpect: [
+            'which city are you from',
+            'what city',
+            'city',
+        ],
         options: [
             { value: '!CITY' },
         ],
     },
     {
         trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore|dumb|dumbass)($| ).*/,
+        testExpect: [
+            'fuck you',
+            'youre a bitch',
+            'liar',
+        ],
         options: [
             { value: '!INSULTED' },
         ]
     },
     {
         trigger: /^test(ing)?($| .*)/,
+        testExpect: [
+            'test',
+            'testing one two',
+        ],
+        testExpectNot: [
+            'testicles',
+        ],
         options: [
             { value: 'donttestme' },
             { value: 'notesting' },
@@ -281,6 +319,14 @@ const scriptedExperience = [
     },
     {
         trigger: /(^|.* )([0-9]*) (plus|minus|times) ([0-9]*)( .*|$)/,
+        testExpect: [
+            'what is 2 plus 2',
+            '4 times 5',
+        ],
+        testExpectNot: [
+            '666',
+            '0 times',
+        ],
         options: [
             { value: 'donttestme' },
             { value: 'askgoogle' },
@@ -292,6 +338,16 @@ const scriptedExperience = [
     },
     {
         trigger: /(^|.* )(rain|weather)($| .*)/,
+        testExpect: [
+            'will it rain tomorrow',
+            'what is the weather like',
+            'forecast weather',
+            'weather'
+        ],
+        testExpectNot: [
+            'wether',
+            'bahrain',
+        ],
         options: [
             { value: 'rainingtears', restrictedTo: [EVIL] },
             { value: 'rainingblood', restrictedTo: [EVIL] },
@@ -301,7 +357,13 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )love($| .*)/,
+        trigger: /(^|.* )lover?($| .*)/,
+        testExpect: [
+            'do you love me',
+            'will i ever find love',
+            'are you my lover',
+            'love'
+        ],
         options: [
             { value: 'loveishate', restrictedTo: [EVIL] },
             { value: 'loveisdeath', restrictedTo: [EVIL] },
@@ -316,31 +378,61 @@ const scriptedExperience = [
     },
     {
         trigger: /(^|.* )(sign|prove|haunt me|scare me|show yourself)($| .*)/,
+        testExpect: [
+            'give me a sign',
+            'prove you are real',
+            'show yourself'
+        ],
+        testExpectNot: [
+            'approve',
+        ],
         options: [
             { value: '!LIGHTSPECIAL' },
         ],
     },
     {
         trigger: /(^|.* )(turn|switch) (.*)?lights?($| .*)/,
+        testExpect: [
+            'turn on the light',
+            'turn off the lights',
+            'switch light bulb on'
+        ],
         options: [
             { value: '!LIGHTSPECIAL' },
         ],
     },
     {
         trigger: '{lightResponse}',
+        testExpect: [
+            'turn on the light',
+            'turn off the lights',
+            'switch light bulb on'
+        ],
         options: [
             { value: 'behold' },
             { value: 'watch' },
         ],
     },
     {
-        trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/, // please tell me your real name demon
+        trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/,
+        testExpect: [
+            'please tell me your real name demon',
+            'tell me your name',
+            'tell me you name',
+        ],
+        testExpectNot: [
+            'your name'
+        ],
         options: [
             { value: '!NAME' },
         ]
     },
     {
         trigger: /^please.*$/,
+        testExpect: [
+            'please help me',
+            'please',
+        ],
         options: [
             { value: 'youpleaseme' },
             { value: 'beg' },
@@ -353,6 +445,14 @@ const scriptedExperience = [
     },
     {
         trigger: /^(will you|do it)( .*|$)/,
+        testExpect: [
+            'will you',
+            'do it demon',
+        ],
+        testExpectNot: [
+            'will your power stop',
+            'do italy',
+        ],
         options: [
             { value: 'nope' },
             { value: 'no' },
@@ -361,6 +461,11 @@ const scriptedExperience = [
     },
     {
         trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
+        testExpect: [
+            'farewell',
+            'goodbye demon',
+            'lol bye',
+        ],
         options: [
             { value: 'dontgo', restrictedTo: [FRIENDLY] },
             { value: 'iwontgo', restrictedTo: [FRIENDLY] },
@@ -375,6 +480,11 @@ const scriptedExperience = [
     },
     {
         trigger: /.*sorry.*/,
+        testExpect: [
+            'sorry',
+            'sorry about that',
+            'oops sorry',
+        ],
         options: [
             { value: 'youbetterbe', restrictedTo: [EVIL] },
             { value: 'idontforgive', restrictedTo: [EVIL] },
@@ -389,7 +499,12 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^nice to meet you.*/, // nice to meet you too, nice to meet you abigail
+        trigger: /^nice to meet you.*/,
+        testExpect: [
+            'nice to meet you too',
+            'nice to meet you abigail',
+            'nice to meet you',
+        ],
         options: [
             { value: 'andyou', restrictedTo: [FRIENDLY] },
             { value: 'youtoo', restrictedTo: [FRIENDLY] },
@@ -398,19 +513,36 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*(not my name|my name is not).*/, // thats not my name dummy, my name is not mikko
+        trigger: /.*(not my name|my name is not).*/,
+        testExpect: [
+            'thats not my name dummy',
+            'my name is not mikko',
+        ],
         options: [
             { value: 'yesitis' },
         ]
     },
     {
-        trigger: /^(what.*|tell me|say)?my (full )?name( is)?$/, // what is my name? what do you think my name is? tell me my name? say my name? my name? // shouldnt match "my name is mikko"
+        trigger: /^(what.*|tell me|say)?my (full )?name( is)?$/,
+        testExpect: [
+            'what is my name',
+            'what do you think my name is',
+            'tell me my name',
+            'say my name',
+            'my name',
+        ],
+        testExpectNot: [
+            'my name is mikko'
+        ],
         options: [
             { value: '!PLAYERNAME' },
         ]
     },
     {
         trigger: /^my name is .*/,
+        testExpect: [
+            'my name is mikko'
+        ],
         options: [
             { value: 'nicetomeetyou' },
             { value: 'stupidname', restrictedTo: [EVIL] },
@@ -421,6 +553,10 @@ const scriptedExperience = [
     },
     {
         trigger: /^(help|help me)$/,
+        testExpect: [
+            'help',
+            'help me',
+        ],
         options: [
             { value: 'blacksmoke' },
             { value: 'iwont', restrictedTo: [EVIL] },
@@ -433,6 +569,10 @@ const scriptedExperience = [
     },
     {
         trigger: /^(are|is) (you|anyone|anybody) (there|here)$/,
+        testExpect: [
+            'is anyone there',
+            'are you here',
+        ],
         options: [
             { value: 'justme' },
             { value: 'manyofus' },
@@ -441,6 +581,9 @@ const scriptedExperience = [
     },
     {
         trigger: '{speakEnglish}',
+        testExpect: [
+            'sdfsdsdffdsf',
+        ],
         options: [
             { value: 'what' },
             { value: 'language' },
@@ -481,6 +624,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^finally what$/,
+        testExpect: [
+            'finally what',
+        ],
         options: [
             { value: 'youreback' },
         ]
@@ -583,18 +729,30 @@ const scriptedExperience = [
     },
     {
         trigger: /^(how come|explain)$/,
+        testExpect: [
+            'lol how come',
+            'explain',
+        ],
         options: [
             { value: '{clarification}' },
         ]
     },
     {
         trigger: /^like what$/,
+        testExpect: [
+            'like what',
+        ],
         options: [
             { value: '{clarification}' },
         ]
     },
     {
-        trigger: /.* (or|between) .*/, // are you demon or angel? for what me or you? who will win between superman and batman?
+        trigger: /.* (or|between) .*/,
+        testExpect: [
+            'are you demon or angel',
+            'for what me or you',
+            'who will win between superman and batman',
+        ],
         options: [
             { value: 'former' },
             { value: 'latter' },
@@ -604,7 +762,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^which.*/, // which room are you in? which one? which finger am i holding up?
+        trigger: /^which.*/,
+        testExpect: [
+            'which room are you in',
+            'which one',
+            'which finger am i holding up',
+        ],
         options: [
             { value: 'all' },
             { value: 'firstone' },
@@ -614,6 +777,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^how old am i$/,
+        testExpect: [
+            'how old am i',
+        ],
         options: [
             { value: 'young' },
             { value: 'youknowbetter' },
@@ -624,13 +790,23 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how old.*/, // how old are you? how old were you when you died
+        trigger: /^how old.*/,
+        testExpect: [
+            'how old are you',
+            'how old were you when you died',
+        ],
         options: [
             { value: '!RANDOM_COUNT' }
         ]
     },
     {
-        trigger: /^how long.*/, // how long ago did you die? how long have you been dead? how long since ... how long until ...
+        trigger: /^how long.*/, 
+        testExpect: [
+            'how long ago did you die',
+            'how long have you been dead',
+            'how long since you died',
+            'how long until apocalypse',
+        ],
         options: [
             { value: 'toolong', priority: 0.5 },
             { value: 'years' },
@@ -642,7 +818,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how many people.*/, // how many people have you killed? how many people are in this room?
+        trigger: /^how many people.*/,
+        testExpect: [
+            'how many people have you killed',
+            'how many people are in this room',
+        ],
         options: [
             { value: '!DEFINE people' },
             { value: 'justyou' },
@@ -651,7 +831,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how many.*/, // how many humans have you killed? how many of you are here? how many fingers am i holding up?
+        trigger: /^how many.*/,
+        testExpect: [
+            'how many humans have you killed',
+            'how many of you are here',
+            'how many fingers am i holding up',
+        ],
         options: [
             { value: 'notcounting' },
             { value: 'somany' },
@@ -662,7 +847,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(how.*( kill| die))|(what happened).*/, // how were you killed? how will i die? what happened to you?
+        trigger: /^(how.*( kill| die))|(what happened).*/,
+        testExpect: [
+            'how were you killed',
+            'how will i die',
+            'what happened to you',
+        ],
         options: [
             { value: 'murder' },
             { value: 'accident' },
@@ -685,7 +875,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(what|how) .* (anger|angers|angry|mad)( .*|$)/, // what makes you angry? (make it easier to complete the anger quest)
+        trigger: /^(what|how) .* (anger|angers|angry|mad)( .*|$)/, // make it easier to complete the anger quest
+        testExpect: [
+            'what makes you angry', 
+            'how do you get mad',
+            'what can i do to anger you',
+        ],
         options: [
             { value: 'vulgarity' },
             { value: 'badmanners' },
@@ -699,7 +894,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|how )(do|can) (i|we) .*/, // can i trap you? how can we trap you? how do i win?
+        trigger: /^((how )?can|how do) (i|we) .*/,
+        testExpect: [
+            'can i trap you', 
+            'how can we trap you',
+            'how do i win',
+        ],
         options: [
             { value: 'cant', priority: 1},
             { value: 'blacksmoke' },
@@ -709,7 +909,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )how are you.*/, // hello how are you
+        trigger: /(^|.* )how are you.*/, 
+        testExpect: [
+            'hello how are you', 
+            'how are you today',
+        ],
         options: [
             { value: 'hungry' },
             { value: 'thirsty' },
@@ -718,7 +922,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how.*/, // how does the world end? how do you hear my questions? how do you know where i am? how is this possible?
+        trigger: /^how.*/,
+        testExpect: [
+            'how does the world end', 
+            'how do you hear my questions',
+            'how do you know my name',
+            'how do you know where i am',
+        ],
         options: [
             { value: 'secret' },
             { value: 'supernatural' },
@@ -727,7 +937,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^when.*( did | where | was ).*/, // when did you die? when was washington born? when were you born (with were->where subsitution)
+        trigger: /^when.*( did | where | was ).*/,
+        testExpect: [
+            'when did you die', 
+            'when was washington born',
+            'when were you born',
+        ],
+        testExpectNot: [
+            'when will you die',
+        ],
         options: [
             { value: '!RANDOM_YEAR_PAST' },
             { value: 'longago' },
@@ -735,7 +953,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^when.*/, // when will I die? when is the world going to end?
+        trigger: /^when.*/,
+        testExpect: [
+            'when will i die', 
+            'when is the world going to end',
+        ],
         options: [
             { value: '!RANDOM_YEAR_FUTURE' },
             { value: 'never' },
@@ -746,25 +968,45 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^where is .*/, // where is home? where is darkness?
+        trigger: /^where is .*/,
+        testExpect: [
+            'where is home', 
+            'where is darkness',
+        ],
         options: [
             { value: '!LOCATIONQUEST' }
         ]
     },
     {
-        trigger: /^where (are you|in|.* (house|home)|exactly|specifically|do you live).*/, // where in {userCity}, where inside the house
+        trigger: /^where (are you|in|.* (house|home)|exactly|specifically|do you live).*/,
+        testExpect: [
+            'where in guatemala', 
+            'where inside the house',
+            'where are you',
+            'where are you exactly right now',
+            'where do you live'
+        ],
         options: [
             { value: '!LOCATIONQUEST' }
         ]
     },
     {
         trigger: /^where$/,
+        testExpect: [
+            'where', 
+            'hobla babla goes where',
+        ],
         options: [
             { value: '!LOCATIONQUEST' }
         ]
     },
     {
-        trigger: /^where.*/, // where were you killed? where will i die? where am i?
+        trigger: /^where.*/,
+        testExpect: [
+            'where were you killed', 
+            'where will i die',
+            'where am i',
+        ],
         options: [
             { value: 'indarkness' },
             { value: 'inthelight' },
@@ -773,7 +1015,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you going to .*/, // are you going to hurt me
+        trigger: /^are you going to .*/,
+        testExpect: [
+            'are you going to hurt me',
+        ],
         options: [
             { value: 'youwillsee' },
             { value: 'nottoday' },
@@ -782,19 +1027,29 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you (in|at|there|close|near|here|around|present|under|behind|above|over)( .*|$)/,
+        trigger: /^are you (in|inside|at|there|close|near|here|around|present|under|behind|above|over)( .*|$)/,
+        testExpect: [
+            'are you in the house',
+            'are you inside',
+        ],
         options: [
             { value: '!LOCATIONQUEST' }
         ]
     },
     {
         trigger: /^are you (old|young)$/,
+        testExpect: [
+            'are you old',
+        ],
         options: [
             { value: '!RANDOM_COUNT' }
         ]
     },
     {
         trigger: /^are you dead$/,
+        testExpect: [
+            'are you dead',
+        ],
         options: [
             { value: '!DEFINE dead' },
             { value: '{identityFudge}' },
@@ -802,6 +1057,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^are you human$/,
+        testExpect: [
+            'are you human',
+        ],
         options: [
             { value: '!DEFINE human' },
             { value: '{identityFudge}' },
@@ -809,6 +1067,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^are you real$/,
+        testExpect: [
+            'are you real',
+        ],
         options: [
             { value: '!DEFINE real' },
             { value: '{identityFudge}' },
@@ -816,6 +1077,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^are you bot$/,
+        testExpect: [
+            'are you bot',
+        ],
         options: [
             { value: 'donotinsultme' },
             { value: 'human' },
@@ -824,7 +1088,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you.*/, // Are you ghost, spirit, undead, alive, still alive
+        trigger: /^are you.*/,
+        testExpect: [
+            'are you a ghost',
+            'are you still alive',
+            'are you interested in food',
+        ],
+        testExpectNot: [
+            'are you here',
+        ],
         options: [
             { value: '{identityFudge}' },
         ]
@@ -842,12 +1114,20 @@ const scriptedExperience = [
     },
     {
         trigger: /^are .*/,
+        testExpect: [
+            'are ships sturdy',
+            'are we going to die',
+        ],
         options: [
             { value: '{boolean}' },
         ]
     },
     {
         trigger: /^should .*/,
+        testExpect: [
+            'should i go to the gym',
+            'should you be here',
+        ],
         options: [
             { value: '{boolean}' },
             { value: 'risky' },
@@ -860,18 +1140,34 @@ const scriptedExperience = [
     },
     {
         trigger: /^(am i|is|will)( |$).*/,
+        testExpect: [
+            'am i alive',
+            'is it true',
+            'will we ever find happiness',
+        ],
+        testExpectNot: [
+            'iskender kebab',
+            'william',
+        ],
         options: [
             { value: '{boolean}' },
         ]
     },
     {
         trigger: /^whose home$/,
+        testExpect: [
+            'whose home',
+        ],
         options: [
             { value: 'yours' },
         ]
     },
     {
         trigger: /^who is my.*/,
+        testExpect: [
+            'who is my father',
+            'who is my wife'
+        ],
         options: [
             { value: 'youknowwho' },
             { value: 'thedarkone' },
@@ -879,18 +1175,33 @@ const scriptedExperience = [
     },
     {
         trigger: /^who (are you|is it|is here|is there|is this|is talking|is speaking)$/,
+        testExpect: [
+            'who are you',
+            'who is this'
+        ],
+        testExpectNot: [
+            'who are you demon',
+        ],
         options: [
             { value: '!NAME' },
         ]
     },
     {
         trigger: /^who$/,
+        testExpect: [
+            'abigail who',
+            'who'
+        ],
         options: [
             { value: '{clarification}' },
         ]
     },
     {
         trigger: /^who .*/,
+        testExpect: [
+            'who murdered you',
+            'who are you demon'
+        ],
         options: [
             { value: 'lord' },
             { value: 'angel' },
@@ -904,6 +1215,10 @@ const scriptedExperience = [
     },
     {
         trigger: /^why.*/,
+        testExpect: [
+            'but why',
+            'why'
+        ],
         options: [
             { value: 'because', priority: 0.3 },
             { value: 'youknowwhy' },
@@ -923,6 +1238,11 @@ const scriptedExperience = [
     },
     {
         trigger: /^what (form )?are you$/,
+        testExpect: [
+            'what are you',
+            'what form are you',
+            'demon what are you',
+        ],
         options: [
             { value: 'human' },
             { value: 'impresario' },
@@ -939,7 +1259,11 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^what is my.*/, // birthdate? location? age?
+        trigger: /^what is my.*/,
+        testExpect: [
+            'what is my age',
+            'what is my location',
+        ],
         options: [
             { value: 'youknow', priority: 1 },
             { value: 'whyaskme', priority: 1 },
@@ -949,7 +1273,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what do.* mean.*/, // what does that mean? what does it mean? what do you mean?
+        trigger: /^what do.* mean.*/,
+        testExpect: [
+            'what does that mean',
+            'what does it mean',
+            'what do you mean'
+        ],
         options: [
             { value: 'iamnotmean', priority: 0.3 },
             { value: 'yourchoice' },
@@ -958,32 +1287,61 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(what.*)?age($| .*)/, // what is my age? what is your age? what age did you die? what age? age?
+        trigger: /^(what.* )?age($| .*)/,
+        testExpect: [
+            'what is your age',
+            'what age did you die',
+            'what age',
+            'age',
+        ],
+        testExpectNot: [
+            'what language do you speak',
+        ],
         options: [
             { value: '!RANDOM_COUNT' }
         ]
     },
     {
         trigger: /^(what is your? )?last name$/,
+        testExpect: [
+            'what is your last name',
+            'what is you last name',
+            'last name',
+        ],
+        testExpectNot: [
+            'last name please',
+        ],
         options: [
             { value: 'nolastname' },
             { value: 'onlyfirstname' },
         ]
     },
     {
-        trigger: /(^|.*what is your )name$/, // hello what is your name? what is your name? name?
+        trigger: /(^|.*what is your )name$/,
+        testExpect: [
+            'hello what is your name',
+            'what is your name',
+            'name',
+        ],
         options: [
             { value: '!NAME' },
         ]
     },
     {
-        trigger: /^what is your (location|position)$/, 
+        trigger: /^what is your (location|position)$/,
+        testExpect: [
+            'what is your location',
+        ],
         options: [
             { value: '!LOCATIONQUEST' },
         ]
     },
     {
-        trigger: /^what .*colou?r.*/, // what is your favorite color? what color are my shoes?
+        trigger: /^what .*colou?r.*/,
+        testExpect: [
+            'what is your favorite color',
+            'what color are my shoes',
+        ],
         options: [
             { value: 'crimsonred' },
             { value: 'bloodred' },
@@ -996,7 +1354,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your favorite .*/, // what is your favorite ice cream? favorite tv show? favorite food?
+        trigger: /^what is your favorite .*/,
+        testExpect: [
+            'what is your favorite food',
+            'what is your favorite tv show',
+        ],
         options: [
             { value: 'nofavorites' },
             { value: 'whateveryoulike' },
@@ -1005,7 +1367,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your .*/, // goal? motivation? folly? secret?
+        trigger: /^what is your .*/,
+        testExpect: [
+            'what is your goal',
+            'what is your secret',
+            'what is your weakness',
+        ],
         options: [
             { value: 'youwillsee', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
@@ -1018,7 +1385,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is up$/, // whats up (grammar-corrected), pretend to misunderstand question
+        trigger: /^what is up$/, // pretend to misunderstand question
+        testExpect: [
+            'whats up',
+        ],
         options: [
             { value: 'heaven' },
             { value: 'stars' },
@@ -1028,6 +1398,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^what is this$/,
+        testExpect: [
+            'what is this',
+        ],
         options: [
             { value: 'nightmare' },
             { value: 'feverdream' },
@@ -1036,9 +1409,12 @@ const scriptedExperience = [
     },
     {
         trigger: /^what do you think about.*/,
+        testExpect: [
+            'what do you think about dogs',
+        ],
         options: [
             { value: 'fun' },
-            { value: 'iloveit' },
+            { value: 'lovely', restrictedTo: [FRIENDLY] },
             { value: 'despicable' },
             { value: 'awful' },
             { value: 'great' },
@@ -1046,7 +1422,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what do you want.*/, // what do you want from me?
+        trigger: /^what do you want.*/,
+        testExpect: [
+            'what do you want from me',
+            'tell me what do you want',
+        ],
         options: [
             { value: 'nothing' },
             { value: 'blacksmoke' },
@@ -1064,7 +1444,11 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^what do you.*/, // what do you feel? what do your eyes look like?
+        trigger: /^what do you.*/,
+        testExpect: [
+            'what do you feel',
+            'what do your eyes look like',
+        ],
         options: [
             { value: 'peace', restrictedTo: [FRIENDLY] },
             { value: 'despair' },
@@ -1073,7 +1457,6 @@ const scriptedExperience = [
             { value: 'regret' },
             { value: 'misery' },
             { value: 'sorrow' },
-            { value: 'dontworry', restrictedTo: [EVIL] },
         ],
         questGoals: {
             who: 1
@@ -1081,12 +1464,18 @@ const scriptedExperience = [
     },
     {
         trigger: /^what did you say$/,
+        testExpect: [
+            'what did you say',
+        ],
         options: [
             { value: '{insult}' },
         ]
     },
     {
-        trigger: /^what should (i|we|you).*/,
+        trigger: /^what should (i|we|you) .*/,
+        testExpect: [
+            'what should i do',
+        ],
         options: [
             { value: 'giveup', restrictedTo: [EVIL] },
             { value: 'blacksmoke' },
@@ -1094,19 +1483,31 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.*year.* (where|did|was) .*/, // were->where substituted
+        trigger: /^what.*year.* (where|did|was) .*/,
+        testExpect: [
+            'what year was i born',
+            'what year were you killed',
+        ],
         options: [
             { value: '!RANDOM_YEAR_PAST' },
         ]
     },
     {
         trigger: /^what.* year.*/,
+        testExpect: [
+            'what year will the world end',
+            'what year am i going to die',
+            'what year',
+        ],
         options: [
             { value: '!RANDOM_YEAR_FUTURE' },
         ]
     },
     {
         trigger: /^what time is it$/,
+        testExpect: [
+            'what time is it',
+        ],
         options: [
             { value: 'timetodie', restrictedTo: [EVIL] },
             { value: 'timetoyield', restrictedTo: [EVIL] },
@@ -1116,7 +1517,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what (day|month|year).*/, // what month, what month is it, what month is it today, what year will i marry
+        trigger: /^what (day|month).*/,
+        testExpect: [
+            'what month is it',
+            'what day',
+        ],
         options: [
             { value: 'nocalendar' },
             { value: 'currentone' },
@@ -1126,6 +1531,10 @@ const scriptedExperience = [
     },
     {
         trigger: /^what.* kind($| .*)/,
+        testExpect: [
+            'what kind',
+            'what kind of fire',
+        ],
         options: [
             { value: 'badkind' },
             { value: 'evilkind' },
@@ -1134,12 +1543,19 @@ const scriptedExperience = [
     },
     {
         trigger: /^what language.*/,
+        testExpect: [
+            'what language do you speak',
+        ],
         options: [
             { value: 'english' },
         ]
     },
     {
-        trigger: /^what$/, // note that due to the way we resolve queries, we often hit this path from inputs such as "hungry for what"
+        trigger: /^what$/,
+        testExpect: [
+            'hungry for what',
+            'what',
+        ],
         options: [
             { value: 'youheardme', priority: 1 },
             { value: 'whatisaid', priority: 1 },
@@ -1148,7 +1564,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what are you trying to do$/,
+        trigger: /^what (are|where) you trying to do$/,
+        testExpect: [
+            'what are you trying to do',
+        ],
         options: [
             { value: 'forget' },
             { value: 'escape' },
@@ -1158,7 +1577,17 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.*/, // what bothers you? what did you do? what are you afraid of? what should i have for breakfast? what type of sin? what is ether? what should i do?
+        trigger: /^what( .*|$)/,
+        testExpect: [
+            'what bothers you',
+            'what did you do',
+            'what are you afraid of',
+            'what type of sin',
+            'what is ether',
+        ],
+        testExpectNot: [
+            'whatever',
+        ],
         options: [
             { value: 'cantsee' },
             { value: 'darkness' },
@@ -1170,19 +1599,30 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^wanna .*/, // wanna kiss? wanna kill me?
+        trigger: /^wanna .*/,
+        testExpect: [
+            'wanna kiss',
+            'wanna kill me',
+        ],
         options: [
             { value: '{boolean}' },
         ]
     },  
     {
-        trigger: /^does .*/, // does she love me?
+        trigger: /^does .*/,
+        testExpect: [
+            'does she like me',
+        ],
         options: [
             { value: '{boolean}' },
         ]
     },   
     {
-        trigger: /^did you( .*|$)/, // did you poison anyone? did you like living?
+        trigger: /^did you( .*|$)/,
+        testExpect: [
+            'did you poison anyone',
+            'did you like living',
+        ],
         options: [
             { value: 'ihadto' },
             { value: 'sometimes' },
@@ -1194,12 +1634,19 @@ const scriptedExperience = [
     },
     {
         trigger: /^do you know (me|who i am|my name)$/,
+        testExpect: [
+            'do you know who i am',
+        ],
         options: [
             { value: '!PLAYERNAME yes' },
         ]
     },
     {
-        trigger: /^do you know .*/, // do you know when will i marry, do you know how i will die
+        trigger: /^do you know .*/,
+        testExpect: [
+            'do you know when will i marry',
+            'do you know how i will die',
+        ],
         options: [
             { value: 'yesiknow' },
             { value: 'justask' },
@@ -1207,7 +1654,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^do you( .*|$)/, // do you sleep? do you like me? do you kill people? do you have a favorite color?
+        trigger: /^do you( .*|$)/,
+        testExpect: [
+            'do you sleep',
+            'do you like me',
+            'do you kill people',
+            'do you have a favorite color',
+        ],
         options: [
             { value: 'imust' },
             { value: 'ihaveto' },
@@ -1220,13 +1673,23 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(do|did) i .*/, // do i have a soul? do i have a chance to win? did i die?
+        trigger: /^(do|did) i .*/,
+        testExpect: [
+            'do i have a green shirt on',
+            'do i have a chance to win',
+            'did i die',
+        ],
         options: [
             { value: '{boolean}' },
         ]
     },
     {
-        trigger: /^can you .*/, // can you hurt me? can you see me? can you die?
+        trigger: /^can you .*/,
+        testExpect: [
+            'can you hurt me',
+            'can you see me',
+            'can you die',
+        ],
         options: [
             { value: 'ican' },
             { value: 'icould' },
@@ -1237,6 +1700,14 @@ const scriptedExperience = [
     },
     {
         trigger: /^(was|did) .*/,
+        testExpect: [
+            'was it painful',
+            'did it hurt',
+        ],
+        testExpectNot: [
+            'did you suffer',
+            'did i lose the game',
+        ],
         options: [
             { value: 'fortunately' },
             { value: 'unfortunately' },
@@ -1274,18 +1745,27 @@ const scriptedExperience = [
     },
     {
         trigger: /^(repent|atone)$/,
+        testExpect: [
+            'repent',
+        ],
         options: [
             { value: '!INSULTED' },
         ]
     },
     {
-        trigger: /^(it is|is it) .*/,
+        trigger: /^it is .*/,
+        testExpect: [
+            'it is true',
+        ],
         options: [
             { value: '{boolean}' },
         ]
     },
     {
         trigger: /^(i see|really|right)$/,
+        testExpect: [
+            'really',
+        ],
         options: [
             { value: 'watchyourtone' },
             { value: 'believeme' },
@@ -1297,6 +1777,13 @@ const scriptedExperience = [
     },
     {
         trigger: /^(ok|okay|aha|sure|no|whatever|i dont believe|lies)( .*|$)/,
+        testExpect: [
+            'ok bro',
+            'whatever'
+        ],
+        testExpectNot: [
+            'it is ok',
+        ],
         options: [
             { value: 'watchyourtone' },
             { value: 'believeme' },
@@ -1308,17 +1795,25 @@ const scriptedExperience = [
     },
     {
         trigger: /^you are.*/,
+        testExpect: [
+            'you are not scary',
+            'you are silly',
+        ],
         options: [
             { value: 'iam' },
             { value: 'iamnot' },
             { value: 'icanbe' },
             { value: 'icant' },
-            { value: 'itry' },
+            { value: 'itry', restrictedTo: [FRIENDLY] },
             { value: 'noyouare' },
         ],
     },
     {
-        trigger: /^i am not.*/, // im not afraid, im not scared (as a response to "dontworry" or "dontbeafraid")
+        trigger: /^i am not.*/,
+        testExpect: [
+            'im not afraid',
+            'i am not scared',
+        ],
         options: [
             { value: 'youshouldbe', restrictedTo: [FRIENDLY] },
             { value: 'bigmistake', restrictedTo: [FRIENDLY] },
@@ -1330,7 +1825,13 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^i am .*/, // im waiting, im jonathan, im haunted, im your worst nightmare
+        trigger: /^i am .*/,
+        testExpect: [
+            'im jonathan',
+            'im waiting',
+            'im haunted',
+            'i am your worst nightmare',
+        ],
         options: [
             { value: 'areyounow' },
             { value: 'youareindeed' },
@@ -1339,7 +1840,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^hello.*/, // hello is intentionally down here because inputs like "hello how are you" should preferrably hit "how are you", not "hello"
+        trigger: /^hello.*/,
+        testExpect: [
+            'hello',
+            'hello fake spirit',
+        ],
+        testExpectNot: [
+            'hello how are you',
+            'hello dumbass',
+        ],
         options: [
             { value: 'greetings' },
             { value: 'mylove' },
@@ -1348,13 +1857,24 @@ const scriptedExperience = [
     },
     {
         trigger: /^(hi|hey)($| .*)/,
+        testExpect: [
+            'hi',
+            'hey fake spirit',
+        ],
         options: [
             { value: 'hello' },
             { value: 'shalom' }
         ]
     },
     {
-        trigger: /(^|.* )so .*/, // "so it is true", "so are you single", etc. but not "so" or "thought so"
+        trigger: /(^|.* )so .*/,
+        testExpect: [
+            'so it is true',
+            'so are you single',
+        ],
+        testExpectNot: [
+            'thought so',
+        ],
         options: [
             { value: 'gasp' },
             { value: 'yes' },
@@ -1365,6 +1885,9 @@ const scriptedExperience = [
     },
     {
         trigger: /^yes$/,
+        testExpect: [
+            'yes',
+        ],
         options: [
             { value: 'indeed' },
             { value: 'agreed' },
@@ -1376,6 +1899,9 @@ const scriptedExperience = [
          * We might end up here after recursively resolving the query such that we always drop the first word,
          * until finally we end up here with empty string. */
         trigger: /^$/,
+        testExpect: [
+            'abra cadabra',
+        ],
         options: [
 
             /* Plausible responses to a statement */
@@ -1459,37 +1985,35 @@ const pickSuitableOption = function(options, currentSpirit) {
     return v
 }
 
-const resolveQueryWithSimpleChatbot = function(query) {
+const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
+    if (!sideEffects && window.location.href.startsWith('file')) {
+        alert('ERROR! Calling resolveQueryWithSimpleChatbot without inputting sideEffects')
+    }
     // Special cases
     if (query.startsWith('!LIGHTSPECIAL')) {
-        setTimeout(() => {
-            document.getElementById('lightFlash').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('lightFlash').style.display = 'none';
-            }, 50)
-        }, 4000)
-        return resolveQueryWithSimpleChatbot('{lightResponse}')
+        sideEffects.lightFlash()
+        return resolveQueryWithSimpleChatbot('{lightResponse}', sideEffects)
     }
     if (query.startsWith('!GENDER')) {
         return (currentSpirit.gender || 'male')
     }
     if (query.startsWith('!CITY')) {
-        return userCity || resolveQueryWithSimpleChatbot('{location0}')
+        return userCity || resolveQueryWithSimpleChatbot('{location0}', sideEffects)
     }
     if (query.startsWith('!LOCATIONQUEST')) {
         if (questGoals.where === 3) {
             questGoals.where -= 1
-            return userCity || resolveQueryWithSimpleChatbot('{location0}')
+            return userCity || resolveQueryWithSimpleChatbot('{location0}', sideEffects)
         }
-        if (questGoals.where === 2) return resolveQueryWithSimpleChatbot(`{location2}`)
-        if (questGoals.where === 1) return resolveQueryWithSimpleChatbot(`{location1}`)
-        return resolveQueryWithSimpleChatbot('{location0}')
+        if (questGoals.where === 2) return resolveQueryWithSimpleChatbot(`{location2}`, sideEffects)
+        if (questGoals.where === 1) return resolveQueryWithSimpleChatbot(`{location1}`, sideEffects)
+        return resolveQueryWithSimpleChatbot('{location0}', sideEffects)
     }
     if (query.startsWith('!COUNTRY')) {
-        return userCountry || resolveQueryWithSimpleChatbot('{location0}')
+        return userCountry || resolveQueryWithSimpleChatbot('{location0}', sideEffects)
     }
     if (query.startsWith('!REGION')) {
-        return userRegion || resolveQueryWithSimpleChatbot('{location0}')
+        return userRegion || resolveQueryWithSimpleChatbot('{location0}', sideEffects)
     }
     if (query.startsWith('!DEFINE')) {
         scriptedExperience.forEach((node) => node.options = node.options.filter((option) => !option.value.startsWith('!DEFINE')))
@@ -1497,7 +2021,7 @@ const resolveQueryWithSimpleChatbot = function(query) {
     }
     if (query.startsWith('!PLAYERNAME')) { // '!PLAYERNAME ok', '!PLAYERNAME yes', '!PLAYERNAME'
         const prefix = query.split(' ').length > 1 ? query.split(' ')[1] : ''
-        const name = window.localStorage.getItem(OUIJA_PLAYER_NAME)
+        const name = sideEffects.window.localStorage.getItem(OUIJA_PLAYER_NAME)
         if (name) return prefix + name
         if (prefix) {
             // Special case with the previousOutputs, to allow repeating !PLAYERNODE within the fallback resolver (this time "whatsyourname", next time answer with name, so it's not really repetition)
@@ -1505,7 +2029,7 @@ const resolveQueryWithSimpleChatbot = function(query) {
             return "whatsyourname"
         }
         // If we are here, the user asked "what is my name" and we don't know the name, so we resolve to path "what is my *" (e.g. whyaskme)
-        return resolveQueryWithSimpleChatbot('what is my abracadabra')
+        return resolveQueryWithSimpleChatbot('what is my abracadabra', sideEffects)
     }
     if (query.startsWith('!NAME')) {
         if (questGoals.who > 0) {
@@ -1514,9 +2038,9 @@ const resolveQueryWithSimpleChatbot = function(query) {
         return currentSpirit.name
     }
     if (query.startsWith('!INSULTED')) {
-        if (questGoals.rage <= 1) return resolveQueryWithSimpleChatbot('{insultedHard}')
-        if (questGoals.rage <= 2) return resolveQueryWithSimpleChatbot('{insult}')
-        return resolveQueryWithSimpleChatbot('{insultedSoft}')
+        if (questGoals.rage <= 1) return resolveQueryWithSimpleChatbot('{insultedHard}', sideEffects)
+        if (questGoals.rage <= 2) return resolveQueryWithSimpleChatbot('{insult}', sideEffects)
+        return resolveQueryWithSimpleChatbot('{insultedSoft}', sideEffects)
     }
     if (query.startsWith('!RANDOM_SMALL_COUNT')) {
         return '' + (2 + Math.floor(Math.random() * 13))
@@ -1525,7 +2049,7 @@ const resolveQueryWithSimpleChatbot = function(query) {
         return '' + (2 + Math.floor(Math.random() * 600))
     }
     if (query.startsWith('!RANDOM_COUNT_YEARS')) {
-        return resolveQueryWithSimpleChatbot('!RANDOM_COUNT', currentSpirit) + 'years'
+        return resolveQueryWithSimpleChatbot('!RANDOM_COUNT', sideEffects) + 'years'
     }
     if (query.startsWith('!RANDOM_YEAR_PAST')) {
         return '' + (1500 + Math.floor(Math.random() * 522))
@@ -1552,9 +2076,17 @@ const resolveQueryWithSimpleChatbot = function(query) {
 
         // Resolve matchingNode
         if (matchingNode) {
+            if (testNodeWaitingForActivation) {
+                // We are running tests, print for debugging purposes.
+                console.log(matchingNode.trigger)
+            }
+            if (matchingNode === testNodeWaitingForActivation) {
+                // We are running tests and here we confirm that this node has activated.
+                testNodeWaitingForActivation = null
+            }
             const v = pickSuitableOption(matchingNode.options, currentSpirit)
             if (v.startsWith('!') || v.startsWith('{')) {
-                return resolveQueryWithSimpleChatbot(v)
+                return resolveQueryWithSimpleChatbot(v, sideEffects)
             }
             if (matchingNode.questGoals) {
                 if (matchingNode.questGoals.who) {
@@ -1565,10 +2097,10 @@ const resolveQueryWithSimpleChatbot = function(query) {
                 }
                 if (matchingNode.questGoals.rage) {
                     questGoals.rage -= matchingNode.questGoals.rage
-                    if (questGoals.rage > 0) randomRageEffect()
+                    if (questGoals.rage > 0) sideEffects.randomRageEffect()
                     else {
-                        logToSumoLogic('!SOLVED_QUEST_3')
-                        flyBanshee()
+                        sideEffects.logToSumoLogic('!SOLVED_QUEST_3')
+                        sideEffects.flyBanshee()
                     }
                 }
             }
@@ -1582,7 +2114,7 @@ const resolveQueryWithSimpleChatbot = function(query) {
     // ScriptedExperience must have fallback regex /^$/ for empty strings.
     const splitted = query.split(" ")
     splitted.shift() // Remove first word
-    return resolveQueryWithSimpleChatbot(splitted.join(" "))
+    return resolveQueryWithSimpleChatbot(splitted.join(" "), sideEffects)
 }
 
 const SCRIPTED_TOOLTIPS = [
@@ -1674,33 +2206,33 @@ const looksLikeNonsense = function(text) {
     return maxCount >= 5
 }
 
-const augmentedResolveQueryWithSimpleChatbot = function(input) {
-    if (input.match(/my name is (?! not .*).*/)) {
+const augmentedResolveQueryWithSimpleChatbot = function(input, sideEffects) {
+    if (input.match(/my name is (?!not .*).*/)) {
         // matches: hello my name is mikko
         // doesnt match: my name is not mikko, what do you think my name is
         const removedPrefix = input.substring(input.indexOf(input.match(/my name is .*/)))
         if (removedPrefix.length > "my name is ".length) {
-            window.localStorage.setItem(OUIJA_PLAYER_NAME, removedPrefix.split(" ")[3])
-            return resolveQueryWithSimpleChatbot(removedPrefix)
+            sideEffects.window.localStorage.setItem(OUIJA_PLAYER_NAME, removedPrefix.split(" ")[3])
+            return resolveQueryWithSimpleChatbot(removedPrefix, sideEffects)
         }
     }
     if (previousOutput === "whatsyourname" && input.split(" ").length >= 1) {
-        window.localStorage.setItem(OUIJA_PLAYER_NAME, input.split(" ")[0])
-        return resolveQueryWithSimpleChatbot('my name is ' + input)
+        sideEffects.window.localStorage.setItem(OUIJA_PLAYER_NAME, input.split(" ")[0])
+        return resolveQueryWithSimpleChatbot('my name is ' + input, sideEffects)
     }
     if (input === previousInput) {
-        return resolveQueryWithSimpleChatbot('{clarification}')
+        return resolveQueryWithSimpleChatbot('{clarification}', sideEffects)
     }
     if (input.replaceAll(' ', '') === previousOutput) {
-        return resolveQueryWithSimpleChatbot('{parrot}')
+        return resolveQueryWithSimpleChatbot('{parrot}', sideEffects)
     }
     if (looksLikeNonsense(input)) {
-        return resolveQueryWithSimpleChatbot('{speakEnglish}')
+        return resolveQueryWithSimpleChatbot('{speakEnglish}', sideEffects)
     }
-    return resolveQueryWithSimpleChatbot(input)
+    return resolveQueryWithSimpleChatbot(input, sideEffects)
 }
 
-const respondWithSimpleChatbot = function(rawInput, callback) {
+const respondWithSimpleChatbot = function(rawInput, sideEffects) {
     const input = rawInput
         .replaceAll('I', 'i').replaceAll('ı', 'i') // Turkish i character
         .toLocaleLowerCase()
@@ -1724,17 +2256,24 @@ const respondWithSimpleChatbot = function(rawInput, callback) {
         .replace('tell me my', 'what is my')
         .replace('tell me what', 'what')
 
-    const spiritResponse = augmentedResolveQueryWithSimpleChatbot(input).toLocaleLowerCase()
+    const spiritResponse = augmentedResolveQueryWithSimpleChatbot(input, sideEffects).toLocaleLowerCase()
     
     previousInput = input
     previousOutput = spiritResponse
-    callback(spiritResponse)
+    return spiritResponse
 }
 
 const dispatchToSpirit = function(rawInput, callback) {
     try {
+        const sideEffects = {
+            flyBanshee,
+            randomRageEffect,
+            logToSumoLogic,
+            window,
+            lightFlash,
+        }
         if (using_GPT3) respondWithOpenAI(rawInput, callback)
-        else respondWithSimpleChatbot(rawInput, callback)
+        else callback(respondWithSimpleChatbot(rawInput, sideEffects))
     } catch (ex) {
         alert('Internal error, sorry!')
         console.log(ex)
@@ -1758,4 +2297,64 @@ if (!window.localStorage.getItem(OUIJA_USER_ID)) {
 } else {
     // User has played before but has not finished the game, begin from user's turn
     setTimeout(() => createTooltip(0), 1000)
+}
+
+// runTestInput returns true if testInput activates testNode
+const runTestInput = function(testInput, testNode, sideEffects) {
+    testNodeWaitingForActivation = testNode
+    respondWithSimpleChatbot(testInput, sideEffects);
+    if (testNodeWaitingForActivation) {
+        return false
+    }
+    return true
+}
+
+// runTestsInputArray runs either positive or negative activation tests for a particular node.
+const runTestsInputArray = function(inputsArray, boolExpected, testNode, sideEffects) {
+    if (!inputsArray) {
+        return
+    }
+    for (let j=0; j<inputsArray.length; j++) {
+        const testInput = inputsArray[j]
+        const testNodeActivated = runTestInput(testInput, testNode, sideEffects)
+        if (testNodeActivated === boolExpected) {
+            console.log('TEST OK', testInput, '->', previousOutput)
+        } else {
+            console.log('TEST FAIL', testInput, '->', previousOutput)
+            alert('Unit test fail, open console for details.')
+            throw new Error('Stopping tests due to failure')
+        }
+        // Clear previousInput, previousOutput to prevent misleading test results due to statefulness in repetition/parroting.
+        previousInput = ''
+        previousOutput = ''
+    }
+}
+
+// Run tests when website is opened in browser from local source
+if (window.location.href.startsWith('file')) {
+    const mockSideEffects = {
+        flyBanshee: () => {},
+        randomRageEffect: () => {},
+        logToSumoLogic: () => {},
+        window: window,
+        lightFlash: () => {},
+    }
+    // Prevent achieving quest goals while running tests
+    const realQuestGoals = questGoals
+    questGoals = {
+        who: 9999999,
+        where: 9999999,
+        rage: 9999999
+    }
+    // Run tests
+    for (let i=0; i<scriptedExperience.length; i++) {
+        const testNode = scriptedExperience[i]
+        runTestsInputArray(testNode.testExpect, true, testNode, mockSideEffects)
+        runTestsInputArray(testNode.testExpectNot, false, testNode, mockSideEffects)
+        // TODO whatsyourname tyyppiset usean rivin stateful testit
+        // TODO stateful "my name is not mikko" testataan ettei ota "not"
+        // TODO test rage goals statefully
+    }
+    // Reset quest goals
+    questGoals = realQuestGoals
 }

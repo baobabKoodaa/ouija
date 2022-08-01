@@ -381,6 +381,15 @@ const flyBanshee = function() {
     }, 3000)
 }
 
+const lightFlash = function() {
+    setTimeout(() => {
+        document.getElementById('lightFlash').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('lightFlash').style.display = 'none';
+        }, 50)
+    }, 4000)
+}
+
 const preloadAudio = function(id) {
     const a = document.getElementById(id)
     a.volume = 0.0
