@@ -2340,7 +2340,11 @@ if (window.location.href.startsWith('file')) {
         lightFlash: () => {},
     }
     // Prevent achieving quest goals while running tests
-    const realQuestGoals = questGoals
+    const realQuestGoals = {
+        who: questGoals.who,
+        where: questGoals.where,
+        rage: questGoals.rage,
+    }
     questGoals = {
         who: 9999999,
         where: 9999999,
