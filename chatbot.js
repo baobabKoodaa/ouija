@@ -370,10 +370,9 @@ const scriptedExperience = [
             { value: 'loveispointless', restrictedTo: [EVIL] },
             { value: 'nolovehere', restrictedTo: [EVIL] },
             { value: 'ihatelove', restrictedTo: [EVIL] },
+            { value: 'iloveall', restrictedTo: [FRIENDLY] },
             { value: 'loveyourself', restrictedTo: [FRIENDLY] },
-            { value: 'findlove', restrictedTo: [FRIENDLY] },
             { value: 'loveistheanswer', restrictedTo: [FRIENDLY] },
-            { value: 'thatslove', restrictedTo: [FRIENDLY] },
         ],
     },
     {
@@ -391,7 +390,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )(turn|switch) (.*)?lights?($| .*)/,
+        trigger: /(^|.* )(turn|switch|make) (.*)?lights?($| .*)/,
         testExpect: [
             'turn on the light',
             'turn off the lights',
@@ -1281,7 +1280,8 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'iamnotmean', priority: 0.3 },
-            { value: 'yourchoice' },
+            { value: 'figureitout' },
+            { value: 'gofigure' },
             { value: 'interpret' },
             { value: '{clarification}' },
         ]
@@ -2216,7 +2216,7 @@ const augmentedResolveQueryWithSimpleChatbot = function(input, sideEffects) {
             return resolveQueryWithSimpleChatbot(removedPrefix, sideEffects)
         }
     }
-    if (previousOutput === "whatsyourname" && input.split(" ").length >= 1) {
+    if (previousOutput === "whatsyourname" && input.split(" ").length >= 1 && !['i', 'why', 'what', 'who', 'when'].includes(input.split(" ")[0])) {
         sideEffects.window.localStorage.setItem(OUIJA_PLAYER_NAME, input.split(" ")[0])
         return resolveQueryWithSimpleChatbot('my name is ' + input, sideEffects)
     }
