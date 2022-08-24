@@ -1051,6 +1051,9 @@ const scriptedExperience = [
         ],
         options: [
             { value: '!DEFINE dead' },
+            { value: 'alive' },
+            { value: 'living' },
+            { value: 'livingdead' },
             { value: '{identityFudge}' },
         ]
     },
@@ -1061,6 +1064,8 @@ const scriptedExperience = [
         ],
         options: [
             { value: '!DEFINE human' },
+            { value: 'iwas' },
+            { value: 'iusedtobe' },
             { value: '{identityFudge}' },
         ]
     },
@@ -1071,6 +1076,23 @@ const scriptedExperience = [
         ],
         options: [
             { value: '!DEFINE real' },
+            { value: 'imaginary' },
+            { value: 'realenough' },
+            { value: '{identityFudge}' },
+        ]
+    },
+    {
+        trigger: /^are you evil$/,
+        testExpect: [
+            'are you evil',
+        ],
+        options: [
+            { value: '!DEFINE evil' },
+            { value: 'noyouare', restrictedTo: [FRIENDLY] },
+            { value: 'no', restrictedTo: [FRIENDLY] },
+            { value: 'ungodlyevil', restrictedTo: [EVIL] },
+            { value: 'theymakeme', restrictedTo: [EVIL] },
+            { value: 'yourenosainteither', restrictedTo: [EVIL] },
             { value: '{identityFudge}' },
         ]
     },
