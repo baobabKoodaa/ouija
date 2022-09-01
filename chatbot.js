@@ -214,6 +214,34 @@ let testNodeWaitingForActivation
 
 const scriptedExperience = [
     {
+        trigger: /(^|.* )joke( .*|$)/,
+        testExpect: [
+            'tell me a joke',
+        ],
+        options: [
+            { value: 'askwhatsup' },
+            { value: 'yomamasofat' },
+            { value: 'knockknock' }, // no followup though, user will ask "whos there" and get a weirdly straight answer
+            { value: 'willyoulaugh' }, // no followup though
+            { value: 'joke' }, // there, i said it
+            { value: 'amyschumer' }, // amy schumer is a joke
+            { value: 'donaldtrump' }, // donald trump is a joke
+            { value: 'imnotyourclown' }, // how dare you
+        ],
+    },
+    {
+        trigger: /^how fat is she$/, // "tell me a joke" -> "yomamasofat" -> "how fat is she"
+        testExpect: [
+            'how fat is she',
+        ],
+        options: [ // answers like a robot that tries hard to make a joke but fails
+            { value: 'veryfat' },
+            { value: 'obese' },
+            { value: 'eatingtoomuch' },
+            { value: 'lackofexercise' },
+        ],
+    },
+    {
         trigger: /(^|.* )song( .*|$)/,
         testExpect: [
             'do you know this song',
