@@ -214,6 +214,21 @@ let testNodeWaitingForActivation
 
 const scriptedExperience = [
     {
+        trigger: /(^|.* )song( .*|$)/,
+        testExpect: [
+            'do you know this song',
+            'what is your favorite song',
+        ],
+        options: [
+            { value: 'stairwaytoheaven' },
+            { value: 'stayinalive' },
+            { value: 'africa' },
+            { value: 'blurredlines' },
+            { value: 'soundofsilence' },
+            { value: 'songoffireandice' },
+        ],
+    },
+    {
         trigger: /(^|.* )gender( .*|$)/,
         testExpect: [
             'what is your gender',
@@ -1949,6 +1964,7 @@ const scriptedExperience = [
             { value: 'idontthinkso' },
             { value: 'fabrication' },
             { value: 'agreed' },
+            { value: 'shocking' },
             { value: 'whatever', restrictedTo: [EVIL] },
             { value: 'idontcare', restrictedTo: [EVIL] },
 
@@ -1958,6 +1974,7 @@ const scriptedExperience = [
             { value: 'explain' },
 
             /* Nonsequiturs */
+            { value: 'dracarys', restrictedTo: [EVIL] },
             { value: 'youwilldie', restrictedTo: [EVIL] },
             { value: 'youwillcry', restrictedTo: [EVIL] },
             { value: 'youshallweep', restrictedTo: [EVIL] },
