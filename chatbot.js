@@ -215,6 +215,20 @@ let testNodeWaitingForActivation
 
 const scriptedExperience = [
     {
+        trigger: /(^|.* )sin( .*|$)/,
+        testExpect: [
+            'what sin have i done',
+            'i dont sin',
+        ],
+        options: [
+            { value: 'lust' },
+            { value: 'gluttony' },
+            { value: 'greed' },
+            { value: 'envy' },
+            { value: 'pride' },
+        ],
+    },
+    {
         trigger: /(^|.* )joke( .*|$)/,
         testExpect: [
             'tell me a joke',
@@ -983,6 +997,19 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what can i do for you.*/,
+        testExpect: [
+            'what can i do for you',
+        ],
+        options: [
+            { value: 'nothing' },
+            { value: 'forgiveme', restrictedTo: [FRIENDLY] },
+            { value: 'run', restrictedTo: [FRIENDLY] },
+            { value: 'serveme', restrictedTo: [EVIL] },
+            { value: 'letmein', restrictedTo: [EVIL] },
+        ]
+    },
+    {
         trigger: /^((how )?can|how do) (i|we) .*/,
         testExpect: [
             'can i trap you', 
@@ -1370,30 +1397,6 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^what (are you|forms? .*)$/,
-        testExpect: [
-            'what are you',
-            'what form are you',
-            'demon what are you',
-            'what forms do you take',
-            'what form do you take'
-        ],
-        options: [
-            { value: 'human' },
-            { value: 'impresario' },
-            { value: 'lostsoul', restrictedTo: [FRIENDLY] },
-            { value: 'wanderer', restrictedTo: [FRIENDLY] },
-            { value: 'demon', restrictedTo: [EVIL] },
-            { value: 'angel', restrictedTo: [EVIL] },
-            { value: 'iamdeath', restrictedTo: [EVIL] },
-            { value: 'god', restrictedTo: [EVIL] },
-            { value: '666', restrictedTo: [EVIL] },
-        ],
-        questGoals: {
-            who: 1
-        }
-    },
-    {
         trigger: /^what (is my|am i) .*/,
         testExpect: [
             'what is my age',
@@ -1545,7 +1548,6 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'youwillsee', restrictedTo: [EVIL] },
-            { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'darkness', restrictedTo: [EVIL] },
             { value: 'punishment', restrictedTo: [EVIL] },
             { value: 'peace', restrictedTo: [FRIENDLY] },
@@ -1744,6 +1746,18 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what.* type($| .*)/,
+        testExpect: [
+            'what type',
+            'what type of fire',
+        ],
+        options: [
+            { value: 'badtype' },
+            { value: 'eviltype' },
+            { value: 'wrongtype' },
+        ]
+    },
+    {
         trigger: /^what language.*/,
         testExpect: [
             'what language do you speak',
@@ -1782,12 +1796,81 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what are you afraid of$/,
+        testExpect: [
+            'what are you afraid of',
+        ],
+        options: [
+            { value: 'resolution' },
+            { value: 'judgement' },
+            { value: 'blacksmoke' },
+            { value: 'thevoices' },
+            { value: 'sameasyou' },
+        ],
+        questGoals: {
+            who: 1
+        }
+    },
+    {
+        trigger: /^what (are you|forms?).*/,
+        testExpect: [
+            'what are you',
+            'what are you to me',
+            'what are you now',
+            'what form are you',
+            'demon what are you',
+            'what forms do you take',
+            'what form do you take'
+        ],
+        options: [
+            { value: 'human' },
+            { value: 'impresario' },
+            { value: 'guide' },
+            { value: 'teacher' },
+            { value: 'lostsoul', restrictedTo: [FRIENDLY] },
+            { value: 'wanderer', restrictedTo: [FRIENDLY] },
+            { value: 'demon', restrictedTo: [EVIL] },
+            { value: 'angel', restrictedTo: [EVIL] },
+            { value: 'iamdeath', restrictedTo: [EVIL] },
+            { value: 'god', restrictedTo: [EVIL] },
+            { value: '666', restrictedTo: [EVIL] },
+        ],
+        questGoals: {
+            who: 1
+        }
+    },
+    {
+        trigger: /^what have i done.*/,
+        testExpect: [
+            'what have i done wrong',
+        ],
+        options: [
+            { value: 'youknowwhatyoudid' },
+            { value: 'youshouldknow' },
+            { value: 'figureitout' },
+        ]
+    },
+    {
+        trigger: /^what is (going to )?happen.*/,
+        testExpect: [
+            'what is happening',
+            'what is going to happen to me'
+        ],
+        options: [
+            { value: 'badthings' },
+            { value: 'thehappening' },
+            { value: 'infiltration' },
+            { value: 'excursion' },
+        ]
+    },
+    {
         trigger: /^what( .*|$)/,
         testExpect: [
             'what bothers you',
-            'what are you afraid of',
-            'what type of sin',
             'what is ether',
+            'what sins have i done',
+            'what god are you',
+            'what lie',
         ],
         testExpectNot: [
             'whatever',
@@ -2135,6 +2218,7 @@ const scriptedExperience = [
             { value: 'whatever', restrictedTo: [EVIL] },
             { value: 'idontcare', restrictedTo: [EVIL] },
 
+            /* Plausible questions as a response to a statement */
             { value: 'why' },
             { value: 'how' },
             { value: 'when' },
@@ -2146,11 +2230,13 @@ const scriptedExperience = [
             { value: 'youwillcry', restrictedTo: [EVIL] },
             { value: 'youshallweep', restrictedTo: [EVIL] },
             { value: 'iwillhurtyou', restrictedTo: [EVIL] },
-            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
-            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
             { value: 'repent', restrictedTo: [FRIENDLY] },
             { value: 'atone', restrictedTo: [FRIENDLY] },
+            { value: 'sinner', restrictedTo: [FRIENDLY] },
+            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
 
+            /* Nonsequitur questions */
+            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'whatdoyouwant' },
             { value: 'whyareyouhere' },
 
