@@ -215,9 +215,9 @@ let testNodeWaitingForActivation
 
 const scriptedExperience = [
     {
-        trigger: /(^|.* )sin( .*|$)/,
+        trigger: /(^|.* )sins?( .*|$)/,
         testExpect: [
-            'what sin have i done',
+            'what sins have i done',
             'i dont sin',
         ],
         options: [
@@ -469,6 +469,20 @@ const scriptedExperience = [
             { value: 'iloveall', restrictedTo: [FRIENDLY] },
             { value: 'loveyourself', restrictedTo: [FRIENDLY] },
             { value: 'loveistheanswer', restrictedTo: [FRIENDLY] },
+        ],
+    },
+    {
+        trigger: /^(what|which|will) .*(university|school).*/,
+        testExpect: [
+            'what school do you go to',
+            'which university will i get in',
+            'will i get in university',
+            'what is name of my school',
+        ],
+        options: [
+            { value: 'schoolofrock' },
+            { value: 'schooloflife' },
+            { value: 'hogwarts' },
         ],
     },
     {
@@ -751,10 +765,7 @@ const scriptedExperience = [
             { value: 'fuckoff', priority: 1.0 },
             { value: 'leavemebe', priority: 1.0 },
             { value: '{insult}' },
-        ],
-        questGoals: {
-            rage: 1
-        }
+        ]
     },
     {
         trigger: '{insult}',
@@ -966,6 +977,7 @@ const scriptedExperience = [
             { value: 'thirst' },
             { value: 'fire' },
             { value: 'suffocation' },
+            { value: 'insomnia' },
 
             { value: 'arrogance' },
             { value: 'betrayal' },
@@ -973,6 +985,8 @@ const scriptedExperience = [
             { value: 'inquisition' },
             { value: 'witchhunt' },
             { value: 'exorcism' },
+            { value: 'tragedy' },
+            { value: 'mutiny' },
             { value: 'purge' },
             { value: 'carnage' },
         ]
@@ -991,7 +1005,6 @@ const scriptedExperience = [
             { value: 'cursewords' },
             { value: 'insults' },
             { value: 'repetition' },
-            { value: 'stupidquestions' },
             { value: 'doubts' },
             { value: 'attitude' },
         ]
@@ -1384,19 +1397,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.*(university|school).*/,
-        testExpect: [
-            'what school do you go to',
-            'what university will i get in',
-            'what is name of my school',
-        ],
-        options: [
-            { value: 'schoolofrock' },
-            { value: 'schooloflife' },
-            { value: 'hogwarts' },
-        ],
-    },
-    {
         trigger: /^what (is my|am i) .*/,
         testExpect: [
             'what is my age',
@@ -1527,10 +1527,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your favorite .*/,
+        trigger: /^what is your favou?rite .*/,
         testExpect: [
             'what is your favorite food',
-            'what is your favorite tv show',
+            'what is your favourite tv show',
         ],
         options: [
             { value: 'nofavorites' },
@@ -1547,8 +1547,8 @@ const scriptedExperience = [
             'what is your weakness',
         ],
         options: [
+            { value: 'artifact' },
             { value: 'youwillsee', restrictedTo: [EVIL] },
-            { value: 'darkness', restrictedTo: [EVIL] },
             { value: 'punishment', restrictedTo: [EVIL] },
             { value: 'peace', restrictedTo: [FRIENDLY] },
             { value: 'balance', restrictedTo: [FRIENDLY] },
@@ -1734,27 +1734,26 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what.* kind($| .*)/,
+        trigger: /^what.* (kind|type)($| .*)/,
         testExpect: [
             'what kind',
             'what kind of fire',
+            'what type of spirit are you'
         ],
         options: [
-            { value: 'badkind' },
-            { value: 'evilkind' },
-            { value: 'wrongkind' },
-        ]
-    },
-    {
-        trigger: /^what.* type($| .*)/,
-        testExpect: [
-            'what type',
-            'what type of fire',
-        ],
-        options: [
-            { value: 'badtype' },
-            { value: 'eviltype' },
-            { value: 'wrongtype' },
+            { value: 'badkind', restrictedTo: [EVIL] },
+            { value: 'evilkind', restrictedTo: [EVIL] },
+            { value: 'wrongkind', restrictedTo: [EVIL] },
+            { value: 'goodkind', restrictedTo: [FRIENDLY] },
+            { value: 'friendly', restrictedTo: [FRIENDLY] },
+            { value: 'real' },
+            { value: 'artificial' },
+            { value: 'imaginary' },
+            { value: 'ordinary' },
+            { value: 'typical' },
+            { value: 'rare' },
+            { value: 'uncommon' },
+            { value: 'regular' },
         ]
     },
     {
@@ -1773,9 +1772,14 @@ const scriptedExperience = [
             'what',
         ],
         options: [
-            { value: 'youheardme', priority: 1 },
-            { value: 'whatisaid', priority: 1 },
-            { value: 'areyoudeaf', priority: 1 },
+            { value: 'relic' },
+            { value: 'invocation' },
+            { value: 'divinity' },
+            { value: 'immersion' },
+
+            { value: 'youheardme' },
+            { value: 'whatisaid' },
+            { value: 'areyoudeaf' },
             { value: '{clarification}' },
         ]
     },
@@ -1796,7 +1800,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what are you afraid of$/,
+        trigger: /^what are you (afraid|scared) of$/,
         testExpect: [
             'what are you afraid of',
         ],
@@ -1868,7 +1872,6 @@ const scriptedExperience = [
         testExpect: [
             'what bothers you',
             'what is ether',
-            'what sins have i done',
             'what god are you',
             'what lie',
         ],
@@ -1877,7 +1880,11 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'cantsee' },
+            { value: 'canttell' },
+            { value: 'dontknow' },
             { value: 'darkness' },
+            { value: 'fog' },
+
             { value: 'misery' },
             { value: 'sorrow' },
             { value: 'anguish' },
@@ -2197,7 +2204,7 @@ const scriptedExperience = [
             { value: 'noted' },
             { value: 'blasphemy', restrictedTo: [FRIENDLY] },
             { value: 'heresy', restrictedTo: [FRIENDLY] },
-            { value: 'recant', restrictedTo: [FRIENDLY] },
+            { value: 'omenous' },
             { value: 'wretched' },
             { value: 'lies' },
             { value: 'liar' },
@@ -2233,6 +2240,7 @@ const scriptedExperience = [
             { value: 'repent', restrictedTo: [FRIENDLY] },
             { value: 'atone', restrictedTo: [FRIENDLY] },
             { value: 'sinner', restrictedTo: [FRIENDLY] },
+            { value: 'recant', restrictedTo: [FRIENDLY] },
             { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
 
             /* Nonsequitur questions */
