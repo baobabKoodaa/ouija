@@ -524,6 +524,19 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )give me($| .*)/,
+        testExpect: [
+            'can you give me money',
+            'give me powers',
+        ],
+        options: [
+            { value: 'exchange' },
+            { value: 'forwhat' },
+            { value: 'iwantsomething' },
+            { value: 'letsmakedeal' },
+        ],
+    },
+    {
         trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/,
         testExpect: [
             'please tell me your real name demon',
@@ -1578,16 +1591,14 @@ const scriptedExperience = [
             'tell me what do you want',
         ],
         options: [
-            { value: 'nothing' },
             { value: 'blacksmoke' },
-            { value: 'assistance', restrictedTo: [FRIENDLY] },
+            { value: 'nothing', restrictedTo: [FRIENDLY] },
             { value: 'help', restrictedTo: [FRIENDLY] },
             { value: 'soul', restrictedTo: [EVIL] },
             { value: 'yoursoul', restrictedTo: [EVIL] },
             { value: 'yourlife', restrictedTo: [EVIL] },
-            { value: 'lifeforce', restrictedTo: [EVIL] },
-            { value: 'youressence', restrictedTo: [EVIL] },
-            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: 'servitude', restrictedTo: [EVIL] },
+            { value: 'sacrifice', restrictedTo: [EVIL] },
         ],
         questGoals: {
             who: 1
@@ -1955,10 +1966,26 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^can you see me( .*|$)/,
+        testExpect: [
+            'can you see me right now',
+            'can you see me',
+        ],
+        options: [
+            { value: 'nicechair' },
+            { value: 'messyroom' },
+            { value: 'gorgeous', restrictedTo: [FRIENDLY] },
+            { value: 'attractive', restrictedTo: [FRIENDLY] },
+            { value: 'stunning', restrictedTo: [FRIENDLY] },
+            { value: 'ugly', restrictedTo: [EVIL] },
+            { value: 'hideous', restrictedTo: [EVIL] },
+            { value: 'unsightly', restrictedTo: [EVIL] },
+        ]
+    },
+    {
         trigger: /^can you .*/,
         testExpect: [
             'can you hurt me',
-            'can you see me',
             'can you die',
         ],
         options: [
