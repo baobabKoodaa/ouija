@@ -690,22 +690,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: '{speakEnglish}',
-        testExpect: [
-            'sdfsdsdffdsf',
-        ],
-        options: [
-            { value: 'what' },
-            { value: 'language' },
-            { value: 'speakproperly' },
-            { value: 'speakup' },
-            { value: 'english' },
-        ],
-        questGoals: {
-            rage: 1
-        }
-    },
-    {
         trigger: '{return}',
         options: [
             { value: 'finally' },
@@ -1299,11 +1283,12 @@ const scriptedExperience = [
         ]
     }, 
     {
-        trigger: /^(am i|is|will)( |$).*/,
+        trigger: /^(am i|is|will|have you)( .*|$)/,
         testExpect: [
             'am i alive',
             'is it true',
             'will we ever find happiness',
+            'have you seen me before'
         ],
         testExpectNot: [
             'iskender kebab',
@@ -1347,20 +1332,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^who$/,
-        testExpect: [
-            'abigail who',
-            'who'
-        ],
-        options: [
-            { value: '{clarification}' },
-        ]
-    },
-    {
-        trigger: /^who .*/,
+        trigger: /^who( .*|$)/,
         testExpect: [
             'who murdered you',
-            'who are you demon'
+            'who are you demon',
+            'who',
+            'abigail who',
         ],
         options: [
             { value: 'lord' },
@@ -2103,12 +2080,26 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /^i am not lying.*/,
+        testExpect: [
+            'im not lying',
+            'i am not lying',
+        ],
+        options: [
+            { value: 'yesyouare' },
+            { value: 'pinocchio' },
+            { value: 'morelies' },
+            { value: 'yeahright' },
+        ],
+    },
+    {
         trigger: /^i am not.*/,
         testExpect: [
             'im not afraid',
             'i am not scared',
         ],
         options: [
+            { value: 'yesyouare' },
             { value: 'youshouldbe', restrictedTo: [FRIENDLY] },
             { value: 'bigmistake', restrictedTo: [FRIENDLY] },
             { value: 'iwillmakeyou', restrictedTo: [EVIL] },
@@ -2477,38 +2468,6 @@ const initializeSpirit = function() {
 }
 currentSpirit = initializeSpirit()
 
-const looksLikeNonsense = function(text) {
-    // Relative percentage of consonants: detect inputs like "fdf" as nonsense
-    let count = 0;
-    const consonants = 'bcdfghjklmnpqrstvwxz'
-    for (let i=0; i<text.length; i++) {
-        if (consonants.includes(text[i])) count += 1
-    }
-    const consonantPercentage = count * 1.0 / text.length
-    if (consonantPercentage > 0.9) return true
-    
-    // Absolute number of consecutive consonants or vowels: detect inputs like "screeeeeee" as nonsense
-    let maxCount = 1
-    let currentCount = 0
-    let prevCharType = 'nothing'
-    for (let i=0; i<text.length; i++) {
-        if ('0123456789 '.includes(text[i])) {
-            currentCount = 0
-            prevCharType = 'nothing'
-            continue
-        }
-        const currCharType = consonants.includes(text[i]) ? 'consonant' : 'vowel'
-        if (currCharType === prevCharType) {
-            currentCount += 1
-        } else {
-            currentCount = 1
-        }
-        maxCount = Math.max(maxCount, currentCount)
-        prevCharType = currCharType
-    }
-    return maxCount >= 5
-}
-
 const augmentedResolveQueryWithSimpleChatbot = function(input, sideEffects) {
     if (input.match(/my name is (?!not .*).*/)) {
         // matches: hello my name is mikko
@@ -2528,9 +2487,6 @@ const augmentedResolveQueryWithSimpleChatbot = function(input, sideEffects) {
     }
     if (input.replaceAll(' ', '') === previousOutput) {
         return resolveQueryWithSimpleChatbot('{parrot}', sideEffects)
-    }
-    if (looksLikeNonsense(input)) {
-        return resolveQueryWithSimpleChatbot('{speakEnglish}', sideEffects)
     }
     return resolveQueryWithSimpleChatbot(input, sideEffects)
 }
