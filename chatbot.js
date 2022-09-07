@@ -280,7 +280,7 @@ const scriptedExperience = [
             { value: 'stayinalive' },
             { value: 'blurredlines' },
             { value: 'soundofsilence' },
-            { value: 'songoffireandice' },
+            { value: 'songoficeandfire' },
         ],
     },
     {
@@ -1449,12 +1449,14 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.*what is your )name( .*|$)/,
+        trigger: /.*what is your name.*/,
         testExpect: [
             'hello what is your name',
             'what is your name',
             'what is your name demon',
-            'name',
+        ],
+        testExpectNot: [
+            'nice name bro'
         ],
         options: [
             { value: '!NAME' },
@@ -2074,21 +2076,33 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^(ok|okay|aha|sure|whatever|i dont believe|lies)( .*|$)/,
+        trigger: /^(ok|oki|okay)( .*|$)/,
         testExpect: [
             'ok bro',
-            'whatever'
+            'ok',
+            'okay'
         ],
         testExpectNot: [
             'it is ok',
+        ],
+        options: [
+            { value: 'itisknown' },
+            { value: 'fact' },
+            { value: 'confirmed' },
+            { value: 'guaranteed' },
+        ]
+    },
+    {
+        trigger: /^(aha|sure|whatever|i dont believe|lies)( .*|$)/,
+        testExpect: [
+            'aha',
+            'whatever'
         ],
         options: [
             { value: 'watchyourtone' },
             { value: 'believeme' },
             { value: 'trustme' },
             { value: 'ipromise' },
-            { value: 'itisknown' },
-            { value: 'fact' },
         ]
     },
     {
