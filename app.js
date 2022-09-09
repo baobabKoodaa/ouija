@@ -1095,7 +1095,6 @@ document.getElementById('planchetteHelper').addEventListener('mousemove', e => {
 document.querySelectorAll('.popupHoverboard').forEach((element) => element.addEventListener('mousemove', e => { mouseMoved(e) }))
 document.querySelectorAll('.popupButton').forEach((element) => element.addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) }))
 document.querySelectorAll('.slider').forEach((element) => element.addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) }))
-document.getElementById('extRowMusic').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
 document.getElementById('extRowGithub').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
 document.getElementById('extRowFeedback').addEventListener('mousemove', e => { mouseMoved(e, ON_BUTTON) })
 
