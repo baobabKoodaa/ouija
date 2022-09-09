@@ -537,6 +537,36 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )(what do you want|deal|exchange|favor)( .*|$)/,
+        testExpect: [
+            'what do you want from me',
+            'tell me what do you want',
+            'what favor',
+            'exchange for what',
+            'deal huh'
+        ],
+        options: [
+            { value: 'blacksmoke' }, // to help pass quests
+            { value: 'freeme' },
+            { value: 'takemyplace' },
+            { value: 'iaskyoulater' },
+            { value: 'tellmeasecret' },
+            { value: 'yoursecret' },
+            { value: 'iamtrapped' },
+            { value: 'itconsumesme' },
+            { value: 'nothing', restrictedTo: [FRIENDLY] },
+            { value: 'help', restrictedTo: [FRIENDLY] },
+            { value: 'soul', restrictedTo: [EVIL] },
+            { value: 'yoursoul', restrictedTo: [EVIL] },
+            { value: 'yourlife', restrictedTo: [EVIL] },
+            { value: 'servitude', restrictedTo: [EVIL] },
+            { value: 'sacrifice', restrictedTo: [EVIL] },
+        ],
+        questGoals: {
+            who: 1
+        }
+    },
+    {
         trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/,
         testExpect: [
             'please tell me your real name demon',
@@ -620,6 +650,26 @@ const scriptedExperience = [
             { value: 'acknowledged', restrictedTo: [FRIENDLY] },
             { value: 'noted', restrictedTo: [FRIENDLY] },
         ],
+    },
+    {
+        trigger: /^(what|how)( .*)? about( .*|$)/,
+        testExpect: [
+            'how about that',
+            'what do you think about dogs',
+        ],
+        options: [
+            { value: 'allaboutthat' },
+            { value: 'allabouttit' },
+            { value: 'abouttodie' },
+            { value: 'whataboutit' },
+            { value: 'danger' },
+            { value: 'fun' },
+            { value: 'lovely' },
+            { value: 'despicable' },
+            { value: 'awful' },
+            { value: 'great' },
+            { value: 'horrid' },
+        ]
     },
     {
         trigger: /^nice to meet you.*/,
@@ -757,10 +807,10 @@ const scriptedExperience = [
     {
         trigger: '{clarification}',
         options: [
-            { value: 'itoldyou', priority: 2 },
-            { value: 'areyoudeaf', priority: 1.5 },
-            { value: 'fuckoff', priority: 1.0 },
-            { value: 'leavemebe', priority: 1.0 },
+            { value: 'areyoudeaf', restrictedTo: [EVIL] },
+            { value: 'fuckoff', restrictedTo: [EVIL] },
+            { value: 'leavemebe', restrictedTo: [FRIENDLY] },
+            { value: 'itoldyou', restrictedTo: [FRIENDLY] },
             { value: '{insult}' },
         ]
     },
@@ -784,10 +834,7 @@ const scriptedExperience = [
             { value: 'dontparrotme', priority: 1.0 },
             { value: 'stoprepeating', priority: 1.0 },
             { value: '{insult}' },
-        ],
-        questGoals: {
-            rage: 1
-        }
+        ]
     },
     {
         trigger: '{location2}',
@@ -853,6 +900,7 @@ const scriptedExperience = [
     {
         trigger: /.* (or|between) .*/,
         testExpect: [
+            'good or god',
             'are you demon or angel',
             'for what me or you',
             'who will win between superman and batman',
@@ -864,6 +912,28 @@ const scriptedExperience = [
             { value: 'neither' },
             { value: 'either' },
         ]
+    },
+    {
+        trigger: /(^|.* )god( .*|$)/,
+        testExpect: [
+            'in name of god leave me',
+            'youre not god',
+            'who is your god',
+        ],
+        options: [
+            { value: 'godisgood', restrictedTo: [FRIENDLY] },
+            { value: 'inshallah', restrictedTo: [FRIENDLY] },
+            { value: 'jesus' },
+            { value: 'jehova' },
+            { value: 'yahweh' },
+            { value: 'kabbalah' },
+            { value: 'bhagavan' },
+            { value: 'imtheonlyone', restrictedTo: [EVIL] },
+            { value: 'iamgod', restrictedTo: [EVIL] },
+            { value: 'nogodhere', restrictedTo: [EVIL] },
+            { value: 'godisdead', restrictedTo: [EVIL] },
+            { value: 'godisgone', restrictedTo: [EVIL] },
+        ],
     },
     {
         trigger: /^which.*/,
@@ -1483,7 +1553,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what (can i call you|are you called).*/,
+        trigger: /^what (can i call you|do they call you|are you called).*/,
         testExpect: [
             'what can i call you',
             'what are you called demon',
@@ -1571,40 +1641,6 @@ const scriptedExperience = [
             { value: 'feverdream' },
             { value: 'nirvana' },
         ]
-    },
-    {
-        trigger: /^what do you think about.*/,
-        testExpect: [
-            'what do you think about dogs',
-        ],
-        options: [
-            { value: 'fun' },
-            { value: 'lovely', restrictedTo: [FRIENDLY] },
-            { value: 'despicable' },
-            { value: 'awful' },
-            { value: 'great' },
-            { value: 'horrid' },
-        ]
-    },
-    {
-        trigger: /^what do you want.*/,
-        testExpect: [
-            'what do you want from me',
-            'tell me what do you want',
-        ],
-        options: [
-            { value: 'blacksmoke' },
-            { value: 'nothing', restrictedTo: [FRIENDLY] },
-            { value: 'help', restrictedTo: [FRIENDLY] },
-            { value: 'soul', restrictedTo: [EVIL] },
-            { value: 'yoursoul', restrictedTo: [EVIL] },
-            { value: 'yourlife', restrictedTo: [EVIL] },
-            { value: 'servitude', restrictedTo: [EVIL] },
-            { value: 'sacrifice', restrictedTo: [EVIL] },
-        ],
-        questGoals: {
-            who: 1
-        }
     },
     {
         trigger: /^what do you do.*/,
@@ -1862,7 +1898,6 @@ const scriptedExperience = [
         testExpect: [
             'what bothers you',
             'what is ether',
-            'what god are you',
             'what lie',
         ],
         testExpectNot: [
@@ -2221,49 +2256,42 @@ const scriptedExperience = [
         ]
     },
     {
-        /* Fallback when nothing else matches. Presumably the user made a statement not a question.
-         * We might end up here after recursively resolving the query such that we always drop the first word,
-         * until finally we end up here with empty string. */
-        trigger: /^$/,
+        trigger: /^thank(s| you).*/,
         testExpect: [
-            'abra cadabra',
+            'thanks',
+            'thank you demon'
         ],
         options: [
-
-            /* Plausible responses to a statement */
-            { value: 'dontbeafraid', restrictedTo: [EVIL] },
-            { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: 'noted' },
-            { value: 'blasphemy', restrictedTo: [FRIENDLY] },
-            { value: 'heresy', restrictedTo: [FRIENDLY] },
-            { value: 'omenous' },
-            { value: 'wretched' },
-            { value: 'lies' },
-            { value: 'liar' },
-            { value: 'donotlie' },
-            { value: 'indeed' },
-            { value: 'unfathomable' },
-            { value: 'unthinkable' },
-            { value: 'intheory' },
-            { value: 'unlikely' },
-            { value: 'thatslovely' },
-            { value: 'soundsgreat' },
-            { value: 'fantastic' },
-            { value: 'exaggeration' },
-            { value: 'idontthinkso' },
-            { value: 'fabrication' },
-            { value: 'agreed' },
-            { value: 'shocking' },
-            { value: 'whatever', restrictedTo: [EVIL] },
-            { value: 'idontcare', restrictedTo: [EVIL] },
-
-            /* Plausible questions as a response to a statement */
-            { value: 'why' },
-            { value: 'how' },
-            { value: 'when' },
+            { value: 'mypleasure' },
+            { value: 'yourewelcome', restrictedTo: [FRIENDLY] },
+            { value: 'thereyougo', restrictedTo: [FRIENDLY] },
+            { value: 'youoweme', restrictedTo: [EVIL] },
+            { value: 'ineedfavornow', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: '{fallbackShort}',
+        testExpect: [
+            'beckham',
+            'eminem',
+            'art',
+        ],
+        options: [
+            /* Plausible responses to a word */
             { value: 'explain' },
+            { value: 'noted' },
+            { value: 'fun' },
+            { value: 'lame' },
+            { value: 'like' },
+            { value: 'dislike' },
+            { value: 'approved' },
+            { value: 'disapproved' },
+            { value: 'exciting' },
+            { value: 'boring' },
+            { value: 'omenous', restrictedTo: [FRIENDLY] },
 
             /* Nonsequiturs */
+            { value: '!PLAYERNAME ok', priority: 0.3 },
             { value: 'dracarys', restrictedTo: [EVIL] },
             { value: 'youwilldie', restrictedTo: [EVIL] },
             { value: 'youwillcry', restrictedTo: [EVIL] },
@@ -2278,15 +2306,57 @@ const scriptedExperience = [
             /* Nonsequitur questions */
             { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
             { value: 'whatdoyouwant' },
-            { value: 'whyareyouhere' },
+            { value: 'whyareyouhere' }, 
+        ]
+    },
+    {
+        trigger: '{fallbackLong}',
+        testExpect: [
+            'life aint but a dream',
+            'the good old days',
+        ],
+        options: [
+            /* Plausible responses to a statement */
+            { value: 'explain' },
+            { value: 'why' },
+            { value: 'how' },
+            { value: 'when' },
+            { value: 'noted' },
+            { value: 'shocking' },
+            { value: 'dontbeafraid', restrictedTo: [EVIL] },
+            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: 'exaggeration', restrictedTo: [EVIL] },
+            { value: 'idontthinkso', restrictedTo: [EVIL] },
+            { value: 'whatever', restrictedTo: [EVIL] },
+            { value: 'idontcare', restrictedTo: [EVIL] },
+            { value: 'wretched', restrictedTo: [EVIL] },
+            { value: 'lies', restrictedTo: [EVIL] },
+            { value: 'liar', restrictedTo: [EVIL] },
+            { value: 'donotlie', restrictedTo: [EVIL] },
+            { value: 'unfathomable', restrictedTo: [EVIL] },
+            { value: 'unthinkable', restrictedTo: [EVIL] },
+            { value: 'unlikely', restrictedTo: [EVIL] },
+            { value: 'indeed', restrictedTo: [FRIENDLY] },
+            { value: 'intheory', restrictedTo: [FRIENDLY] },
+            { value: 'blasphemy', restrictedTo: [FRIENDLY] },
+            { value: 'heresy', restrictedTo: [FRIENDLY] },
+            { value: 'thatslovely', restrictedTo: [FRIENDLY] },
+            { value: 'soundsgreat', restrictedTo: [FRIENDLY] },
+            { value: 'fantastic', restrictedTo: [FRIENDLY] },
+            { value: 'agreed', restrictedTo: [FRIENDLY] },
+            { value: 'notsafehere', restrictedTo: [FRIENDLY] },
 
+            /* Nonsequiturs */
             { value: '!PLAYERNAME ok', priority: 0.3 },
-            
-            //{ value: 'iamtrapped', restrictedTo: [EVIL] },
-            // youarechosen ... donotresist
-            // itconsumesme ... itwillcomeforyounow
-            // ithurts ... makeitstop
-            // theytookmyeyes ...
+        ]
+    },
+    {
+        /* Fallback when nothing else matches. Presumably the user made a statement not a question.
+         * We might end up here after recursively resolving the query such that we always drop the first word,
+         * until finally we end up here with empty string. */
+        trigger: /^$/,
+        options: [
+            { value: '!FALLBACK' }
         ]
     }
 ]
@@ -2322,6 +2392,13 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         alert('ERROR! Calling resolveQueryWithSimpleChatbot without inputting sideEffects')
     }
     // Special cases
+    if (query.startsWith('!FALLBACK')) {
+        if (currentInput.split(" ").length <= 1) {
+            return resolveQueryWithSimpleChatbot('{fallbackShort}', sideEffects)
+        } else {
+            return resolveQueryWithSimpleChatbot('{fallbackLong}', sideEffects)
+        }
+    }
     if (query.startsWith('!LIGHTSPECIAL')) {
         sideEffects.lightFlash()
         return resolveQueryWithSimpleChatbot('{lightResponse}', sideEffects)
