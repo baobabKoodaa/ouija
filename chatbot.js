@@ -1519,11 +1519,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /.*what is your name.*/,
+        trigger: /.*what (is|was) your name.*/,
         testExpect: [
             'hello what is your name',
             'what is your name',
             'what is your name demon',
+            'what was your name again'
         ],
         testExpectNot: [
             'nice name bro'
@@ -2253,6 +2254,34 @@ const scriptedExperience = [
             { value: 'indeed' },
             { value: 'agreed' },
             { value: 'yesindeed' },
+        ]
+    },
+    {
+        trigger: /^dont know.*/,
+        testExpect: [
+            'i dont know',
+            'dont know why',
+        ],
+        options: [
+            { value: 'yesyoudo' },
+            { value: 'youdoknow' },
+            { value: 'soforgetful' },
+            { value: 'badmemory' },
+        ]
+    },
+    {
+        trigger: /^i know.*/,
+        testExpect: [
+            'i know dear',
+            'i know',
+        ],
+        options: [
+            { value: 'youknow' },
+            { value: 'youbetter' },
+            { value: 'itisknown' },
+            { value: 'fact' },
+            { value: 'confirmed' },
+            { value: 'guaranteed' },
         ]
     },
     {
