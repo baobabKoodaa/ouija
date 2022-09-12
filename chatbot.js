@@ -229,6 +229,22 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )door?( .*|$)/,
+        testExpect: [
+            'open door',
+            'close my door',
+            'open my door then close it',
+            'are you at my door'
+        ],
+        options: [
+            { value: 'knockknock' },
+            { value: 'creaking' },
+            { value: 'whenyousleep' },
+            { value: 'lateriwill' },
+            { value: 'window' },
+        ],
+    },
+    {
         trigger: /(^|.* )joke( .*|$)/,
         testExpect: [
             'tell me a joke',
@@ -1118,17 +1134,31 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^how do you know.*/,
+        testExpect: [
+            'how do you know my name',
+            'how do you know where i am',
+        ],
+        options: [
+            { value: 'iknowthings' },
+            { value: 'ivebeenwatching' },
+            { value: 'ijustdo' },
+            { value: 'lurking' },
+            { value: 'observations', restrictedTo: [FRIENDLY] },
+            { value: 'goodmemory', restrictedTo: [FRIENDLY] },
+        ]
+    },
+    {
         trigger: /^how.*/,
         testExpect: [
             'how does the world end', 
             'how do you hear my questions',
-            'how do you know my name',
-            'how do you know where i am',
         ],
         options: [
             { value: 'secret' },
             { value: 'supernatural' },
             { value: 'voodoo' },
+            { value: 'withglee' },
             { value: 'blackmagic' },
         ]
     },
@@ -1211,6 +1241,18 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^are you able to .*/,
+        testExpect: [
+            'are you able to sing',
+        ],
+        options: [
+            { value: 'unable' },
+            { value: 'easily' },
+            { value: 'ableandwilling' },
+            { value: 'verymuchso' },
+        ]
+    },
+    {
         trigger: /^are you going to .*/,
         testExpect: [
             'are you going to hurt me',
@@ -1223,10 +1265,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you (in|inside|at|there|close|near|here|around|present|under|behind|above|over)( .*|$)/,
+        trigger: /^are you (in|inside|at|there|close|near|next to|here|around|present|under|behind|above|over)( .*|$)/,
         testExpect: [
             'are you in the house',
             'are you inside',
+            'are you next to me',
         ],
         options: [
             { value: '!LOCATIONQUEST' }
@@ -2112,14 +2155,13 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^(ok|oki|okay)( .*|$)/,
+        trigger: /^(ok|oki|okay)$/,
         testExpect: [
-            'ok bro',
             'ok',
             'okay'
         ],
         testExpectNot: [
-            'it is ok',
+            'ok who is there with you',
         ],
         options: [
             { value: 'itisknown' },
@@ -2285,6 +2327,21 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^let me .*/,
+        testExpect: [
+            'let me go',
+            'i beg you to let me know right now',
+        ],
+        options: [
+            { value: 'disallowed' },
+            { value: 'denied' },
+            { value: 'nopermission' },
+            { value: 'theysaidno', restrictedTo: [FRIENDLY] },
+            { value: 'sorryno', restrictedTo: [FRIENDLY] },
+            { value: 'notletting', restrictedTo: [FRIENDLY] },
+        ]
+    },
+    {
         trigger: /^thank(s| you).*/,
         testExpect: [
             'thanks',
@@ -2296,6 +2353,25 @@ const scriptedExperience = [
             { value: 'thereyougo', restrictedTo: [FRIENDLY] },
             { value: 'youoweme', restrictedTo: [EVIL] },
             { value: 'ineedfavornow', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^kill m(e|y)( .*|$)/,
+        testExpect: [
+            'kill my cousin',
+            'then kill me',
+        ],
+        options: [
+            { value: 'nottoday', restrictedTo: [FRIENDLY] },
+            { value: 'careful', restrictedTo: [FRIENDLY] },
+            { value: 'idontkill', restrictedTo: [FRIENDLY] },
+            { value: 'iwont', restrictedTo: [FRIENDLY] },
+            { value: 'dontaskthat', restrictedTo: [FRIENDLY] },
+            { value: 'lateriwill', restrictedTo: [EVIL] },
+            { value: 'withpleasure', restrictedTo: [EVIL] },
+            { value: 'slowly', restrictedTo: [EVIL] },
+            { value: 'withpoison', restrictedTo: [EVIL] },
+            { value: 'done', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -2351,7 +2427,7 @@ const scriptedExperience = [
             { value: 'how' },
             { value: 'when' },
             { value: 'noted' },
-            { value: 'shocking' },
+            //{ value: 'shocking' },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'exaggeration', restrictedTo: [EVIL] },
