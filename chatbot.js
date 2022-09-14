@@ -2344,6 +2344,7 @@ const scriptedExperience = [
             { value: 'evening' },
             { value: 'morning' },
             { value: 'wellhello' },
+            { value: 'salutations' },
         ],
     },
     {
@@ -2354,7 +2355,11 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'hello' },
-            { value: 'shalom' }
+            { value: 'hallo' },
+            { value: 'shalom' },
+            { value: 'salute' },
+            { value: 'salutations' },
+            { value: 'salaam' },
         ]
     },
     {
@@ -2395,30 +2400,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^oh( .*|$)/,
+        trigger: /^(oh|huh)$/,
         testExpect: [
-            'oh ok who are you',
             'oh',
-        ],
-        testExpectNot: [
-            'oh ok then kill me',
-            'oh sorry',
-            'oh pls show yourself',
-            'oh really',
+            'huh',
         ],
         options: [
             { value: 'ohyes' },
-            { value: 'ohmy' },
-            { value: 'doh' },
-        ]
-    },
-    {
-        trigger: /^huh( .*|$)/,
-        testExpect: [
-            'huh is that so',
-            'huh'
-        ],
-        options: [
             { value: 'doh' },
             { value: 'aha' },
             { value: 'daa' },
@@ -2516,6 +2504,8 @@ const scriptedExperience = [
             /* Plausible responses to a word */
             { value: 'explain' },
             { value: 'noted' },
+            { value: 'halal' },
+            { value: 'haram' },
             { value: 'fun' },
             { value: 'lame' },
             { value: 'like' },
