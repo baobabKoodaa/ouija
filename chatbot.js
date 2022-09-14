@@ -247,7 +247,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^((((jump)?scare me)|do that) )?again.*/,
+        trigger: /^((((jump)?scare me)|do that|make noise|makse sound) )?again.*/,
         testExpect: [
             'jumpscare me again',
             'scare me again',
@@ -526,6 +526,28 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )make (noise|sound)($| .*)/,
+        testExpect: [
+            'make a sound',
+            'make noise',
+        ],
+        options: [
+            { value: '!JACKSOUND' },
+        ],
+    },
+    {
+        trigger: '{jackResponse}',
+        testExpect: [
+            'make a sound',
+            'make noise',
+        ],
+        options: [
+            { value: 'listen' },
+            { value: 'hear' },
+            { value: 'here' },
+        ],
+    },
+    {
         trigger: /(^|.* )(sign|prove|haunt me|scare me|show your ?self)($| .*)/,
         testExpect: [
             'give me a sign',
@@ -679,7 +701,6 @@ const scriptedExperience = [
             'oops sorry',
         ],
         options: [
-            { value: 'youbetterbe', restrictedTo: [EVIL] },
             { value: 'idontforgive', restrictedTo: [EVIL] },
             { value: 'unforgivable', restrictedTo: [EVIL] },
             { value: 'notforgiven', restrictedTo: [EVIL] },
@@ -688,7 +709,6 @@ const scriptedExperience = [
             { value: 'itsfine', restrictedTo: [FRIENDLY] },
             { value: 'forgiven', restrictedTo: [FRIENDLY] },
             { value: 'acknowledged', restrictedTo: [FRIENDLY] },
-            { value: 'noted', restrictedTo: [FRIENDLY] },
         ],
     },
     {
@@ -2594,6 +2614,14 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         // Fallback in case bug in code
         return 'neither'
     }
+    if (query.startsWith('!JACKSOUND')) {
+        if (sideEffects.getPlayedJack()) {
+            return resolveQueryWithSimpleChatbot('again', sideEffects)
+        }
+        sideEffects.setPlayedJack()
+        sideEffects.jackSound()
+        return resolveQueryWithSimpleChatbot('{jackResponse}', sideEffects)
+    }
     if (query.startsWith('!LIGHTSPECIAL')) {
         sideEffects.lightFlash()
         return resolveQueryWithSimpleChatbot('{lightResponse}', sideEffects)
@@ -2846,6 +2874,9 @@ const dispatchToSpirit = function(rawInput, callback) {
             logToSumoLogic,
             window,
             lightFlash,
+            jackSound,
+            setPlayedJack: () => { window.playedJack = true },
+            getPlayedJack: () => { return window.playedJack }
         }
         if (using_GPT3) respondWithOpenAI(rawInput, callback)
         else callback(respondWithSimpleChatbot(rawInput, sideEffects))
@@ -2913,6 +2944,9 @@ if (window.location.href.startsWith('file')) {
         logToSumoLogic: () => {},
         window: window,
         lightFlash: () => {},
+        jackSound: () => {},
+        setPlayedJack: () => {},
+        getPlayedJack: () => { return false }
     }
     // Prevent achieving quest goals while running tests
     const realQuestGoals = {
