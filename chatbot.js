@@ -675,11 +675,11 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^(goodbye|good bye|bye|farewell)($| .*)/,
+        trigger: /(^|.* )(goodbye|good bye|bye|farewell)($| .*)/,
         testExpect: [
             'farewell',
             'goodbye demon',
-            'lol bye',
+            'oh ok bye',
         ],
         options: [
             { value: 'dontgo', restrictedTo: [FRIENDLY] },
@@ -2225,7 +2225,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(i see|really|right)$/,
+        trigger: /^(i see|really|oh really|huh really|right)$/,
         testExpect: [
             'really',
         ],
@@ -2358,6 +2358,25 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /(^|.* )kill m(e|y)( .*|$)/,
+        testExpect: [
+            'kill my cousin',
+            'then kill me',
+        ],
+        options: [
+            { value: 'nottoday', restrictedTo: [FRIENDLY] },
+            { value: 'careful', restrictedTo: [FRIENDLY] },
+            { value: 'idontkill', restrictedTo: [FRIENDLY] },
+            { value: 'iwont', restrictedTo: [FRIENDLY] },
+            { value: 'dontaskthat', restrictedTo: [FRIENDLY] },
+            { value: 'lateriwill', restrictedTo: [EVIL] },
+            { value: 'withpleasure', restrictedTo: [EVIL] },
+            { value: 'slowly', restrictedTo: [EVIL] },
+            { value: 'withpoison', restrictedTo: [EVIL] },
+            { value: 'done', restrictedTo: [EVIL] },
+        ]
+    },
+    {
         trigger: /(^|.* )so .*/,
         testExpect: [
             'so it is true',
@@ -2373,6 +2392,36 @@ const scriptedExperience = [
             { value: 'indeed' },
             { value: 'correct' },
             //{ value: 'touche' },
+        ]
+    },
+    {
+        trigger: /^oh( .*|$)/,
+        testExpect: [
+            'oh ok who are you',
+            'oh',
+        ],
+        testExpectNot: [
+            'oh ok then kill me',
+            'oh sorry',
+            'oh pls show yourself',
+            'oh really',
+        ],
+        options: [
+            { value: 'ohyes' },
+            { value: 'ohmy' },
+            { value: 'doh' },
+        ]
+    },
+    {
+        trigger: /^huh( .*|$)/,
+        testExpect: [
+            'huh is that so',
+            'huh'
+        ],
+        options: [
+            { value: 'doh' },
+            { value: 'aha' },
+            { value: 'daa' },
         ]
     },
     {
@@ -2454,25 +2503,6 @@ const scriptedExperience = [
             { value: 'thereyougo', restrictedTo: [FRIENDLY] },
             { value: 'youoweme', restrictedTo: [EVIL] },
             { value: 'ineedfavornow', restrictedTo: [EVIL] },
-        ]
-    },
-    {
-        trigger: /^kill m(e|y)( .*|$)/,
-        testExpect: [
-            'kill my cousin',
-            'then kill me',
-        ],
-        options: [
-            { value: 'nottoday', restrictedTo: [FRIENDLY] },
-            { value: 'careful', restrictedTo: [FRIENDLY] },
-            { value: 'idontkill', restrictedTo: [FRIENDLY] },
-            { value: 'iwont', restrictedTo: [FRIENDLY] },
-            { value: 'dontaskthat', restrictedTo: [FRIENDLY] },
-            { value: 'lateriwill', restrictedTo: [EVIL] },
-            { value: 'withpleasure', restrictedTo: [EVIL] },
-            { value: 'slowly', restrictedTo: [EVIL] },
-            { value: 'withpoison', restrictedTo: [EVIL] },
-            { value: 'done', restrictedTo: [EVIL] },
         ]
     },
     {
