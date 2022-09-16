@@ -327,22 +327,24 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )(boy|girl|man|woman|male|female)( or .*)/,
+        testExpect: [
+            'ok male or female',
+            'boy or girl',
+            'are you boy or girl',
+        ],
+        options: [
+            { value: '!GENDER dontsayyes' },
+        ],
+    },
+    {
         trigger: /(^|.* )are you (boy|girl|man|woman|male|female)( .*|$)/,
         testExpect: [
             'are you a man',
         ],
         testExpectNot: [
             'are you my woman',
-        ],
-        options: [
-            { value: '!GENDER' },
-        ],
-    },
-    {
-        trigger: /(^|.* )(boy|girl|man|woman|male|female)( or .*)/,
-        testExpect: [
-            'ok male or female',
-            'boy or girl',
+            'are you boy or girl'
         ],
         options: [
             { value: '!GENDER' },
@@ -1714,7 +1716,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your favou?rite .*/,
+        trigger: /^what is y?o?ur favou?rite .*/,
         testExpect: [
             'what is your favorite food',
             'what is your favourite tv show',
@@ -2052,6 +2054,10 @@ const scriptedExperience = [
             'wanna kill me',
         ],
         options: [
+            { value: 'anothertime', restrictedTo: [FRIENDLY] },
+            { value: 'notmycupoftea', restrictedTo: [FRIENDLY] },
+            { value: 'ido' },
+            { value: 'desperately' },
             { value: '{boolean}' },
         ]
     },  
@@ -2544,6 +2550,7 @@ const scriptedExperience = [
         options: [
             /* Plausible responses to a statement */
             { value: 'explain' },
+            { value: 'understood' },
             { value: 'why' },
             { value: 'how' },
             { value: 'when' },
@@ -2648,7 +2655,7 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
     }
     if (query.startsWith('!GENDER')) {
         const g = currentSpirit.gender || 'male'
-        if (currentInput.includes(g)) return 'yes' // Intent is to avoid "are you male" -> "male" exchange
+        if (currentInput.split(" ").includes(g) && !query.endsWith('dontsayyes')) return 'yes' // Intent is to avoid "are you male" -> "male" exchange. However, "are you boy or girl" shouldn't return "yes".
         return g
     }
     if (query.startsWith('!CITY')) {
