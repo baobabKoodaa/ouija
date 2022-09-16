@@ -1137,7 +1137,11 @@ document.body.addEventListener('keydown', e => {
     const lowerCasedChar = e.key.toLocaleLowerCase()
     if (turn === TURN_USER && !popupIsOpen && !gameOver) {
         const m = document.getElementById('userMessagePre')
-        if (ALLOWED_CHARS.includes(lowerCasedChar) || lowerCasedChar == ' ') {
+        if (possessedMessage.length > 0) {
+            const c = possessedMessage.charAt(0)
+            possessedMessage = possessedMessage.substring(1)
+            m.innerText += c.toUpperCase()
+        } else if (ALLOWED_CHARS.includes(lowerCasedChar) || lowerCasedChar == ' ') {
             if (m.innerText.length < USER_MESSAGE_MAX_LENGTH) {
                 m.innerText += lowerCasedChar.toUpperCase()
             }
@@ -1147,7 +1151,6 @@ document.body.addEventListener('keydown', e => {
                 console.log('Player: ' + userQuestion)
                 switchTurnToSpirit()
                 dispatchToSpirit(userQuestion, spiritIsReadyToCommunicate)
-                
             }
         } else if (e.key == 'Backspace' && m.innerText.length > 0) {
             m.innerText = m.innerText.substring(0, m.innerText.length - 1)
