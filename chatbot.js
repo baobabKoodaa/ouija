@@ -265,9 +265,11 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )joke( .*|$)/,
+        trigger: /(^|.* )(joke|funny)( .*|$)/,
         testExpect: [
             'tell me a joke',
+            'your funny',
+            'thats funny',
         ],
         options: [
             { value: 'askwhatsup' },
@@ -275,7 +277,8 @@ const scriptedExperience = [
             { value: 'knockknock' }, // no followup though, user will ask "whos there" and get a weirdly straight answer
             { value: 'willyoulaugh' }, // no followup though
             { value: 'joke' }, // there, i said it
-            { value: 'notyourclown' }, // how dare you
+            { value: 'notyourclown', restrictedTo: [EVIL] }, // how dare you
+            { value: 'thisisnojoke', restrictedTo: [FRIENDLY] }, // how dare you
         ],
     },
     {
@@ -1399,7 +1402,8 @@ const scriptedExperience = [
             { value: 'alive' },
             { value: 'living' },
             { value: 'livingdead' },
-            { value: '{identityFudge}' },
+            { value: 'theopposite' },
+            { value: 'deadly' },
         ]
     },
     {
@@ -1411,7 +1415,8 @@ const scriptedExperience = [
             { value: '!DEFINE human' },
             { value: 'iwas' },
             { value: 'iusedtobe' },
-            { value: '{identityFudge}' },
+            { value: 'half' },
+            { value: 'ilooklikeone' },
         ]
     },
     {
@@ -1423,7 +1428,8 @@ const scriptedExperience = [
             { value: '!DEFINE real' },
             { value: 'imaginary' },
             { value: 'realenough' },
-            { value: '{identityFudge}' },
+            { value: 'ifeelreal' },
+            { value: 'realest', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -1433,12 +1439,11 @@ const scriptedExperience = [
         ],
         options: [
             { value: '!DEFINE evil' },
-            { value: 'noyouare', restrictedTo: [FRIENDLY] },
-            { value: 'no', restrictedTo: [FRIENDLY] },
+            { value: 'theopposite' },
+            { value: 'noyouare' },
+            { value: 'notrustme', restrictedTo: [FRIENDLY] },
             { value: 'ungodlyevil', restrictedTo: [EVIL] },
             { value: 'theymakeme', restrictedTo: [EVIL] },
-            { value: 'yourenosainteither', restrictedTo: [EVIL] },
-            { value: '{identityFudge}' },
         ]
     },
     {
@@ -2921,7 +2926,15 @@ const SCRIPTED_TOOLTIPS = [
     },
 ]
 
-const possessedMessages = ["i am possessed", "possess me", "take my soul", "i offer my soul", "the dark lord commands me", "i am losing my sanity"]
+const possessedMessages = [
+    "i am possessed",
+    "possess me",
+    "take my soul",
+    "i offer my soul",
+    "my soul is yours",
+    "the dark lord commands me",
+    "sanity i am losing it",
+]
 
 const initializeSpirit = function() {
     const spiritType = Math.random() > 0.5 ? EVIL : FRIENDLY
