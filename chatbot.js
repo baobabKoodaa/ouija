@@ -972,8 +972,6 @@ const scriptedExperience = [
             'who will win between superman and batman',
         ],
         options: [
-            { value: 'former' },
-            { value: 'latter' },
             { value: 'both' },
             { value: 'neither' },
             { value: 'either' },
@@ -1332,15 +1330,16 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you going to .*/,
+        trigger: /^are you (going to|gonna) .*/,
         testExpect: [
             'are you going to hurt me',
+            'are you gonna jumpscare'
         ],
         options: [
             { value: 'youwillsee' },
             { value: 'nottoday' },
-            { value: 'yes' },
-            { value: 'dontworry', restrictedTo: [EVIL] },
+            { value: 'iam' },
+            { value: 'iwill' },
         ]
     },
     {
@@ -2636,7 +2635,13 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         const splitted = currentInput.split(' ')
         const orIndex = splitted.findIndex(word => word === 'or')
         if (orIndex >= 1 && orIndex <= splitted.length-2) {
-            return splitted[Math.random() > 0.5 ? orIndex-1 : orIndex+1]
+            const a = splitted[orIndex-1]
+            const b = splitted[orIndex+1]
+            if (a == b) {
+                return resolveQueryWithSimpleChatbot(`choose between ${a} and ${b}`, sideEffects) // neither,either,both
+            }
+            const chosenWord = Math.random() > 0.5 ? a : b
+            return chosenWord == 'me' ? 'you' : (chosenWord == 'you' ? 'me' : chosenWord)
         }
         // Fallback in case bug in code
         return 'neither'
