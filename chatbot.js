@@ -251,6 +251,18 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )typing( .*|$)/,
+        testExpect: [
+            'how are you typing',
+            'you typing on a keyboard'
+        ],
+        options: [
+            { value: 'nokeyboard' },
+            { value: 'telepathically' },
+            { value: 'notreally' }
+        ]
+    },
+    {
         trigger: /^((((jump)?scare me)|do that|make noise|makse sound) )?again.*/,
         testExpect: [
             'jumpscare me again',
@@ -2575,7 +2587,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(thats |your?e? )?cool$/,
+        trigger: /^cool$/,
         testExpect: [
             'cool',
             'thats cool',
@@ -2597,6 +2609,19 @@ const scriptedExperience = [
             { value: 'thankyou', restrictedTo: [FRIENDLY] },
             { value: 'coolest', restrictedTo: [EVIL] },
             { value: 'right', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^wow$/,
+        testExpect: [
+            'wow',
+        ],
+        options: [
+            { value: 'amazed' },
+            { value: 'impressed' },
+            { value: 'yep' },
+            { value: 'yeah' },
+            { value: 'likethat' },
         ]
     },
     {
