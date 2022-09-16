@@ -779,9 +779,9 @@ const scriptedExperience = [
             'my name is mikko'
         ],
         options: [
-            { value: 'nicetomeetyou' },
             { value: 'stupidname', restrictedTo: [EVIL] },
             { value: 'dumbname', restrictedTo: [EVIL] },
+            { value: 'nicetomeetyou', restrictedTo: [FRIENDLY] },
             { value: 'nicename', restrictedTo: [FRIENDLY] },
             { value: 'fancyname', restrictedTo: [FRIENDLY] },
         ]
@@ -2106,10 +2106,35 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^do you like .*/,
+        testExpect: [
+            'do you like talking to me',
+            'do you like me',
+            'do you like samantha',
+            'do you like humans',
+            'do you like jesus',
+        ],
+        options: [
+            { value: 'honestly' },
+            { value: 'onsomedays' },
+            { value: 'alot', restrictedTo: [FRIENDLY] },
+            { value: 'myfavorite', restrictedTo: [FRIENDLY] },
+            { value: 'thebest', restrictedTo: [FRIENDLY] },
+            { value: 'lovely', restrictedTo: [FRIENDLY] },
+            { value: 'fantastic', restrictedTo: [FRIENDLY] },
+            { value: 'notonebit', restrictedTo: [EVIL] },
+            { value: 'delicious', restrictedTo: [EVIL] },
+            { value: 'tasty', restrictedTo: [EVIL] },
+            { value: 'boring', restrictedTo: [EVIL] },
+            { value: 'disgusting', restrictedTo: [EVIL] },
+            { value: 'wretched', restrictedTo: [EVIL] },
+            { value: 'sinful', restrictedTo: [EVIL] },
+        ]
+    },
+    {
         trigger: /^do you( .*|$)/,
         testExpect: [
             'do you sleep',
-            'do you like me',
             'do you kill people',
             'do you have a favorite color',
         ],
@@ -2517,8 +2542,6 @@ const scriptedExperience = [
             { value: 'dislike' },
             { value: 'approved' },
             { value: 'disapproved' },
-            { value: 'exciting' },
-            { value: 'boring' },
             { value: 'omenous', restrictedTo: [FRIENDLY] },
 
             /* Nonsequiturs */
@@ -2561,7 +2584,6 @@ const scriptedExperience = [
             { value: 'idontthinkso', restrictedTo: [EVIL] },
             { value: 'whatever', restrictedTo: [EVIL] },
             { value: 'idontcare', restrictedTo: [EVIL] },
-            { value: 'wretched', restrictedTo: [EVIL] },
             { value: 'lies', restrictedTo: [EVIL] },
             { value: 'liar', restrictedTo: [EVIL] },
             { value: 'donotlie', restrictedTo: [EVIL] },
@@ -2574,7 +2596,6 @@ const scriptedExperience = [
             { value: 'heresy', restrictedTo: [FRIENDLY] },
             { value: 'thatslovely', restrictedTo: [FRIENDLY] },
             { value: 'soundsgreat', restrictedTo: [FRIENDLY] },
-            { value: 'fantastic', restrictedTo: [FRIENDLY] },
             { value: 'agreed', restrictedTo: [FRIENDLY] },
             { value: 'notsafehere', restrictedTo: [FRIENDLY] },
 
