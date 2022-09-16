@@ -183,8 +183,8 @@ const resizeUpdates = function () {
     Object.assign(mag.style, {
         left: (100 * MAG_LEFT) + "%",
         top: (100 * MAG_TOP) + "%",
-        width: magSize + 'px', // TODO %
-        height: magSize + 'px', // TODO %
+        width: magSize + 'px',
+        height: magSize + 'px',
         backgroundSize: (MAG_ZOOM * 100 * boardWidth / magSize) + '% ' + (MAG_ZOOM * 100 * boardHeight / magSize) + '%',
         visibility: 'visible'
     })
@@ -682,26 +682,53 @@ const switchTurnToSpirit = function () {
     questLineTick()
 }
 
+const getInitialDelay = function() {
+    // Intent is to emulate a human who takes a little bit longer before starting to write
+    return 700 + Math.round(Math.random() * 1000)
+}
+
+const getConsecutiveDelay = function(nextChar) {
+    // Intent is to emulate a human with varying delays between key presses
+    const prev1 = revealedSpiritLetters.charAt(revealedSpiritLetters.length-1)
+    const prev2 = revealedSpiritLetters.charAt(revealedSpiritLetters.length-2)
+    if (nextChar == prev1 || nextChar == prev2) {
+        return 60 + Math.round(Math.random() * 150)
+    }
+    return 100 + Math.round(Math.random() * 300)
+}
+
+const recursivelyRevealSpiritMessage = function (delayParam) {
+    turn = 'no-one'
+    document.getElementById('planchette').classList = ['planchette-no-glow']
+    if (remainingGoals.length === 0) {
+        turn = TURN_USER
+        console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
+        document.getElementById('userMessagePre').innerText = ''
+        document.getElementById('userMessagePre').classList = ['blinking-caret']
+        currentExchangeNumber++
+        questLineTick()
+    } else {
+        const delay = delayParam ?? getInitialDelay()
+        setTimeout(() => {
+            const c = remainingGoals[0]
+            const nextDelay = getConsecutiveDelay(c)
+            remainingGoals = remainingGoals.substring(1)
+            addCharToRevealedMessage(c)
+            recursivelyRevealSpiritMessage(nextDelay)
+        }, delay)
+    }
+}
+
 const spiritIsReadyToCommunicate = function (rawMessage) {
     const message = rawMessage.toLocaleLowerCase().replace(/[^0-9a-z]/gi, '')
     const container = document.getElementById('spiritMessageContainer')
 
     logToSumoLogic(previousInput + " -> " + message)
 
+    remainingGoals = message
     if (speedMode) {
-        turn = TURN_USER
-        revealedSpiritLetters = message
-        console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
-        container.innerText = message
-        container.setAttribute('data-text', message)
-        document.getElementById('userMessagePre').innerText = ''
-        document.getElementById('userMessagePre').classList = ['blinking-caret']
-        document.getElementById('planchette').classList = ['planchette-no-glow']
-        currentExchangeNumber++
-        questLineTick()
-        return
+        recursivelyRevealSpiritMessage()
     }
-    remainingGoals = message // Set incoming message as new goals
 }
 
 let currentTooltip = 0
@@ -835,18 +862,7 @@ const toggleSpeedMode = function () {
         localStorage.removeItem('ouija-speedmode')
     }
     if (speedMode && remainingGoals.length > 0) {
-        turn = TURN_USER
-        revealedSpiritLetters += remainingGoals
-        console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
-        const container = document.getElementById('spiritMessageContainer')
-        container.innerText = revealedSpiritLetters
-        container.setAttribute('data-text', revealedSpiritLetters)
-        document.getElementById('userMessagePre').innerText = ''
-        document.getElementById('userMessagePre').classList = [' blinking-caret']
-        document.getElementById('planchette').classList = [' planchette-no-glow']
-        remainingGoals = ''
-        currentExchangeNumber++
-        questLineTick()
+        recursivelyRevealSpiritMessage()
     }
 }
 
