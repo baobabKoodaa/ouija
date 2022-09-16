@@ -2552,6 +2552,49 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^nice( .*|$)/,
+        testExpect: [
+            'nice name',
+            'nice',
+        ],
+        testExpectNot: [
+            'nice to meet you'
+        ],
+        options: [
+            { value: 'niceindeed' },
+            { value: 'yeah' },
+            { value: 'thanks', restrictedTo: [FRIENDLY] },
+            { value: 'thankyou', restrictedTo: [FRIENDLY] },
+            { value: 'nicest', restrictedTo: [EVIL] },
+            { value: 'niceforme', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^(thats |your?e? )?cool$/,
+        testExpect: [
+            'cool',
+            'thats cool',
+            'you cool',
+            'your cool',
+            'youre cool'
+        ],
+        testExpectNot: [
+            'cool how old are you'
+        ],
+        options: [
+            { value: 'icecool' }, // pretend to misunderstand
+            { value: 'cooltemperature' }, // pretend to misunderstand
+            { value: 'cooloutside' }, // pretend to misunderstand
+            { value: 'coolness' },
+            { value: 'yeah' },
+            { value: 'forreal', },
+            { value: 'thanks', restrictedTo: [FRIENDLY] },
+            { value: 'thankyou', restrictedTo: [FRIENDLY] },
+            { value: 'coolest', restrictedTo: [EVIL] },
+            { value: 'right', restrictedTo: [EVIL] },
+        ]
+    },
+    {
         trigger: '{fallbackShort}',
         testExpect: [
             'beckham',
