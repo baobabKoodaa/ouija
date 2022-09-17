@@ -2135,15 +2135,29 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^do you know .*/,
+        trigger: /^do you know (when|how|what|if|will) .*/,
         testExpect: [
             'do you know when will i marry',
             'do you know how i will die',
         ],
         options: [
-            { value: 'yesiknow' },
+            { value: 'askplainly' },
             { value: 'justask' },
+            { value: 'askdirectly' },
+        ]
+    },
+    {
+        trigger: /^do you know .*/,
+        testExpect: [
+            'do you know miriam',
+            'do you know method',
+        ],
+        options: [
+            { value: 'yesiknow' },
             { value: 'iknoweverything' },
+            { value: 'knownforever' },
+            { value: 'familiar' },
+            { value: 'notknown' },
         ]
     },
     {
@@ -2581,6 +2595,7 @@ const scriptedExperience = [
             { value: 'thankyou', restrictedTo: [FRIENDLY] },
             { value: 'nicest', restrictedTo: [EVIL] },
             { value: 'niceforme', restrictedTo: [EVIL] },
+            { value: '{nonSequiturs}' }
         ]
     },
     {
@@ -2597,7 +2612,6 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'icecool' }, // pretend to misunderstand
-            { value: 'cooltemperature' }, // pretend to misunderstand
             { value: 'cooloutside' }, // pretend to misunderstand
             { value: 'coolness' },
             { value: 'yeah' },
@@ -2606,6 +2620,7 @@ const scriptedExperience = [
             { value: 'thankyou', restrictedTo: [FRIENDLY] },
             { value: 'coolest', restrictedTo: [EVIL] },
             { value: 'right', restrictedTo: [EVIL] },
+            { value: '{nonSequiturs}' }
         ]
     },
     {
@@ -2616,9 +2631,30 @@ const scriptedExperience = [
         options: [
             { value: 'amazed' },
             { value: 'impressed' },
-            { value: 'yep' },
-            { value: 'yeah' },
             { value: 'likethat' },
+            { value: '{nonSequiturs}' }
+        ]
+    },
+    {
+        trigger: '{nonSequiturs}',
+        options: [
+            { value: 'isthisagametoyou' },
+            { value: 'whatdoyouwant' },
+            { value: 'whyareyouhere' }, 
+
+            { value: '!PLAYERNAME ok', priority: 0.3 },
+
+            { value: 'dracarys', restrictedTo: [EVIL] },
+            { value: 'youwilldie', restrictedTo: [EVIL] },
+            { value: 'youwillcry', restrictedTo: [EVIL] },
+            { value: 'youshallweep', restrictedTo: [EVIL] },
+            { value: 'iwillhurtyou', restrictedTo: [EVIL] },
+            { value: 'repent', restrictedTo: [FRIENDLY] },
+            { value: 'atone', restrictedTo: [FRIENDLY] },
+            { value: 'sinner', restrictedTo: [FRIENDLY] },
+            { value: 'recant', restrictedTo: [FRIENDLY] },
+            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
+            { value: 'notsafehere', restrictedTo: [FRIENDLY] },
         ]
     },
     {
@@ -2640,25 +2676,9 @@ const scriptedExperience = [
             { value: 'dislike' },
             { value: 'approved' },
             { value: 'disapproved' },
-            { value: 'omenous', restrictedTo: [FRIENDLY] },
 
             /* Nonsequiturs */
-            { value: '!PLAYERNAME ok', priority: 0.3 },
-            { value: 'dracarys', restrictedTo: [EVIL] },
-            { value: 'youwilldie', restrictedTo: [EVIL] },
-            { value: 'youwillcry', restrictedTo: [EVIL] },
-            { value: 'youshallweep', restrictedTo: [EVIL] },
-            { value: 'iwillhurtyou', restrictedTo: [EVIL] },
-            { value: 'repent', restrictedTo: [FRIENDLY] },
-            { value: 'atone', restrictedTo: [FRIENDLY] },
-            { value: 'sinner', restrictedTo: [FRIENDLY] },
-            { value: 'recant', restrictedTo: [FRIENDLY] },
-            { value: 'thisisnotagame', restrictedTo: [FRIENDLY] },
-
-            /* Nonsequitur questions */
-            { value: 'isthisagametoyou', restrictedTo: [FRIENDLY] },
-            { value: 'whatdoyouwant' },
-            { value: 'whyareyouhere' }, 
+            { value: '{nonSequiturs}' }
         ]
     },
     {
@@ -2695,7 +2715,7 @@ const scriptedExperience = [
             { value: 'thatslovely', restrictedTo: [FRIENDLY] },
             { value: 'soundsgreat', restrictedTo: [FRIENDLY] },
             { value: 'agreed', restrictedTo: [FRIENDLY] },
-            { value: 'notsafehere', restrictedTo: [FRIENDLY] },
+            { value: 'omenous', restrictedTo: [FRIENDLY] },
 
             /* Nonsequiturs */
             { value: '!PLAYERNAME ok', priority: 0.3 },
