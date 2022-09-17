@@ -879,8 +879,6 @@ const scriptedExperience = [
     {
         trigger: '{POSSESSYES}',
         options: [
-            { value: 'whosthere' },
-            { value: 'whoisthat' },
             { value: 'iaccept' },
             { value: 'ahyes' },
             { value: 'goood' },
@@ -2074,7 +2072,6 @@ const scriptedExperience = [
         options: [
             { value: 'cantsee' },
             { value: 'canttell' },
-            { value: 'dontknow' },
             { value: 'darkness' },
             { value: 'fog' },
 
@@ -3022,16 +3019,17 @@ const respondWithSimpleChatbot = function(rawInput, sideEffects) {
         .replace('tell me my', 'what is my')
         .replace('tell me what', 'what')
     
+    let inputToResolver = input
     if (currentRound === possessedRound && currentSpirit.type === EVIL) {
         if (possessedMessages.includes(rawInput.toLocaleLowerCase())) {
-            input = '{POSSESSYES}'
+            inputToResolver = '{POSSESSYES}'
         } else {
-            input = '{POSSESSNO}'
+            inputToResolver = '{POSSESSNO}'
         }
     }
 
     currentInput = input
-    const spiritResponse = augmentedResolveQueryWithSimpleChatbot(input, sideEffects).toLocaleLowerCase()
+    const spiritResponse = augmentedResolveQueryWithSimpleChatbot(inputToResolver, sideEffects).toLocaleLowerCase()
     
     previousInput = input
     previousOutput = spiritResponse

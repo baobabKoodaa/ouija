@@ -1153,20 +1153,21 @@ document.body.addEventListener('keydown', e => {
     const lowerCasedChar = e.key.toLocaleLowerCase()
     if (turn === TURN_USER && !popupIsOpen && !gameOver) {
         const m = document.getElementById('userMessagePre')
-        if (possessedMessage.length > 0) {
+        if (e.key == 'Enter') {
+            if (m.innerText.length >= 2) {
+                possessedMessage = '' // this may be needed in case user sends half-consumed possessedMessage
+                const userQuestion = m.innerText
+                console.log('Player: ' + userQuestion)
+                switchTurnToSpirit()
+                dispatchToSpirit(userQuestion, spiritIsReadyToCommunicate)
+            }
+        } else if (possessedMessage.length > 0) {
             const c = possessedMessage.charAt(0)
             possessedMessage = possessedMessage.substring(1)
             m.innerText += c.toUpperCase()
         } else if (ALLOWED_CHARS.includes(lowerCasedChar) || lowerCasedChar == ' ') {
             if (m.innerText.length < USER_MESSAGE_MAX_LENGTH) {
                 m.innerText += lowerCasedChar.toUpperCase()
-            }
-        } else if (e.key == 'Enter') {
-            if (m.innerText.length >= 2) {
-                const userQuestion = m.innerText
-                console.log('Player: ' + userQuestion)
-                switchTurnToSpirit()
-                dispatchToSpirit(userQuestion, spiritIsReadyToCommunicate)
             }
         } else if (e.key == 'Backspace' && m.innerText.length > 0) {
             m.innerText = m.innerText.substring(0, m.innerText.length - 1)
