@@ -1161,7 +1161,7 @@ document.body.addEventListener('keydown', e => {
                 switchTurnToSpirit()
                 dispatchToSpirit(userQuestion, spiritIsReadyToCommunicate)
             }
-        } else if (possessedMessage.length > 0) {
+        } else if (possessedMessage?.length > 0) {
             const c = possessedMessage.charAt(0)
             possessedMessage = possessedMessage.substring(1)
             m.innerText += c.toUpperCase()
