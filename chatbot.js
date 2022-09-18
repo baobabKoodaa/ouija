@@ -1369,9 +1369,9 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^where is .*/,
+        trigger: /(^|.* )where is .*/,
         testExpect: [
-            'where is home', 
+            'so where is home', 
             'where is darkness',
         ],
         options: [
@@ -1379,8 +1379,9 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^where (are you|in|.* (house|home)|exactly|specifically|do you live).*/,
+        trigger: /(^|.* )where (are you|in|.* (house|home)|exactly|specifically|do you live).*/,
         testExpect: [
+            'so so where are you right now',
             'where in guatemala', 
             'where inside the house',
             'where are you',
