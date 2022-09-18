@@ -902,6 +902,25 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /(^|.* )(wanna|want to|are we|can we) be friends($| .*)/,
+        testExpect: [
+            'want to be friends',
+            'wanna be friends',
+            'can we be friends',
+            'are we friends'
+        ],
+        options: [
+            { value: 'bestfriends', restrictedTo: [FRIENDLY] },
+            { value: 'closefriends', restrictedTo: [FRIENDLY] },
+            { value: 'myfriend', restrictedTo: [FRIENDLY] },
+            { value: 'comrades', restrictedTo: [FRIENDLY] },
+            { value: 'acquaintances', restrictedTo: [EVIL] },
+            { value: 'fornow', restrictedTo: [EVIL] },
+            { value: 'toolate', restrictedTo: [EVIL] },
+            { value: 'friendsforever', restrictedTo: [EVIL] },
+        ]
+    },  
+    {
         trigger: '{POSSESSYES}',
         options: [
             { value: 'iaccept' },
@@ -2122,9 +2141,9 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^wanna .*/,
+        trigger: /^(wanna|want to) .*/,
         testExpect: [
-            'wanna be friends',
+            'want to kill me',
             'wanna kill me',
         ],
         options: [
@@ -2318,7 +2337,7 @@ const scriptedExperience = [
     {
         trigger: '{insultedHard}',
         options: [
-            { value: 'youwillpayforthis', restrictedTo: [FRIENDLY] },
+            { value: 'youwillpay', restrictedTo: [FRIENDLY] },
             { value: 'howdareyou', restrictedTo: [FRIENDLY] },
             { value: 'unbelievable', restrictedTo: [FRIENDLY] },
             { value: 'die', restrictedTo: [EVIL] },
