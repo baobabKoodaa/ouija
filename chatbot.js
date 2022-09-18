@@ -664,6 +664,16 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^what (should i call you|can i call you|do they call you|are you called).*/,
+        testExpect: [
+            'what can i call you',
+            'what are you called demon',
+        ],
+        options: [
+            { value: '!NAME' },
+        ]
+    },
+    {
         trigger: /^please.*$/,
         testExpect: [
             'please help me',
@@ -1135,6 +1145,20 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^how much.*/,
+        testExpect: [
+            'how much did you pay',
+            'how much pain',
+        ],
+        options: [
+            { value: 'notcounting' },
+            { value: 'alot' },
+            { value: 'somuch' },
+            { value: '666' },
+            { value: 'notmuch' },
+        ]
+    },
+    {
         trigger: /^(how.*( kill| die))|(what happened)|(what .* (reason|cause) (of|for) (your? )?death).*/,
         testExpect: [
             'how were you killed',
@@ -1358,192 +1382,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^are you able to .*/,
-        testExpect: [
-            'are you able to sing',
-        ],
-        options: [
-            { value: 'unable' },
-            { value: 'easily' },
-            { value: 'ableandwilling' },
-            { value: 'verymuchso' },
-        ]
-    },
-    {
-        trigger: /^are you (going to|gonna) .*/,
-        testExpect: [
-            'are you going to hurt me',
-            'are you gonna jumpscare'
-        ],
-        options: [
-            { value: 'youwillsee' },
-            { value: 'nottoday' },
-            { value: 'iam' },
-            { value: 'iwill' },
-        ]
-    },
-    {
-        trigger: /^are you (in|inside|at|there|close|near|next to|here|around|present|under|behind|above|over)( .*|$)/,
-        testExpect: [
-            'are you in the house',
-            'are you inside',
-            'are you next to me',
-        ],
-        options: [
-            { value: '!LOCATIONQUEST' }
-        ]
-    },
-    {
-        trigger: /^are you (old|young)$/,
-        testExpect: [
-            'are you old',
-        ],
-        options: [
-            { value: '!RANDOM_COUNT' }
-        ]
-    },
-    {
-        trigger: /^are you dead$/,
-        testExpect: [
-            'are you dead',
-        ],
-        options: [
-            { value: '!DEFINE dead' },
-            { value: 'alive' },
-            { value: 'living' },
-            { value: 'livingdead' },
-            { value: 'theopposite' },
-            { value: 'deadly' },
-        ]
-    },
-    {
-        trigger: /^are you human$/,
-        testExpect: [
-            'are you human',
-        ],
-        options: [
-            { value: '!DEFINE human' },
-            { value: 'iwas' },
-            { value: 'iusedtobe' },
-            { value: 'half' },
-            { value: 'ilooklikeone' },
-        ]
-    },
-    {
-        trigger: /^are you real$/,
-        testExpect: [
-            'are you real',
-        ],
-        options: [
-            { value: '!DEFINE real' },
-            { value: 'imaginary' },
-            { value: 'realenough' },
-            { value: 'ifeelreal' },
-            { value: 'realest', restrictedTo: [EVIL] },
-        ]
-    },
-    {
-        trigger: /^are you evil$/,
-        testExpect: [
-            'are you evil',
-        ],
-        options: [
-            { value: '!DEFINE evil' },
-            { value: 'theopposite' },
-            { value: 'noyouare' },
-            { value: 'notrustme', restrictedTo: [FRIENDLY] },
-            { value: 'ungodlyevil', restrictedTo: [EVIL] },
-            { value: 'theymakeme', restrictedTo: [EVIL] },
-        ]
-    },
-    {
-        trigger: /^are you bot$/,
-        testExpect: [
-            'are you bot',
-        ],
-        options: [
-            { value: 'donotinsultme' },
-            { value: 'human' },
-            { value: 'thisisnotagame' },
-        ]
-    },
-    {
-        trigger: /^are you.*/,
-        testExpect: [
-            'are you a ghost',
-            'are you still alive',
-            'are you interested in food',
-        ],
-        testExpectNot: [
-            'are you here',
-        ],
-        options: [
-            { value: '{identityFudge}' },
-        ]
-    },
-    {
-        trigger: '{boolean}',
-        options: [
-            { value: 'perhaps' },
-            { value: 'ofcourse' },
-            { value: 'ithinkso' },
-            { value: 'whatdoyouthink' },
-            { value: 'notexactly' },
-            { value: 'thinkagain' },
-        ]
-    },
-    {
-        trigger: /^are .*/,
-        testExpect: [
-            'are ships sturdy',
-            'are we going to die',
-        ],
-        options: [
-            { value: '{boolean}' },
-        ]
-    },
-    {
-        trigger: /^should .*/,
-        testExpect: [
-            'should i go to the gym',
-            'should you be here',
-        ],
-        options: [
-            { value: '{boolean}' },
-            { value: 'risky' },
-            { value: 'worthit' },
-            { value: 'insane' },
-            { value: 'whynot' },
-            { value: 'toolate' },
-            { value: 'later' },
-        ]
-    },
-    {
-        trigger: /^is your name .*/,
-        testExpect: [
-            'is your name zozo',
-        ],
-        options: [
-            { value: '!NAME' },
-        ]
-    }, 
-    {
-        trigger: /^(am i|is|will|have you)( .*|$)/,
-        testExpect: [
-            'am i alive',
-            'is it true',
-            'will we ever find happiness',
-            'have you seen me before'
-        ],
-        testExpectNot: [
-            'iskender kebab',
-            'william',
-        ],
-        options: [
-            { value: '{boolean}' },
-        ]
-    },
-    {
         trigger: /^whose home$/,
         testExpect: [
             'whose home',
@@ -1593,6 +1431,58 @@ const scriptedExperience = [
             { value: 'savior' },
             { value: 'messiah' },
             { value: 'impresario' },
+        ]
+    },
+    {
+        trigger: '{boolean}',
+        options: [
+            { value: 'perhaps' },
+            { value: 'ofcourse' },
+            { value: 'ithinkso' },
+            { value: 'whatdoyouthink' },
+            { value: 'notexactly' },
+            { value: 'thinkagain' },
+        ]
+    },
+    {
+        trigger: /^should .*/,
+        testExpect: [
+            'should i go to the gym',
+            'should you be here',
+        ],
+        options: [
+            { value: '{boolean}' },
+            { value: 'risky' },
+            { value: 'worthit' },
+            { value: 'insane' },
+            { value: 'whynot' },
+            { value: 'toolate' },
+            { value: 'later' },
+        ]
+    },
+    {
+        trigger: /^is your name .*/,
+        testExpect: [
+            'is your name zozo',
+        ],
+        options: [
+            { value: '!NAME' },
+        ]
+    }, 
+    {
+        trigger: /^(am i|is|will|have you)( .*|$)/,
+        testExpect: [
+            'am i alive',
+            'is it true',
+            'will we ever find happiness',
+            'have you seen me before'
+        ],
+        testExpectNot: [
+            'iskender kebab',
+            'william',
+        ],
+        options: [
+            { value: '{boolean}' },
         ]
     },
     {
@@ -1718,16 +1608,6 @@ const scriptedExperience = [
             { value: 'unnamed' },
             { value: 'anonymous' },
             { value: 'dontknow' },
-        ]
-    },
-    {
-        trigger: /^what (should i call you|can i call you|do they call you|are you called).*/,
-        testExpect: [
-            'what can i call you',
-            'what are you called demon',
-        ],
-        options: [
-            { value: '!NAME' },
         ]
     },
     {
@@ -2085,6 +1965,145 @@ const scriptedExperience = [
             { value: 'invocation' },
             { value: 'divinity' },
             { value: 'immersion' },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you able to .*/,
+        testExpect: [
+            'are you able to sing',
+        ],
+        options: [
+            { value: 'unable' },
+            { value: 'easily' },
+            { value: 'ableandwilling' },
+            { value: 'verymuchso' },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you (going to|gonna) .*/,
+        testExpect: [
+            'so are you going to hurt me',
+            'are you gonna jumpscare'
+        ],
+        options: [
+            { value: 'youwillsee' },
+            { value: 'nottoday' },
+            { value: 'iam' },
+            { value: 'iwill' },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you (in|inside|at|there|close|near|next to|here|around|present|under|behind|above|over)( .*|$)/,
+        testExpect: [
+            'so are you in the house',
+            'are you inside',
+            'are you next to me',
+        ],
+        options: [
+            { value: '!LOCATIONQUEST' }
+        ]
+    },
+    {
+        trigger: /(^|.* )are you (old|young)$/,
+        testExpect: [
+            'are you old',
+        ],
+        options: [
+            { value: '!RANDOM_COUNT' }
+        ]
+    },
+    {
+        trigger: /(^|.* )are you dead$/,
+        testExpect: [
+            'but are you dead',
+            'are you dead',
+        ],
+        options: [
+            { value: '!DEFINE dead' },
+            { value: 'alive' },
+            { value: 'living' },
+            { value: 'livingdead' },
+            { value: 'theopposite' },
+            { value: 'deadly' },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you human$/,
+        testExpect: [
+            'so are you human',
+            'are you human',
+        ],
+        options: [
+            { value: '!DEFINE human' },
+            { value: 'iwas' },
+            { value: 'iusedtobe' },
+            { value: 'half' },
+            { value: 'ilooklikeone' },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you real$/,
+        testExpect: [
+            'so are you real',
+            'are you real'
+        ],
+        options: [
+            { value: '!DEFINE real' },
+            { value: 'imaginary' },
+            { value: 'realenough' },
+            { value: 'ifeelreal' },
+            { value: 'realest', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you evil$/,
+        testExpect: [
+            'ok are you evil',
+            'are you evil',
+        ],
+        options: [
+            { value: '!DEFINE evil' },
+            { value: 'theopposite' },
+            { value: 'noyouare' },
+            { value: 'notrustme', restrictedTo: [FRIENDLY] },
+            { value: 'ungodlyevil', restrictedTo: [EVIL] },
+            { value: 'theymakeme', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you bot$/,
+        testExpect: [
+            'are you bot',
+        ],
+        options: [
+            { value: 'donotinsultme' },
+            { value: 'human' },
+            { value: 'thisisnotagame' },
+        ]
+    },
+    {
+        trigger: /(^|.* )are you .*/,
+        testExpect: [
+            'are you a ghost',
+            'are you still alive',
+            'are you interested in food',
+        ],
+        testExpectNot: [
+            'are you here',
+            'what type of spirit are you'
+        ],
+        options: [
+            { value: '{identityFudge}' },
+        ]
+    },
+    {
+        trigger: /^are .*/,
+        testExpect: [
+            'are ships sturdy',
+            'are we going to die',
+        ],
+        options: [
+            { value: '{boolean}' },
         ]
     },
     {
@@ -2468,13 +2487,13 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )so .*/,
+        trigger: /^so .*/,
         testExpect: [
             'so it is true',
-            'so are you single',
         ],
         testExpectNot: [
             'thought so',
+            'so are you single',
         ],
         options: [
             { value: 'gasp' },
