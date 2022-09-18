@@ -277,6 +277,21 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )(what|why|how) (.*)?funny( .*|$)/, // one of the fallback responses to statements is "funny", this is a potential follow-up. in addition, user might ask this as a response to a joke told by spirit.
+        testExpect: [
+            'whats funny about that',
+            'why is that funny',
+            'how is that funny',
+        ],
+        options: [
+            { value: 'amusing' },
+            { value: 'funnyweird' },
+            { value: 'schadenfreude' },
+            { value: 'cantexplain' },
+            { value: 'youwouldntgetit' },
+        ],
+    },
+    {
         trigger: /(^|.* )(joke|funny)( .*|$)/,
         testExpect: [
             'tell me a joke',
@@ -2109,7 +2124,7 @@ const scriptedExperience = [
     {
         trigger: /^wanna .*/,
         testExpect: [
-            'wanna kiss',
+            'wanna be friends',
             'wanna kill me',
         ],
         options: [
@@ -2117,7 +2132,10 @@ const scriptedExperience = [
             { value: 'notmycupoftea', restrictedTo: [FRIENDLY] },
             { value: 'ido' },
             { value: 'desperately' },
-            { value: '{boolean}' },
+            { value: 'yesiwant' },
+            { value: 'iwantto' },
+            { value: 'inexchange' },
+            { value: 'forafavor' },
         ]
     },  
     {
@@ -2714,6 +2732,8 @@ const scriptedExperience = [
             { value: 'how' },
             { value: 'when' },
             { value: 'noted' },
+            { value: 'funny' },
+            { value: 'haha' },
             //{ value: 'shocking' },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
