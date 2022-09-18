@@ -902,7 +902,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )(wanna|want to|are we|can we) be friends($| .*)/,
+        trigger: /(^|.* )(wanna|want to|are we|can we) (be )?friends($| .*)/,
         testExpect: [
             'want to be friends',
             'wanna be friends',
