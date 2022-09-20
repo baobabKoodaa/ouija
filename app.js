@@ -637,13 +637,7 @@ const stopDraggingPlanchette = function (event, source) {
                     addCharToRevealedMessage(closestChar)
                     remainingGoals = remainingGoals.substring(1)
                     if (remainingGoals.length === 0) {
-                        console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
-                        document.getElementById('planchette').classList = ['planchette-no-glow']
-                        document.getElementById('userMessagePre').classList = ['blinking-caret']
-                        document.getElementById('userMessagePre').innerText = ''
-                        turn = TURN_USER
-                        currentExchangeNumber++
-                        questLineTick()
+                        thingsToDoAfterSpiritMessageHasBeenRevealed()
                     }
                     // Reset tug timer (if player is not on easy mode, when they pick up the planchette, there will be a small tug available again)
                     lastTugTime = 0
@@ -687,6 +681,16 @@ const getInitialDelay = function() {
     return 700 + Math.round(Math.random() * 1000)
 }
 
+const thingsToDoAfterSpiritMessageHasBeenRevealed = function() {
+    turn = TURN_USER
+    console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
+    document.getElementById('planchette').classList = ['planchette-no-glow']
+    document.getElementById('userMessagePre').innerText = ''
+    document.getElementById('userMessagePre').classList = ['blinking-caret']
+    currentExchangeNumber++
+    questLineTick()
+}
+
 const getConsecutiveDelay = function(nextChar) {
     // Intent is to emulate a human with varying delays between key presses
     const prev1 = revealedSpiritLetters.charAt(revealedSpiritLetters.length-1)
@@ -701,12 +705,7 @@ const recursivelyRevealSpiritMessage = function (delayParam) {
     turn = 'no-one'
     document.getElementById('planchette').classList = ['planchette-no-glow']
     if (remainingGoals.length === 0) {
-        turn = TURN_USER
-        console.log('Spirit: ' + revealedSpiritLetters.toUpperCase())
-        document.getElementById('userMessagePre').innerText = ''
-        document.getElementById('userMessagePre').classList = ['blinking-caret']
-        currentExchangeNumber++
-        questLineTick()
+        thingsToDoAfterSpiritMessageHasBeenRevealed()
     } else {
         const delay = delayParam ?? getInitialDelay()
         setTimeout(() => {
