@@ -1109,6 +1109,32 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /(^|.* )move( .*|$)/,
+        testExpect: [
+            'do you have power to move things',
+            'can you move black cap',
+            'you cant even move think',
+            'move somthing',
+            'did you just move my mouse'
+        ],
+        options: [
+            { value: '!MOVE' },
+        ]
+    },
+    {
+        trigger: '{move}',
+        testExpect: [
+            'do you have power to move things',
+        ],
+        options: [
+            { value: 'see' },
+            { value: 'here' },
+            { value: 'immovable' },
+            { value: 'stuck' },
+            { value: 'withpermission' },
+        ]
+    },
+    {
         trigger: /^how old am i$/,
         testExpect: [
             'how old am i',
@@ -2853,6 +2879,10 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         sideEffects.jackSound()
         return resolveQueryWithSimpleChatbot('{jackResponse}', sideEffects)
     }
+    if (query.startsWith('!MOVE')) {
+        sideEffects.shakeMouse()
+        return resolveQueryWithSimpleChatbot('{move}', sideEffects)
+    }
     if (query.startsWith('!LIGHTSPECIAL')) {
         sideEffects.lightFlash()
         return resolveQueryWithSimpleChatbot('{lightResponse}', sideEffects)
@@ -3122,6 +3152,7 @@ const dispatchToSpirit = function(rawInput, callback) {
         const sideEffects = {
             flyBanshee,
             rageEffect,
+            shakeMouse,
             logToSumoLogic,
             window,
             lightFlash,
@@ -3197,6 +3228,7 @@ if (window.location.href.startsWith('file')) {
     const mockSideEffects = {
         flyBanshee: () => {},
         rageEffect: () => {},
+        shakeMouse: () => {},
         logToSumoLogic: () => {},
         window: window,
         lightFlash: () => {},
