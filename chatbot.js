@@ -327,7 +327,7 @@ const scriptedExperience = [
             'okay let me go and eat something',
         ],
         options: [
-            { value: 'notallowed' },
+            { value: 'notallowed', restrictedTo: [FRIENDLY] },
             { value: 'freshmeat' },
             { value: 'human' },
             { value: 'bones' },
@@ -831,7 +831,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(help|help me)$/,
+        trigger: /^help( .*|$)/,
         testExpect: [
             'help',
             'help me',
@@ -1743,9 +1743,10 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^what do you look like.*/,
+        trigger: /^(what do|show me what) you look like.*/,
         testExpect: [
             'what do you look like',
+            'show me what you look like',
         ],
         options: [
             { value: 'boney' },
@@ -2723,7 +2724,6 @@ const scriptedExperience = [
         ],
         options: [
             /* Plausible responses to a word */
-            { value: 'explain' },
             { value: 'noted' },
             { value: 'halal' },
             { value: 'haram' },
@@ -2733,6 +2733,7 @@ const scriptedExperience = [
             { value: 'dislike' },
             { value: 'approved' },
             { value: 'disapproved' },
+            { value: 'whatever' },
 
             /* Nonsequiturs */
             { value: '{nonSequiturs}' }
@@ -2746,20 +2747,15 @@ const scriptedExperience = [
         ],
         options: [
             /* Plausible responses to a statement */
-            { value: 'explain' },
             { value: 'understood' },
             { value: 'why' },
             { value: 'how' },
-            { value: 'when' },
             { value: 'noted' },
             { value: 'funny' },
             { value: 'haha' },
             //{ value: 'shocking' },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
-            { value: 'exaggeration', restrictedTo: [EVIL] },
-            { value: 'idontthinkso', restrictedTo: [EVIL] },
-            { value: 'whatever', restrictedTo: [EVIL] },
             { value: 'idontcare', restrictedTo: [EVIL] },
             { value: 'lies', restrictedTo: [EVIL] },
             { value: 'liar', restrictedTo: [EVIL] },
@@ -2767,14 +2763,19 @@ const scriptedExperience = [
             { value: 'unfathomable', restrictedTo: [EVIL] },
             { value: 'unthinkable', restrictedTo: [EVIL] },
             { value: 'unlikely', restrictedTo: [EVIL] },
+            { value: 'blasphemy', restrictedTo: [EVIL] },
+            { value: 'heresy', restrictedTo: [EVIL] },
             { value: 'indeed', restrictedTo: [FRIENDLY] },
             { value: 'intheory', restrictedTo: [FRIENDLY] },
-            { value: 'blasphemy', restrictedTo: [FRIENDLY] },
-            { value: 'heresy', restrictedTo: [FRIENDLY] },
             { value: 'thatslovely', restrictedTo: [FRIENDLY] },
             { value: 'soundsgreat', restrictedTo: [FRIENDLY] },
             { value: 'agreed', restrictedTo: [FRIENDLY] },
             { value: 'omenous', restrictedTo: [FRIENDLY] },
+            { value: 'prophetic', restrictedTo: [FRIENDLY] },
+            { value: 'interesting', restrictedTo: [FRIENDLY] },
+            { value: 'isthatso', restrictedTo: [FRIENDLY] },
+            { value: 'idontthinkso', restrictedTo: [FRIENDLY] },
+            { value: 'exaggeration', restrictedTo: [FRIENDLY] },
 
             /* Nonsequiturs */
             { value: '!PLAYERNAME ok', priority: 0.3 },
@@ -2962,7 +2963,7 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
                 }
                 if (matchingNode.questGoals.rage) {
                     questGoals.rage -= matchingNode.questGoals.rage
-                    if (questGoals.rage > 0) sideEffects.randomRageEffect()
+                    if (questGoals.rage > 0) sideEffects.rageEffect()
                     else {
                         sideEffects.logToSumoLogic('!SOLVED_QUEST_3')
                         sideEffects.flyBanshee()
@@ -3120,7 +3121,7 @@ const dispatchToSpirit = function(rawInput, callback) {
     try {
         const sideEffects = {
             flyBanshee,
-            randomRageEffect,
+            rageEffect,
             logToSumoLogic,
             window,
             lightFlash,
@@ -3195,7 +3196,7 @@ const runTestsInputArray = function(inputsArray, boolExpected, testNode, sideEff
 if (window.location.href.startsWith('file')) {
     const mockSideEffects = {
         flyBanshee: () => {},
-        randomRageEffect: () => {},
+        rageEffect: () => {},
         logToSumoLogic: () => {},
         window: window,
         lightFlash: () => {},

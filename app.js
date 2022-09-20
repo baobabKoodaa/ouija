@@ -1066,7 +1066,7 @@ const unlockAchievement = function(achievement) {
     displayNotification(achievement)
 }
 
-const shakeBoard = function() {
+const rageEffect = function() {
     const element = document.getElementById('boardContainer')
     element.classList.remove("shake-board")
     element.offsetWidth // Trigger reflow.
@@ -1089,10 +1089,6 @@ const shakeMouse = function() {
         setTimeout(() => { recursiveTimerReplay() }, 0)
     }
     recursiveTimerReplay()
-}
-
-const randomRageEffect = function() {
-    Math.random() > 0.5 ? shakeBoard() : shakeMouse()
 }
 
 const switchToNormalCursor = function (e) {
