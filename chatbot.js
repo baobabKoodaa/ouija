@@ -2877,7 +2877,7 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
             return resolveQueryWithSimpleChatbot('again', sideEffects)
         }
         sideEffects.setPlayedJack()
-        sideEffects.jackSound()
+        sideEffects.setCompletionEffect(jackSound)
         return resolveQueryWithSimpleChatbot('{jackResponse}', sideEffects)
     }
     if (query.startsWith('!MOVE')) {
