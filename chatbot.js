@@ -12,6 +12,7 @@ let questGoals = {
     rage: 3
 }
 let playedJack = false
+let completionEffect = null
 let possessedMessage = ''
 let possessedRound = 10 + Math.round(Math.random() * 20)
 let currentRound = 0
@@ -599,7 +600,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )(turn|switch|make|flicker) (.*)?lights?($| .*)/,
+        trigger: /(^|.* )(turn|switch|make|flicker|flash) (.*)?lights?($| .*)/,
         testExpect: [
             'turn on the light',
             'turn off the lights',
@@ -2880,11 +2881,11 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         return resolveQueryWithSimpleChatbot('{jackResponse}', sideEffects)
     }
     if (query.startsWith('!MOVE')) {
-        sideEffects.shakeMouse()
+        sideEffects.setCompletionEffect(sideEffects.shakeMouse)
         return resolveQueryWithSimpleChatbot('{move}', sideEffects)
     }
     if (query.startsWith('!LIGHTSPECIAL')) {
-        sideEffects.lightFlash()
+        sideEffects.setCompletionEffect(sideEffects.lightFlash)
         return resolveQueryWithSimpleChatbot('{lightResponse}', sideEffects)
     }
     if (query.startsWith('!GENDER')) {
@@ -3158,6 +3159,7 @@ const dispatchToSpirit = function(rawInput, callback) {
             lightFlash,
             jackSound,
             setPlayedJack: () => { playedJack = true },
+            setCompletionEffect: (effect) => { completionEffect = effect },
             incrementRound: () => {
                 currentRound += 1
                 if (currentRound === possessedRound && currentSpirit.type === EVIL) {
@@ -3234,6 +3236,7 @@ if (window.location.href.startsWith('file')) {
         lightFlash: () => {},
         jackSound: () => {},
         setPlayedJack: () => {},
+        setCompletionEffect: () => {},
         incrementRound: () => {}
     }
     // Prevent achieving quest goals while running tests

@@ -388,12 +388,10 @@ const jackSound = function() {
 }
 
 const lightFlash = function() {
+    document.getElementById('lightFlash').style.display = 'block';
     setTimeout(() => {
-        document.getElementById('lightFlash').style.display = 'block';
-        setTimeout(() => {
-            document.getElementById('lightFlash').style.display = 'none';
-        }, 50)
-    }, 4000)
+        document.getElementById('lightFlash').style.display = 'none';
+    }, 50)
 }
 
 const preloadAudio = function(id) {
@@ -689,6 +687,9 @@ const thingsToDoAfterSpiritMessageHasBeenRevealed = function() {
     document.getElementById('userMessagePre').classList = ['blinking-caret']
     currentExchangeNumber++
     questLineTick()
+    if (completionEffect) {
+        setTimeout(completionEffect, 1000 + Math.round(Math.random() * 3000))
+    }
 }
 
 const getConsecutiveDelay = function(nextChar) {
