@@ -688,6 +688,7 @@ const thingsToDoAfterSpiritMessageHasBeenRevealed = function() {
     currentExchangeNumber++
     questLineTick()
     if (completionEffect) {
+        completionEffect = null
         setTimeout(completionEffect, 1000 + Math.round(Math.random() * 3000))
     }
 }
