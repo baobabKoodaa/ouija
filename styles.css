@@ -524,8 +524,8 @@ h1 {
 
 .shake-board {
     animation-name: board-shake;
-    animation-duration: 0.5s;
-    animation-timing-function: ease-in-out;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
     animation-iteration-count: 1;
 }
 
@@ -534,16 +534,16 @@ h1 {
         transform: translate(-50%, -50%);
     }
     20% {
-        transform: translate(-47%, -47%) rotate3d(1, 1, 1, 5deg);
+        transform: translate(-45%, -45%) rotate3d(1, 1, 1, 10deg) scale(1.03);
     }
     40% {
-        transform: translate(-53%, -47%) rotate3d(1, 1, 1, -5deg);
+        transform: translate(-55%, -45%) rotate3d(1, 1, 1, -10deg) scale(1.1);
     }
     60% {
-        transform: translate(-47%, -47%) rotate3d(1, 1, 1, 5deg);
+        transform: translate(-45%, -45%) rotate3d(1, 1, 1, 10deg) scale(1.07);
     }
     80% {
-        transform: translate(-53%, -47%) rotate3d(1, 1, 1, -5deg);
+        transform: translate(-55%, -45%) rotate3d(1, 1, 1, -10deg) scale(1.03);
     }
     100% {
         transform: translate(-50%, -50%);
