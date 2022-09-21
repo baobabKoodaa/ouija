@@ -311,7 +311,7 @@ h1 {
     position: absolute;
     bottom: 0vw;
     right: 0vw;
-    width: 9vw;
+    width: 13vw;
     height: 6vw;
     z-index: 7;
 }
@@ -330,6 +330,11 @@ h1 {
     width: 2vw;
     opacity: 0;
     fill: #d35400;
+}
+
+#achievement-row svg.not-achieved {
+    opacity: 0.4;
+    fill: grey;
 }
 
 #achievement-row svg.achieved {

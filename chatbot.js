@@ -3139,6 +3139,7 @@ const respondWithSimpleChatbot = function(rawInput, sideEffects) {
     if (currentRound === possessedRound && currentSpirit.type === EVIL) {
         if (possessedMessages.includes(rawInput.toLocaleLowerCase())) {
             inputToResolver = '{POSSESSYES}'
+            unlockAchievement(POSSESSED_ACHIEVEMENT)
         } else {
             inputToResolver = '{POSSESSNO}'
         }
