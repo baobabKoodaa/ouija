@@ -348,6 +348,7 @@ const scriptedExperience = [
             { value: 'blurredlines' },
             { value: 'soundofsilence' },
             { value: 'songoficeandfire' },
+            { value: '!JACKSOUND' },
         ],
     },
     {
@@ -848,10 +849,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(are|is) (you|anyone|anybody) (there|here)$/,
+        trigger: /^(are|is) (you|anyone|anybody|(there )?any spirit) (there|here)$/,
         testExpect: [
             'is anyone there',
             'are you here',
+            'is there any spirit here',
+            'is any spirit here',
         ],
         options: [
             { value: 'justme' },
@@ -2105,10 +2108,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )are you real$/,
+        trigger: /(^|.* )are you (actually )?real$/,
         testExpect: [
             'so are you real',
-            'are you real'
+            'are you real',
+            'are you actually real'
         ],
         options: [
             { value: '!DEFINE real' },
@@ -2775,6 +2779,7 @@ const scriptedExperience = [
         options: [
             /* Plausible responses to a statement */
             { value: 'understood' },
+            { value: 'clearly' },
             { value: 'why' },
             { value: 'how' },
             { value: 'noted' },
