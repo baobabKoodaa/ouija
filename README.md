@@ -10,7 +10,7 @@ Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://o
 
 - Despite existing only as a web page, the spirits have the ability to __move the player's mouse__ towards letters on the board.
 - Two different chatbots available: a __scripted experience__ is available for all, and for players who have OpenAI API keys, there is a more versatile __GPT-3 mode__.
-- The scripted experience has 2 achievements to unlock and some special effects.
+- The scripted experience has 3 achievements to unlock and various special effects including a few jumpscares.
 
 #### How does it work
 
