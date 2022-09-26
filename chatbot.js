@@ -492,6 +492,20 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /^are you gay$/,
+        testExpect: [
+            'are you gay',
+        ],
+        options: [
+            { value: 'yeshappy' },
+            { value: 'jolly' },
+            { value: 'merry' },
+            { value: 'cheerful' },
+            { value: 'pan' },
+            { value: 'homosapiens' }, 
+        ],
+    },
+    {
         trigger: /.*(^| )(bitch|asshole|jerk|harlot|idiot|stupid|faggot|gay|dickhead|suck|sucker|cocksucker|retard|fuck|fucking|shit|shut up|fucker|motherfucker|liar|whore|dumb|dumbass)($| ).*/,
         testExpect: [
             'fuck you',
@@ -2863,7 +2877,7 @@ const scriptedExperience = [
             { value: 'gasp' },
             { value: 'ahhyes' },
             { value: 'correct' },
-            //{ value: 'shocking' },
+            { value: 'shocking' },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
             { value: 'idontcare', restrictedTo: [EVIL] },
@@ -2935,7 +2949,8 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         }
     }
     if (query.startsWith('!FORMERORLATTER')) {
-        const splitted = currentInput.split(' ')
+        let splitted = currentInput.split(' ')
+        splitted = splitted.filter(word => splitted.filter(w => w === word).length === 1) // detect duplicates and remove BOTH instances (e.g. "my dad or your dad" -> "my or your")
         const orIndex = splitted.findIndex(word => word === 'or')
         if (orIndex >= 1 && orIndex <= splitted.length-2) {
             const a = splitted[orIndex-1]
@@ -2946,7 +2961,7 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
             const chosenWord = Math.random() > 0.5 ? a : b
             return chosenWord == 'me' ? 'you' : (chosenWord == 'you' ? 'me' : chosenWord)
         }
-        // Fallback in case bug in code
+        // Fallback in case bug in code or weird input like "superman or superman" or "batman batman or superman superman"
         return 'neither'
     }
     if (query.startsWith('!JACKSOUND')) {
