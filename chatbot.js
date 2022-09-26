@@ -87,6 +87,7 @@ const names = [
     { value: 'Ishmael',     gender: 'boy',          restrictedTo: [EVIL] },
     { value: 'Kezia',       gender: 'girl',         restrictedTo: [EVIL] },
     { value: 'Lazarus',     gender: 'man',          restrictedTo: [EVIL] },
+    { value: 'Lilith',      gender: 'girl',         restrictedTo: [EVIL] },
     { value: 'Lucifer',     gender: 'male',         restrictedTo: [EVIL] },
     { value: 'Magda',       gender: 'woman',        restrictedTo: [EVIL] },
     { value: 'Mahali',      gender: 'man',          restrictedTo: [EVIL] },
@@ -293,7 +294,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )(joke|funny)( .*|$)/,
+        trigger: /(^|.* )(joke|joking|funny)( .*|$)/,
         testExpect: [
             'tell me a joke',
             'your funny',
@@ -320,12 +321,14 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )eat( .*|$)/,
+        trigger: /(^|.* )(eat|food)( .*|$)/,
         testExpect: [
             'you going to eat me',
             'what do you eat',
             'what will i eat tommorow for breakfast',
             'okay let me go and eat something',
+            'what is your favorite food',
+            'do you eat food',
         ],
         options: [
             { value: 'notallowed', restrictedTo: [FRIENDLY] },
@@ -337,10 +340,32 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )song( .*|$)/,
+        trigger: /(^|.* )cry( .*|$)/,
+        testExpect: [
+            'ok you making me cry',
+            'i am about to cry',
+            'should i go cry',
+            'are you gunna cry',
+            'cry about it',
+        ],
+        options: [
+            { value: 'tearsofblood' },
+            { value: 'redtears' },
+            { value: 'blacktears' },
+            { value: 'crocodiletears' },
+            { value: 'withgreatsorrow' },
+            { value: 'sadness' },
+            { value: 'sosad' },
+        ],
+    },
+    {
+        trigger: /(^|.* )(song|sing|music)( .*|$)/,
         testExpect: [
             'do you know this song',
             'what is your favorite song',
+            'what music do you listen to',
+            'sing me something',
+            'are you able to sing'
         ],
         options: [
             { value: 'stairwaytoheaven' },
@@ -550,17 +575,20 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^(what|which|will) .*(university|school).*/,
+        trigger: /(^|.* )(university|school)( .*|$)/,
         testExpect: [
             'what school do you go to',
             'which university will i get in',
             'will i get in university',
             'what is name of my school',
+            'i have to go im late for school'
         ],
         options: [
             { value: 'schoolofrock' },
             { value: 'schooloflife' },
             { value: 'hogwarts' },
+            { value: 'scholarship' },
+            { value: 'tolearn' },
         ],
     },
     {
@@ -667,14 +695,39 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /(^|.* )tell me(.*)? your?(.*)? name( .*|$)/,
+        trigger: /^(what is your? )?(last|full|real|actual) name$/,
         testExpect: [
-            'please tell me your real name demon',
-            'tell me your name',
-            'tell me you name',
+            'what is your last name',
+            'what is you last name',
+            'last name',
+            'what is your full name'
         ],
         testExpectNot: [
-            'your name'
+            'last name please',
+        ],
+        options: [
+            { value: 'onlyfirstname' },
+        ]
+    },
+    {
+        trigger: /(^|.* )y?o?u?r( .*)? name( .*|$)/,
+        testExpect: [
+            'i forgot your name what is it',
+            'tell me your name',
+            'is your name zozo',
+            'hello what is your name',
+            'what is ur name',
+            'whats yur name',
+            'what is your name demon',
+            'what was your name again'
+        ],
+        testExpectNot: [
+            'what name',
+            'nice name bro',
+            'what is my name',
+            'what was his name',
+            'what is my name',
+            'what do you think my name is',
         ],
         options: [
             { value: '!NAME' },
@@ -830,6 +883,23 @@ const scriptedExperience = [
             { value: 'nicetomeetyou', restrictedTo: [FRIENDLY] },
             { value: 'nicename', restrictedTo: [FRIENDLY] },
             { value: 'fancyname', restrictedTo: [FRIENDLY] },
+        ]
+    },
+    {
+        trigger: /^tell me( some ?thing| story| secret)?$/,
+        testExpect: [
+            'tell me',
+            'tell me something',
+            'tell me some thing',
+            'tell me a story',
+            'tell me a secret',
+            'tell me secret'
+        ],
+        options: [
+            { value: 'later' },
+            { value: 'hush' },
+            { value: 'tomorrow' },
+            { value: 'nottoday' },
         ]
     },
     {
@@ -1355,6 +1425,7 @@ const scriptedExperience = [
         testExpect: [
             'how does the world end', 
             'how do you hear my questions',
+            'how cold it is in hell', // TODO how do we fix these?
         ],
         options: [
             { value: 'iwonttell' },
@@ -1480,12 +1551,14 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^who( .*|$)/,
+        trigger: /^whom?e?( .*|$)/,
         testExpect: [
             'who murdered you',
             'who are you demon',
             'who',
             'abigail who',
+            'forced by whom',
+            'forced by whome abigail'
         ],
         options: [
             { value: 'lord' },
@@ -1525,15 +1598,6 @@ const scriptedExperience = [
             { value: 'later' },
         ]
     },
-    {
-        trigger: /^is your name .*/,
-        testExpect: [
-            'is your name zozo',
-        ],
-        options: [
-            { value: '!NAME' },
-        ]
-    }, 
     {
         trigger: /^(am i|is|will|have you)( .*|$)/,
         testExpect: [
@@ -1621,41 +1685,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^(what is your? )?(last|full|real|actual) name$/,
-        testExpect: [
-            'what is your last name',
-            'what is you last name',
-            'last name',
-            'what is your full name'
-        ],
-        testExpectNot: [
-            'last name please',
-        ],
-        options: [
-            { value: 'onlyfirstname' },
-        ]
-    },
-    {
-        trigger: /.*what (is|was) y?o?u?r? name.*/,
-        testExpect: [
-            'hello what is your name',
-            'what is ur name',
-            'what is you name',
-            'whats yur name',
-            'what is your name demon',
-            'what was your name again'
-        ],
-        testExpectNot: [
-            'what name',
-            'nice name bro',
-            'what is my name',
-            'what was his name',
-        ],
-        options: [
-            { value: '!NAME' },
-        ]
-    },
-    {
         trigger: /^what .* name.*/,
         testExpect: [
             'what is person on beds name',
@@ -1676,9 +1705,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what is your (location|position)$/,
+        trigger: /^what is your (exact )?(location|position)$/,
         testExpect: [
             'what is your location',
+            'what is your exact location'
         ],
         options: [
             { value: '!LOCATIONQUEST' },
@@ -1704,7 +1734,7 @@ const scriptedExperience = [
     {
         trigger: /^what is y?o?ur favou?rite .*/,
         testExpect: [
-            'what is your favorite food',
+            'what is your favorite movie',
             'what is your favourite tv show',
         ],
         options: [
@@ -1720,6 +1750,7 @@ const scriptedExperience = [
             'what is your goal',
             'what is your secret',
             'what is your weakness',
+            'what is your rank in heaven',
         ],
         options: [
             { value: 'artifact' },
@@ -2036,7 +2067,7 @@ const scriptedExperience = [
     {
         trigger: /(^|.* )are you able to .*/,
         testExpect: [
-            'are you able to sing',
+            'are you able to dance',
         ],
         options: [
             { value: 'unable' },
@@ -2153,7 +2184,7 @@ const scriptedExperience = [
         testExpect: [
             'are you a ghost',
             'are you still alive',
-            'are you interested in food',
+            'are you interested in poetry',
         ],
         testExpectNot: [
             'are you here',
@@ -2178,14 +2209,13 @@ const scriptedExperience = [
         testExpect: [
             'want to kill me',
             'wanna kill me',
+            'i want to see you'
         ],
         options: [
             { value: 'anothertime', restrictedTo: [FRIENDLY] },
             { value: 'notmycupoftea', restrictedTo: [FRIENDLY] },
-            { value: 'ido' },
+            { value: 'wantandneed' },
             { value: 'desperately' },
-            { value: 'yesiwant' },
-            { value: 'iwantto' },
             { value: 'inexchange' },
             { value: 'forafavor' },
         ]
@@ -2277,6 +2307,23 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^(do|can) you see me( .*|$)/,
+        testExpect: [
+            'can you see me right now',
+            'can you see me',
+        ],
+        options: [
+            { value: 'nicechair' },
+            { value: 'messyroom' },
+            { value: 'gorgeous', restrictedTo: [FRIENDLY] },
+            { value: 'attractive', restrictedTo: [FRIENDLY] },
+            { value: 'stunning', restrictedTo: [FRIENDLY] },
+            { value: 'ugly', restrictedTo: [EVIL] },
+            { value: 'hideous', restrictedTo: [EVIL] },
+            { value: 'unsightly', restrictedTo: [EVIL] },
+        ]
+    },
+    {
         trigger: /^do you( .*|$)/,
         testExpect: [
             'do you sleep',
@@ -2306,23 +2353,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^can you see me( .*|$)/,
-        testExpect: [
-            'can you see me right now',
-            'can you see me',
-        ],
-        options: [
-            { value: 'nicechair' },
-            { value: 'messyroom' },
-            { value: 'gorgeous', restrictedTo: [FRIENDLY] },
-            { value: 'attractive', restrictedTo: [FRIENDLY] },
-            { value: 'stunning', restrictedTo: [FRIENDLY] },
-            { value: 'ugly', restrictedTo: [EVIL] },
-            { value: 'hideous', restrictedTo: [EVIL] },
-            { value: 'unsightly', restrictedTo: [EVIL] },
-        ]
-    },
-    {
         trigger: /^can you .*/,
         testExpect: [
             'can you hurt me',
@@ -2334,6 +2364,19 @@ const scriptedExperience = [
             { value: 'imust' },
             { value: 'iwill' },
             { value: 'wanttosee', restrictedTo: [EVIL] },
+        ]
+    },
+    {
+        trigger: /^would you .*/,
+        testExpect: [
+            'would you save me',
+        ],
+        options: [
+            { value: 'foraprice' },
+            { value: 'inexchange' },
+            { value: 'forafavor' },
+            { value: 'iwould' },
+            { value: 'never' },
         ]
     },
     {
