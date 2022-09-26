@@ -704,9 +704,9 @@ const getConsecutiveDelay = function(nextChar) {
     const prev1 = revealedSpiritLetters.charAt(revealedSpiritLetters.length-1)
     const prev2 = revealedSpiritLetters.charAt(revealedSpiritLetters.length-2)
     if (nextChar == prev1 || nextChar == prev2) {
-        return 60 + Math.round(Math.random() * 150)
+        return 60 + Math.round(Math.random() * 120)
     }
-    return 100 + Math.round(Math.random() * 300)
+    return 80 + Math.round(Math.random() * 400)
 }
 
 const recursivelyRevealSpiritMessage = function (delayParam) {
