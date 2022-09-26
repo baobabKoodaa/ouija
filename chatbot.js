@@ -16,6 +16,8 @@ let completionEffect = null
 let possessedMessage = ''
 let possessedRound = 10 + Math.round(Math.random() * 20)
 let currentRound = 0
+let debuggingLogs = []
+let testCount = 0
 
 const countryMappings = {"BD": "Bangladesh", "BE": "Belgium", "BF": "Burkina Faso", "BG": "Bulgaria", "BA": "Bosnia and Herzegovina", "BB": "Barbados", "WF": "Wallis and Futuna", "BL": "Saint Barthelemy", "BM": "Bermuda", "BN": "Brunei", "BO": "Bolivia", "BH": "Bahrain", "BI": "Burundi", "BJ": "Benin", "BT": "Bhutan", "JM": "Jamaica", "BV": "Bouvet Island", "BW": "Botswana", "WS": "Samoa", "BQ": "Bonaire, Saint Eustatius and Saba ", "BR": "Brazil", "BS": "Bahamas", "JE": "Jersey", "BY": "Belarus", "BZ": "Belize", "RU": "Russia", "RW": "Rwanda", "RS": "Serbia", "TL": "East Timor", "RE": "Reunion", "TM": "Turkmenistan", "TJ": "Tajikistan", "RO": "Romania", "TK": "Tokelau", "GW": "Guinea-Bissau", "GU": "Guam", "GT": "Guatemala", "GS": "South Georgia and the South Sandwich Islands", "GR": "Greece", "GQ": "Equatorial Guinea", "GP": "Guadeloupe", "JP": "Japan", "GY": "Guyana", "GG": "Guernsey", "GF": "French Guiana", "GE": "Georgia", "GD": "Grenada", "GB": "United Kingdom", "GA": "Gabon", "SV": "El Salvador", "GN": "Guinea", "GM": "Gambia", "GL": "Greenland", "GI": "Gibraltar", "GH": "Ghana", "OM": "Oman", "TN": "Tunisia", "JO": "Jordan", "HR": "Croatia", "HT": "Haiti", "HU": "Hungary", "HK": "Hong Kong", "HN": "Honduras", "HM": "Heard Island and McDonald Islands", "VE": "Venezuela", "PR": "Puerto Rico", "PS": "Palestinian Territory", "PW": "Palau", "PT": "Portugal", "SJ": "Svalbard and Jan Mayen", "PY": "Paraguay", "IQ": "Iraq", "PA": "Panama", "PF": "French Polynesia", "PG": "Papua New Guinea", "PE": "Peru", "PK": "Pakistan", "PH": "Philippines", "PN": "Pitcairn", "PL": "Poland", "PM": "Saint Pierre and Miquelon", "ZM": "Zambia", "EH": "Western Sahara", "EE": "Estonia", "EG": "Egypt", "ZA": "South Africa", "EC": "Ecuador", "IT": "Italy", "VN": "Vietnam", "SB": "Solomon Islands", "ET": "Ethiopia", "SO": "Somalia", "ZW": "Zimbabwe", "SA": "Saudi Arabia", "ES": "Spain", "ER": "Eritrea", "ME": "Montenegro", "MD": "Moldova", "MG": "Madagascar", "MF": "Saint Martin", "MA": "Morocco", "MC": "Monaco", "UZ": "Uzbekistan", "MM": "Myanmar", "ML": "Mali", "MO": "Macao", "MN": "Mongolia", "MH": "Marshall Islands", "MK": "Macedonia", "MU": "Mauritius", "MT": "Malta", "MW": "Malawi", "MV": "Maldives", "MQ": "Martinique", "MP": "Northern Mariana Islands", "MS": "Montserrat", "MR": "Mauritania", "IM": "Isle of Man", "UG": "Uganda", "TZ": "Tanzania", "MY": "Malaysia", "MX": "Mexico", "IL": "Israel", "FR": "France", "IO": "British Indian Ocean Territory", "SH": "Saint Helena", "FI": "Finland", "FJ": "Fiji", "FK": "Falkland Islands", "FM": "Micronesia", "FO": "Faroe Islands", "NI": "Nicaragua", "NL": "Netherlands", "NO": "Norway", "NA": "Namibia", "VU": "Vanuatu", "NC": "New Caledonia", "NE": "Niger", "NF": "Norfolk Island", "NG": "Nigeria", "NZ": "New Zealand", "NP": "Nepal", "NR": "Nauru", "NU": "Niue", "CK": "Cook Islands", "XK": "Kosovo", "CI": "Ivory Coast", "CH": "Switzerland", "CO": "Colombia", "CN": "China", "CM": "Cameroon", "CL": "Chile", "CC": "Cocos Islands", "CA": "Canada", "CG": "Republic of the Congo", "CF": "Central African Republic", "CD": "Democratic Republic of the Congo", "CZ": "Czech Republic", "CY": "Cyprus", "CX": "Christmas Island", "CR": "Costa Rica", "CW": "Curacao", "CV": "Cape Verde", "CU": "Cuba", "SZ": "Swaziland", "SY": "Syria", "SX": "Sint Maarten", "KG": "Kyrgyzstan", "KE": "Kenya", "SS": "South Sudan", "SR": "Suriname", "KI": "Kiribati", "KH": "Cambodia", "KN": "Saint Kitts and Nevis", "KM": "Comoros", "ST": "Sao Tome and Principe", "SK": "Slovakia", "KR": "South Korea", "SI": "Slovenia", "KP": "North Korea", "KW": "Kuwait", "SN": "Senegal", "SM": "San Marino", "SL": "Sierra Leone", "SC": "Seychelles", "KZ": "Kazakhstan", "KY": "Cayman Islands", "SG": "Singapore", "SE": "Sweden", "SD": "Sudan", "DO": "Dominican Republic", "DM": "Dominica", "DJ": "Djibouti", "DK": "Denmark", "VG": "British Virgin Islands", "DE": "Germany", "YE": "Yemen", "DZ": "Algeria", "US": "United States", "UY": "Uruguay", "YT": "Mayotte", "UM": "United States Minor Outlying Islands", "LB": "Lebanon", "LC": "Saint Lucia", "LA": "Laos", "TV": "Tuvalu", "TW": "Taiwan", "TT": "Trinidad and Tobago", "TR": "Turkey", "LK": "Sri Lanka", "LI": "Liechtenstein", "LV": "Latvia", "TO": "Tonga", "LT": "Lithuania", "LU": "Luxembourg", "LR": "Liberia", "LS": "Lesotho", "TH": "Thailand", "TF": "French Southern Territories", "TG": "Togo", "TD": "Chad", "TC": "Turks and Caicos Islands", "LY": "Libya", "VA": "Vatican", "VC": "Saint Vincent and the Grenadines", "AE": "United Arab Emirates", "AD": "Andorra", "AG": "Antigua and Barbuda", "AF": "Afghanistan", "AI": "Anguilla", "VI": "U.S. Virgin Islands", "IS": "Iceland", "IR": "Iran", "AM": "Armenia", "AL": "Albania", "AO": "Angola", "AQ": "Antarctica", "AS": "American Samoa", "AR": "Argentina", "AU": "Australia", "AT": "Austria", "AW": "Aruba", "IN": "India", "AX": "Aland Islands", "AZ": "Azerbaijan", "IE": "Ireland", "ID": "Indonesia", "UA": "Ukraine", "QA": "Qatar", "MZ": "Mozambique"}
 
@@ -2950,7 +2952,7 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
     }
     if (query.startsWith('!FORMERORLATTER')) {
         let splitted = currentInput.split(' ')
-        splitted = splitted.filter(word => splitted.filter(w => w === word).length === 1) // detect duplicates and remove BOTH instances (e.g. "my dad or your dad" -> "my or your")
+        splitted = splitted.filter(word => splitted.filter(w => w === word).length === 1) // detect duplicates and remove BOTH instances (e.g. "my dad or your dad" -> "my or your", or ""kiss me or poison me" -> "kiss or poison")
         const orIndex = splitted.findIndex(word => word === 'or')
         if (orIndex >= 1 && orIndex <= splitted.length-2) {
             const a = splitted[orIndex-1]
@@ -3067,7 +3069,7 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         if (matchingNode) {
             if (testNodeWaitingForActivation) {
                 // We are running tests, print for debugging purposes.
-                console.log(matchingNode.trigger)
+                debuggingLogs.push(matchingNode.trigger)
             }
             if (matchingNode === testNodeWaitingForActivation) {
                 // We are running tests and here we confirm that this node has activated.
@@ -3305,10 +3307,12 @@ const runTestsInputArray = function(inputsArray, boolExpected, testNode, sideEff
     for (let j=0; j<inputsArray.length; j++) {
         const testInput = inputsArray[j]
         const testNodeActivated = runTestInput(testInput, testNode, sideEffects)
+        testCount += 1
         if (testNodeActivated === boolExpected) {
-            console.log('TEST OK', testInput, '->', previousOutput)
+            debuggingLogs.push(`TEST OK ${testInput} -> ${previousOutput}`)
         } else {
-            console.log('TEST FAIL', testInput, '->', previousOutput)
+            debuggingLogs.push(`TEST FAIL ${testInput} -> ${previousOutput}`)
+            debuggingLogs.forEach(line => console.log(line))
             alert('Unit test fail, open console for details.')
             throw new Error('Stopping tests due to failure')
         }
@@ -3320,6 +3324,8 @@ const runTestsInputArray = function(inputsArray, boolExpected, testNode, sideEff
 
 // Run tests when website is opened in browser from local source
 if (window.location.href.startsWith('file')) {
+    debuggingLogs = []
+    testCount = 0
     const mockSideEffects = {
         flyBanshee: () => {},
         rageEffect: () => {},
@@ -3354,4 +3360,7 @@ if (window.location.href.startsWith('file')) {
     }
     // Reset quest goals
     questGoals = realQuestGoals
+    // Report test results
+    spiritIsReadyToCommunicate(`${testCount}testsok`)
+    console.log(`${testCount} tests ran successfully.`)
 }

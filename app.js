@@ -218,7 +218,7 @@ window.addEventListener('resize', function (event) {
 const LOG_ENDPOINT = 'https://endpoint1.collection.eu.sumologic.com/receiver/v1/http/ZaVnC4dhaV0vBIvS0oahg-8LYhDkyFCtWZ2zZ_7NbP0x0PYd0DmEk2cLgA4DJlePqnHWB5KjcxPFudwdOmtop0b6isr9VgLeKHYmzJ6eSqkD0cyZ6FNQiQ=='
 const LOG_PROXY_ENDPOINT = 'https://lokittaja.atte-cloudflare.workers.dev/'
 const logToSumoLogic = function (message) {
-    if (window.localStorage.getItem('ouija-dont-log-myself')) {
+    if (window.localStorage.getItem('ouija-dont-log-myself') || window.location.href.startsWith("file")) {
         // Exclude debug testing messages from logs (use incognito if you need to test logging)
         return
     }
