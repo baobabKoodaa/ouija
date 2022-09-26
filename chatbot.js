@@ -2457,22 +2457,6 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^(ok|oki|okay)$/,
-        testExpect: [
-            'ok',
-            'okay'
-        ],
-        testExpectNot: [
-            'ok who is there with you',
-        ],
-        options: [
-            { value: 'itisknown' },
-            { value: 'fact' },
-            { value: 'confirmed' },
-            { value: 'guaranteed' },
-        ]
-    },
-    {
         trigger: /^(aha|sure|whatever|i dont believe|lies)( .*|$)/,
         testExpect: [
             'aha',
@@ -2546,41 +2530,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^hello.*/,
-        testExpect: [
-            'hello',
-            'hello fake spirit',
-        ],
-        testExpectNot: [
-            'hello how are you',
-            'hello dumbass',
-        ],
-        options: [
-            { value: 'greetings' },
-            { value: 'mylove' },
-            { value: 'mylord' },
-            { value: 'evening' },
-            { value: 'morning' },
-            { value: 'wellhello' },
-            { value: 'salutations' },
-        ],
-    },
-    {
-        trigger: /^(hi|hey)($| .*)/,
-        testExpect: [
-            'hi',
-            'hey fake spirit',
-        ],
-        options: [
-            { value: 'hello' },
-            { value: 'hallo' },
-            { value: 'shalom' },
-            { value: 'salute' },
-            { value: 'salutations' },
-            { value: 'salaam' },
-        ]
-    },
-    {
         trigger: /(^|.* )kill m(e|y)( .*|$)/,
         testExpect: [
             'kill my cousin',
@@ -2597,61 +2546,6 @@ const scriptedExperience = [
             { value: 'slowly', restrictedTo: [EVIL] },
             { value: 'withpoison', restrictedTo: [EVIL] },
             { value: 'done', restrictedTo: [EVIL] },
-        ]
-    },
-    {
-        trigger: /^so .*/,
-        testExpect: [
-            'so it is true',
-        ],
-        testExpectNot: [
-            'thought so',
-            'so are you single',
-        ],
-        options: [
-            { value: 'gasp' },
-            { value: 'yes' },
-            { value: 'ahhyes' },
-            { value: 'indeed' },
-            { value: 'correct' },
-            //{ value: 'touche' },
-        ]
-    },
-    {
-        trigger: /^(oh|huh)$/,
-        testExpect: [
-            'oh',
-            'huh',
-        ],
-        options: [
-            { value: 'ohyes' },
-            { value: 'doh' },
-            { value: 'aha' },
-            { value: 'daa' },
-        ]
-    },
-    {
-        trigger: /^yes$/,
-        testExpect: [
-            'yes',
-        ],
-        options: [
-            { value: 'indeed' },
-            { value: 'agreed' },
-            { value: 'yesindeed' },
-        ]
-    },
-    {
-        trigger: /^no*($| .*)/,
-        testExpect: [
-            'no',
-            'noooooo dont do it'
-        ],
-        options: [
-            { value: 'yes' },
-            { value: 'faceit' },
-            { value: 'forreal' },
-            { value: 'toolate' },
         ]
     },
     {
@@ -2698,10 +2592,127 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^thank(s| you).*/,
+        trigger: /^yes( .*|$)/,
+        testExpect: [
+            'yes',
+        ],
+        options: [
+            { value: 'indeed' },
+            { value: 'agreed' },
+            { value: 'yesindeed' },
+        ]
+    },
+    {
+        trigger: /^no*( .*|$)/,
+        testExpect: [
+            'no',
+            'noooooo dont do it'
+        ],
+        options: [
+            { value: 'yes' },
+            { value: 'faceit' },
+            { value: 'forreal' },
+            { value: 'toolate' },
+        ]
+    },
+    {
+        /* Fallback after recursively resolving the query such that we always drop the first word,
+         * until finally we end up here with empty string. */
+        trigger: /^$/,
+        options: [
+            { value: '!FALLBACK_LEVEL2' }
+        ]
+    },
+    /********************************************************************************************************************************
+     * 
+     * 
+     * 
+     *                                                      FALLBACK LEVEL 2 
+     * 
+     * 
+     * 
+     *******************************************************************************************************************************/
+     {
+        trigger: /^hello( .*)? @FALLBACK_LEVEL2$/,
+        testExpect: [
+            'hello',
+            'hello fake spirit',
+        ],
+        testExpectNot: [
+            'hello how are you',
+            'hello is anyone there',
+        ],
+        options: [
+            { value: 'greetings' },
+            { value: 'mylove' },
+            { value: 'mylord' },
+            { value: 'evening' },
+            { value: 'morning' },
+            { value: 'wellhello' },
+            { value: 'salutations' },
+        ],
+    },
+    {
+        trigger: /^(hi|hey)( .*)? @FALLBACK_LEVEL2$/,
+        testExpect: [
+            'hi',
+            'hey fake spirit',
+        ],
+        testExpectNot: [
+            'hey where are you from',
+        ],
+        options: [
+            { value: 'hello' },
+            { value: 'hallo' },
+            { value: 'shalom' },
+            { value: 'salute' },
+            { value: 'salutations' },
+            { value: 'salaam' },
+        ]
+    },
+    {
+        trigger: /^(ok|oki|okay)( .*)? @FALLBACK_LEVEL2$/,
+        testExpect: [
+            'ok',
+            'okay',
+            'ok bro',
+        ],
+        testExpectNot: [
+            'ok who is there with you',
+            'ok but what is your name again'
+        ],
+        options: [
+            { value: 'itisknown' },
+            { value: 'fact' },
+            { value: 'confirmed' },
+            { value: 'guaranteed' },
+        ]
+    },
+    {
+        trigger: /^(oh|huh)( .*)? @FALLBACK_LEVEL2$/,
+        testExpect: [
+            'oh',
+            'huh',
+        ],
+        testExpectNot: [
+            'huh is that so',
+        ],
+        options: [
+            { value: 'ohyes' },
+            { value: 'doh' },
+            { value: 'aha' },
+            { value: 'daa' },
+        ]
+    },
+    {
+        trigger: /^thank(s| you)( .*)? @FALLBACK_LEVEL2$/,
         testExpect: [
             'thanks',
             'thank you demon'
+        ],
+        testExpectNot: [
+            'thank you what is your name',
+            'thanks where are you'
         ],
         options: [
             { value: 'mypleasure' },
@@ -2712,13 +2723,15 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^nice( .*|$)/,
+        trigger: /^nice( .*)? @FALLBACK_LEVEL2$/,
         testExpect: [
-            'nice name',
+            'your nice guy',
+            'deborah nice name',
             'nice',
         ],
         testExpectNot: [
-            'nice to meet you'
+            'nice to meet you',
+            'nice where are you'
         ],
         options: [
             { value: 'niceindeed' },
@@ -2731,7 +2744,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^cool$/,
+        trigger: /^cool( .*)? @FALLBACK_LEVEL2$/,
         testExpect: [
             'cool',
             'thats cool',
@@ -2740,7 +2753,8 @@ const scriptedExperience = [
             'youre cool'
         ],
         testExpectNot: [
-            'cool how old are you'
+            'cool how old are you',
+            'cool where are you'
         ],
         options: [
             { value: 'icecool' }, // pretend to misunderstand
@@ -2756,9 +2770,12 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^wow$/,
+        trigger: /^wow( .*)? @FALLBACK_LEVEL2$/,
         testExpect: [
             'wow',
+        ],
+        testExpectNot: [
+            'wow where are you'
         ],
         options: [
             { value: 'amazed' },
@@ -2790,6 +2807,21 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^@FALLBACK_LEVEL2$/, // We hit this when nothing in fallback_level2 matches.
+        options: [
+            { value: '!FALLBACK_LEVEL3' },
+        ]
+    },
+    /********************************************************************************************************************************
+     * 
+     * 
+     * 
+     *                                                      FALLBACK LEVEL 3
+     * 
+     * 
+     * 
+     *******************************************************************************************************************************/
+    {
         trigger: '{fallbackShort}',
         testExpect: [
             'beckham',
@@ -2814,7 +2846,7 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: '{fallbackLong}',
+        trigger: '{fallbackLong}', // Presumably the user made a statement not a question.
         testExpect: [
             'life aint but a dream',
             'the good old days',
@@ -2828,6 +2860,9 @@ const scriptedExperience = [
             { value: 'noted' },
             { value: 'funny' },
             { value: 'haha' },
+            { value: 'gasp' },
+            { value: 'ahhyes' },
+            { value: 'correct' },
             //{ value: 'shocking' },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
             { value: 'dontworry', restrictedTo: [EVIL] },
@@ -2856,15 +2891,6 @@ const scriptedExperience = [
             { value: '!PLAYERNAME ok', priority: 0.3 },
         ]
     },
-    {
-        /* Fallback when nothing else matches. Presumably the user made a statement not a question.
-         * We might end up here after recursively resolving the query such that we always drop the first word,
-         * until finally we end up here with empty string. */
-        trigger: /^$/,
-        options: [
-            { value: '!FALLBACK' }
-        ]
-    }
 ]
 
 const pickRandom = function(arr) {
@@ -2898,7 +2924,10 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         alert('ERROR! Calling resolveQueryWithSimpleChatbot without inputting sideEffects')
     }
     // Special cases
-    if (query.startsWith('!FALLBACK')) {
+    if (query.startsWith('!FALLBACK_LEVEL2')) {
+        return resolveQueryWithSimpleChatbot(`${currentInput} @FALLBACK_LEVEL2`, sideEffects)
+    }
+    if (query.startsWith('!FALLBACK_LEVEL3')) {
         if (currentInput.split(" ").length <= 1) {
             return resolveQueryWithSimpleChatbot('{fallbackShort}', sideEffects)
         } else {
