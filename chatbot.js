@@ -3191,6 +3191,9 @@ const augmentedResolveQueryWithSimpleChatbot = function(input, sideEffects) {
     if (input.replaceAll(' ', '') === previousOutput) {
         return resolveQueryWithSimpleChatbot('{parrot}', sideEffects)
     }
+    if (!input.includes(' ') && input.length >= 13) {
+        return 'usespaces'
+    }
     return resolveQueryWithSimpleChatbot(input, sideEffects)
 }
 
