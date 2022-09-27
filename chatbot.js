@@ -776,6 +776,26 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.* )(wanna|want to|are we|can we|will you)( be( my)?)? friends?($| .*)/,
+        testExpect: [
+            'want to be friends',
+            'wanna be friends',
+            'can we be friends',
+            'are we friends',
+            'will you be my friend',
+        ],
+        options: [
+            { value: 'bestfriends', restrictedTo: [FRIENDLY] },
+            { value: 'closefriends', restrictedTo: [FRIENDLY] },
+            { value: 'myfriend', restrictedTo: [FRIENDLY] },
+            { value: 'comrades', restrictedTo: [FRIENDLY] },
+            { value: 'acquaintances', restrictedTo: [EVIL] },
+            { value: 'fornow', restrictedTo: [EVIL] },
+            { value: 'toolate', restrictedTo: [EVIL] },
+            { value: 'friendsforever', restrictedTo: [EVIL] },
+        ]
+    },  
+    {
         trigger: /^(will you|do it)( .*|$)/,
         testExpect: [
             'will you',
@@ -992,25 +1012,6 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /(^|.* )(wanna|want to|are we|can we) (be )?friends($| .*)/,
-        testExpect: [
-            'want to be friends',
-            'wanna be friends',
-            'can we be friends',
-            'are we friends'
-        ],
-        options: [
-            { value: 'bestfriends', restrictedTo: [FRIENDLY] },
-            { value: 'closefriends', restrictedTo: [FRIENDLY] },
-            { value: 'myfriend', restrictedTo: [FRIENDLY] },
-            { value: 'comrades', restrictedTo: [FRIENDLY] },
-            { value: 'acquaintances', restrictedTo: [EVIL] },
-            { value: 'fornow', restrictedTo: [EVIL] },
-            { value: 'toolate', restrictedTo: [EVIL] },
-            { value: 'friendsforever', restrictedTo: [EVIL] },
-        ]
-    },  
-    {
         trigger: '{POSSESSYES}',
         options: [
             { value: 'iaccept' },
@@ -1030,22 +1031,6 @@ const scriptedExperience = [
             { value: 'soclose' },
             { value: 'almostgotyou' },
         ]
-    },
-    {
-        trigger: '{identityFudge}',
-        options: [
-            { value: 'iamgod', restrictedTo: [EVIL], priority: 0.3 },
-            { value: 'iamdust' },
-            { value: 'iamlikeyou' },
-            { value: 'iusedtobelikeyou' },
-            { value: 'itakemanyforms' },
-            { value: 'iammanythings' },
-            { value: 'iamdeath', restrictedTo: [EVIL] },
-            { value: 'iampain', restrictedTo: [EVIL] },
-        ],
-        questGoals: {
-            who: 0.49
-        }
     },
     {
         trigger: '{clarification}',
@@ -1974,14 +1959,15 @@ const scriptedExperience = [
             'what are you trying to do',
             'what are you doing',
             'what were you doing',
-            'what did you do demon'
+            'what did you do demon',
         ],
         options: [
-            { value: 'forget' },
-            { value: 'escape' },
-            { value: 'burrow' },
-            { value: 'survive' },
-            { value: 'return' },
+            { value: 'trickery' },
+            { value: 'misdeeds' },
+            { value: 'duties' },
+            { value: 'myjob' },
+            { value: 'task' },
+            { value: 'yourwish' },
         ]
     },
     {
@@ -2207,8 +2193,18 @@ const scriptedExperience = [
             'what type of spirit are you'
         ],
         options: [
-            { value: '{identityFudge}' },
-        ]
+            { value: 'iamgod', restrictedTo: [EVIL], priority: 0.3 },
+            { value: 'iamdust' },
+            { value: 'iamlikeyou' },
+            { value: 'iusedtobelikeyou' },
+            { value: 'itakemanyforms' },
+            { value: 'iammanythings' },
+            { value: 'iamdeath', restrictedTo: [EVIL] },
+            { value: 'iampain', restrictedTo: [EVIL] },
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /^are .*/,
