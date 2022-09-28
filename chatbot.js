@@ -2109,7 +2109,10 @@ const scriptedExperience = [
         ],
         options: [
             { value: '!RANDOM_COUNT' }
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /(^|.* )are you dead$/,
@@ -2124,7 +2127,10 @@ const scriptedExperience = [
             { value: 'livingdead' },
             { value: 'theopposite' },
             { value: 'deadly' },
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /(^|.* )are you human$/,
@@ -2138,7 +2144,10 @@ const scriptedExperience = [
             { value: 'iusedtobe' },
             { value: 'half' },
             { value: 'ilooklikeone' },
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /(^|.* )are you (actually )?real$/,
@@ -2153,7 +2162,10 @@ const scriptedExperience = [
             { value: 'realenough' },
             { value: 'ifeelreal' },
             { value: 'realest', restrictedTo: [EVIL] },
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /(^|.* )are you evil$/,
@@ -2168,7 +2180,10 @@ const scriptedExperience = [
             { value: 'notrustme', restrictedTo: [FRIENDLY] },
             { value: 'ungodlyevil', restrictedTo: [EVIL] },
             { value: 'theymakeme', restrictedTo: [EVIL] },
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /(^|.* )are you bot$/,
@@ -2179,7 +2194,28 @@ const scriptedExperience = [
             { value: 'donotinsultme' },
             { value: 'human' },
             { value: 'thisisnotagame' },
-        ]
+        ],
+        questGoals: {
+            who: 0.49
+        }
+    },
+    {
+        trigger: /(^|.* )are you .*ing($| .*)/,
+        testExpect: [
+            'are you dating anyone',
+            'are you getting upset',
+            'are you talking to max'
+        ],
+        options: [
+            { value: 'iam' },
+            { value: 'withglee' },
+            { value: 'frantically' },
+            { value: 'obsessively', restrictedTo: [EVIL] },
+            { value: 'wholeheartedly', restrictedTo: [FRIENDLY] },
+        ],
+        questGoals: {
+            who: 0.49
+        }
     },
     {
         trigger: /(^|.* )are you .*/,
