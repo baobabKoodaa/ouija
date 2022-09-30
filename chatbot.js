@@ -331,9 +331,9 @@ const scriptedExperience = [
             'okay let me go and eat something',
             'what is your favorite food',
             'do you eat food',
+            'hungry for what',
         ],
         options: [
-            { value: 'notallowed', restrictedTo: [FRIENDLY] },
             { value: 'freshmeat' },
             { value: 'human' },
             { value: 'bones' },
@@ -1942,7 +1942,6 @@ const scriptedExperience = [
     {
         trigger: /^what$/,
         testExpect: [
-            'hungry for what',
             'what',
         ],
         options: [
