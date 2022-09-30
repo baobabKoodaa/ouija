@@ -323,7 +323,7 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /(^|.* )(eat|food)( .*|$)/,
+        trigger: /(^|.* )(eat|food|hungry)( .*|$)/,
         testExpect: [
             'you going to eat me',
             'what do you eat',
@@ -711,12 +711,13 @@ const scriptedExperience = [
         }
     },
     {
-        trigger: /^(what is your? )?(last|full|real|actual) name$/,
+        trigger: /^(do you have |what is your? )?(last|full|real|actual) name$/,
         testExpect: [
             'what is your last name',
             'what is you last name',
             'last name',
-            'what is your full name'
+            'what is your full name',
+            'do you have last name'
         ],
         testExpectNot: [
             'last name please',
@@ -856,7 +857,7 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'allaboutthat' },
-            { value: 'allabouttit' },
+            { value: 'allaboutit' },
             { value: 'abouttodie' },
             { value: 'whataboutit' },
             { value: 'danger' },
@@ -1880,9 +1881,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what time is it$/,
+        trigger: /^what time( .*|$)/,
         testExpect: [
             'what time is it',
+            'what time',
         ],
         options: [
             { value: 'timetodie', restrictedTo: [EVIL] },
@@ -2910,6 +2912,7 @@ const scriptedExperience = [
             { value: 'haha' },
             { value: 'gasp' },
             { value: 'ahhyes' },
+            { value: 'unlucky' },
             { value: 'correct' },
             { value: 'shocking' },
             { value: 'dontbeafraid', restrictedTo: [EVIL] },
@@ -2923,6 +2926,7 @@ const scriptedExperience = [
             { value: 'unlikely', restrictedTo: [EVIL] },
             { value: 'blasphemy', restrictedTo: [EVIL] },
             { value: 'heresy', restrictedTo: [EVIL] },
+            { value: 'whimsical', restrictedTo: [FRIENDLY] },
             { value: 'indeed', restrictedTo: [FRIENDLY] },
             { value: 'intheory', restrictedTo: [FRIENDLY] },
             { value: 'thatslovely', restrictedTo: [FRIENDLY] },
@@ -3312,7 +3316,7 @@ if (!window.localStorage.getItem(OUIJA_USER_ID)) {
     openConsentPopup()
 } else if (window.localStorage.getItem(`ouija-${FALSE_PROPHETS_ACHIEVEMENT}`)) {
     // User has previously finished the game, 50/50 if we begin from user's turn or spirit's turn
-    if (Math.random() > 0.5) {
+    if (Math.random() > 0.5 || window.location.href.startsWith('file')) {
         setTimeout(() => createTooltip(0), 1000)
     } else {
         switchTurnToSpirit()
