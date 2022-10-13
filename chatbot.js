@@ -668,6 +668,22 @@ const scriptedExperience = [
         ],
     },
     {
+        trigger: /(^|.*)ask me (something|question|anything)($| .*)/,
+        testExpect: [
+            'do you want to ask me something',
+            'ask me a question',
+            'ask me anything'
+        ],
+        options: [
+            { value: 'doyoufeelsafe' },
+            { value: 'isdoorlocked' },
+            { value: 'iswindowopen' },
+            { value: 'areyoureal' },
+            { value: 'canyousing' },
+            { value: 'doyoupray' },
+        ],
+    },
+    {
         trigger: /(^|.* )give me($| .*)/,
         testExpect: [
             'can you give me money',
@@ -1253,6 +1269,17 @@ const scriptedExperience = [
         ]
     },
     {
+        trigger: /^how soon.*/, 
+        testExpect: [
+            'how soon',
+        ],
+        options: [
+            { value: 'days' },
+            { value: 'very' },
+            { value: 'hours' },
+        ]
+    },
+    {
         trigger: /^how many people.*/,
         testExpect: [
             'how many people have you killed',
@@ -1579,7 +1606,6 @@ const scriptedExperience = [
             { value: 'perhaps' },
             { value: 'ofcourse' },
             { value: 'ithinkso' },
-            { value: 'whatdoyouthink' },
             { value: 'notexactly' },
             { value: 'thinkagain' },
         ]
