@@ -267,12 +267,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^((((jump)?scare me)|do that|make noise|makse sound) )?again.*/,
+        trigger: /^(((jump)?scare me)|do that|make noise|makse sound) again.*/,
         testExpect: [
             'jumpscare me again',
             'scare me again',
             'do that again',
-            'again',
         ],
         options: [
             { value: 'onceisenough' },
@@ -460,11 +459,14 @@ const scriptedExperience = [
         ],
     },
     {
-        trigger: /^(which |what )?(state|county|region).*/,
+        trigger: /^(which |what )?(state|county|region)( .*|$)/,
         testExpect: [
             'which state are you from',
             'what region',
             'county',
+        ],
+        testExpectNot: [
+            'its a statement',
         ],
         options: [
             { value: '!REGION' },
@@ -1608,6 +1610,7 @@ const scriptedExperience = [
             { value: 'ithinkso' },
             { value: 'notexactly' },
             { value: 'thinkagain' },
+            { value: 'induetime' },
         ]
     },
     {
