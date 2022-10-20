@@ -1065,7 +1065,7 @@ const scriptedExperience = [
         trigger: '{insult}',
         options: [
             { value: 'bitch', restrictedTo: [EVIL] },
-            { value: 'imbecil', restrictedTo: [EVIL] },
+            { value: 'imbecile', restrictedTo: [EVIL] },
             { value: 'fool', restrictedTo: [FRIENDLY] },
             { value: 'weakling', restrictedTo: [FRIENDLY] },
             { value: 'idiot' },
@@ -1610,7 +1610,6 @@ const scriptedExperience = [
             { value: 'ithinkso' },
             { value: 'notexactly' },
             { value: 'thinkagain' },
-            { value: 'induetime' },
         ]
     },
     {
@@ -1984,15 +1983,17 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^what (are|where|did) you.*do.*/,
+        trigger: /^what (are|where|did) you.*(do|up to).*/,
         testExpect: [
             'what are you trying to do',
             'what are you doing',
             'what were you doing',
             'what did you do demon',
+            'what are you up to',
         ],
         options: [
             { value: 'trickery' },
+            { value: 'mischief' },
             { value: 'misdeeds' },
             { value: 'duties' },
             { value: 'myjob' },
@@ -2445,9 +2446,10 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^would you .*/,
+        trigger: /^(could|would) you .*/,
         testExpect: [
             'would you save me',
+            'could you save me',
         ],
         options: [
             { value: 'foraprice' },
@@ -2960,7 +2962,7 @@ const scriptedExperience = [
             { value: 'thatslovely', restrictedTo: [FRIENDLY] },
             { value: 'soundsgreat', restrictedTo: [FRIENDLY] },
             { value: 'agreed', restrictedTo: [FRIENDLY] },
-            { value: 'omenous', restrictedTo: [FRIENDLY] },
+            { value: 'ominous', restrictedTo: [FRIENDLY] },
             { value: 'prophetic', restrictedTo: [FRIENDLY] },
             { value: 'interesting', restrictedTo: [FRIENDLY] },
             { value: 'isthatso', restrictedTo: [FRIENDLY] },
