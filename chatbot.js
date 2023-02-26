@@ -1421,10 +1421,11 @@ const scriptedExperience = [
         ]
     },
     {
-        trigger: /^how do you know.*/,
+        trigger: /^how (do|did) you know.*/,
         testExpect: [
             'how do you know my name',
             'how do you know where i am',
+            'how did you know i was depressed'
         ],
         options: [
             { value: 'iknowthings' },

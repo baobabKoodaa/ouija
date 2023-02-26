@@ -650,8 +650,109 @@ const stopDraggingPlanchette = function (event, source) {
     event.stopPropagation()
 }
 
+const zalgoChars = {
+    up: [
+        '\u030d', '\u030e', '\u0311',
+        '\u0306', '\u0310', '\u0352', '\u0357', '\u0351', '\u0307',
+        '\u0308', '\u030a', '\u0342', '\u0343', '\u0344', '\u034a',
+        '\u034b', '\u034c', '\u0303', '\u0302', '\u030c', '\u0350',
+        '\u0300', '\u0301', '\u030b', '\u030f', '\u0312', '\u0313',
+        '\u0314', '\u033d', '\u0309', '\u033e', '\u035b',
+    ],
+    upLetters: {
+        a: '\u0363',
+        e: '\u0364',
+        i: '\u0365',
+        o: '\u0366',
+        u: '\u0367',
+        c: '\u0368',
+        d: '\u0369',
+        h: '\u036a',
+        m: '\u036b',
+        r: '\u036c',
+        t: '\u036d',
+        v: '\u036e',
+        x: '\u036f',
+        s: '\u033e'
+    },
+    middle: [
+        '\u0315', '\u031b', '\u0340', '\u0341', '\u0358', '\u0327', '\u0328'
+    ],
+    down: [
+        '\u0316', '\u0317', '\u0318', '\u0319', '\u031c', '\u031d',
+        '\u031e', '\u031f', '\u0320', '\u0324', '\u0325', '\u0326',
+        '\u0329', '\u032a', '\u032b', '\u032c', '\u032d', '\u032e',
+        '\u032f', '\u0330', '\u0331', '\u0332', '\u0333', '\u0339',
+        '\u033a', '\u033b', '\u033c', '\u0347', '\u0348',
+        '\u0349', '\u034d', '\u034e', '\u0353', '\u0354', '\u0355',
+        '\u0356', '\u0359', '\u035a', '\u0323'
+    ]
+}
+
+function zalgoRandInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+function zalgoAddRandomChars(charIn, conf) {
+    let charOut = charIn
+    for (const direction in conf) {
+        const arr = zalgoChars[direction]
+        for (let count=0; count<conf[direction]; count++) {
+            charOut += arr[zalgoRandInt(0, arr.length - 1)]
+        }
+    }
+    return charOut
+}
+
+function zalgoAddSpecificLetters(charIn, letters) {
+    let charOut = charIn
+    for (let i=letters.length-1; i>=0; i--) {
+        charOut += zalgoChars.upLetters[letters[i]] || ""
+    }
+    return charOut
+}
+
+const zalgoMessages = [
+    'hecomes',
+    'ithurts',
+    'cthuihu',
+    'xerxes',
+    'doom',
+    // TODO: more
+    // no diatrics characters available to represent: tainted, unholy, toolate, scourge, pestilence, zalgo, mortal, breach, corrupt, pestilence, extinguish
+]
+
+const zalgoize = function(char) {
+    if (currentExchangeNumber === 0) {
+        // Special case here. The interaction begins with no zalgoization and gradually increases in intensity.
+        return char
+    }
+    const MAX_INTENSITY_REACHED_AFTER_EXCHANGE_NUMBER = 20.0
+    const intensity = Math.min(currentExchangeNumber / MAX_INTENSITY_REACHED_AFTER_EXCHANGE_NUMBER, 1.0)
+    if (intensity === 1.0 && Math.random() > 0.9) {
+        // Special case here. Once max intensity is reached we occasionally drop in a hidden message in zalgotext
+        char = zalgoAddRandomChars(char, { up: 2, down: 2 } )
+        char = zalgoAddSpecificLetters(char, zalgoMessages[zalgoRandInt(0, zalgoMessages.length-1)])
+        char = zalgoAddRandomChars(char, { up: 2 } )
+        return char
+    }
+    // Typical case below.
+    if (intensity < 1.0 && Math.random()*2 > intensity+0.3) {
+        // Before we reach max intensity, we want only occasional characters to be zalgoized.
+        // After we reach max intensity, all characters will be zalgoized.
+        return char
+    }
+    conf = {
+        up: zalgoRandInt(2, Math.max(2, Math.round(14 * intensity))),
+        middle: zalgoRandInt(0, 5),
+        down: zalgoRandInt(1, Math.max(1, Math.round(6 * intensity)))
+    }
+    char = zalgoAddRandomChars(char, conf)
+    return char
+}
+
 const addCharToRevealedMessage = function (char) {
-    revealedSpiritLetters += char
+    revealedSpiritLetters += zalgoize(char)
     const container = document.getElementById('spiritMessageContainer')
     container.innerText = revealedSpiritLetters
     container.setAttribute('data-text', revealedSpiritLetters)

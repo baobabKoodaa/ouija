@@ -1,6 +1,6 @@
-## Ouija Online
+## O̅͒͊̎̌ͯ͋̀̉uͭ̒͂̉ͪ͐̌ͦ̀i͒͋ͭ͋́͑͗͒̔̅̓̓̎̒̾͂̈̔̍j̇͗ͮ̉͑̃ͩͩ̀̒ͥͧ̉ǎ͂ͣͩͥ̿̓ͤͬ ͛ͦ͌̔ͣ͑̄ͭ̎̑̅̽͑ͯoͦ̈͋̀͗ͧ͒̈̊̃̆̐̓͑͋̄̀nͧ͆ͬ̅̾l̈͊ͪͮ̄̽ͧi̇ͨ̿̂ͤͣ͛̒̐̐̈̾͋ͥ̌ͩ͆̀n̋́̃̍̑̓ͪeͨ̇ͥ̍ͭ͗̓ͣͮͤͪͩ̓ͣͥͫͮ͋̚
 
-A web horror experience where you communicate with spirits using a Ouija board.
+A web ho̲̘̙̜̮ͦrro̦̅̑̆̀r experience where you communicate with sp̙̝̜͐̇̀ir̛͡͏̀͝its͍̙̅ͣ using a Ouija board.
 
 Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
 
@@ -8,9 +8,9 @@ Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://o
 
 #### Notable features:
 
-- Despite existing only as a web page, the spirits have the ability to __move the player's mouse__ towards letters on the board.
-- Two different chatbots available: a __scripted experience__ is available for all, and for players who have OpenAI API keys, there is a more versatile __GPT-3 mode__.
-- The scripted experience has 3 achievements to unlock and various special effects including a few jumpscares.
+- Despite existing only as a web page, the spirits have the ability to m̜͙̼͉̊͐ͬo̖̗͆̽v̫̺̘̇͗e̮͎̦̞̼ ̩̥͉̆͋̆̎ͅt̞̬͍͓̅̾̎͆́h̫ễ̱̦̤͖̊̅ͭͥ̚ ̳̗͐ͥͭp̺̜̤̅̏̌ͮl̤͒̌a̙̺̣̗̘͆ͣ̒͗͊ͅy̝̻̭̖͑ͭ͑̉e̱͔̯̬̘̅̀͋̍̃ͥr͔͇͉̯̣ͤ̍'͚͎̖̲̞̬͈̈̅̇̑̇š́ͮͦ ̠͈͚̣̩̝ͅm̹̌͊o̗͐ͧ̇̊̏̉̔uͯͧ̓̎̋ͣ̈́s̺̩̗͓͉͈͒̾ͬͯ̒ͧ̆e͉͔̘̒̇̂ͤ towards letters on the board
+- Two different chatbots available: a __scripted experience__ is available for all, and for players who have OpenAI API keys, there is a more versatile __GPT-3 mode__
+- The scripted experience has 3 achievements to unlock and various special effects including a few jumpscares :scream:
 
 #### How does it work
 
@@ -28,7 +28,8 @@ Assets and effects:
 - The Ouija board image is a photograph of the original Ouija board from 1889, created by Kennard Novelty Company. According to [Wikipedia](https://en.wikipedia.org/wiki/Ouija#/media/File:Ouija_board_-_Kennard_Novelty_Company.png), this image is in the public domain. Photographer is unknown.
 - Planchette PNG image is from [KindPNG](https://www.kindpng.com/imgv/hToiomo_transparent-planchette-png-ouija-board-planchette-png-png/), which provide permission for use in "non-commercial or personal projects". Author is unknown.
 - Smoke effect used in tooltip is adapted from work by [chokcoco](https://segmentfault.com/a/1190000041189786/en). I modified the effect heavily in order to get smoother transitions for dissipation and hover. Those transitions now animate the Perlin turbulence filter by using SVG animate (not CSS!) in addition to some CSS transitions.
-- Text glitch effect used in spirit message was popularized by Tiktok and implementation is adapted from [AmazingCSS](https://amazingcss.com/glitch-text-effect-like-tiktok/).
+- Spirit message text glitch Tiktok effect was popularized by Tiktok, implementation adapted from [AmazingCSS](https://amazingcss.com/glitch-text-effect-like-tiktok/).
+- Spirit message text glitch Zalgotext was inspired by [the legendary Stackoverflow answer](https://stackoverflow.com/questions/1732348/regex-match-open-tags-except-xhtml-self-contained-tags), implementation adapted from [tchouky](https://eeemo.net/) and [The Great Rambler](https://github.com/TheGreatRambler/another-zalgo.js/)
 - Magnifying glass effect adapted from [W3Schools](https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp) example code.
 - Font 'Feral' was created by Marcus Lien Gundersen and was downloaded from [1001fonts](https://www.1001fonts.com/feral-font.html), which provide permission for both personal and commercial use.
 - Font 'Carnevalee Freakshow' was created by Chris Hansen and was downloaded from [1001fonts](https://www.1001fonts.com/carnivalee-freakshow-font.html), which provide permission for both personal and commercial use.
