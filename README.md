@@ -4,7 +4,7 @@ A web ho̲̘̙̜̮ͦrro̦̅̑̆̀r experience where you communicate with sp͐̇�
 
 Try it here: :scream: :scream: :scream: [https://ouija.attejuvonen.fi](https://ouija.attejuvonen.fi) :scream: :scream: :scream:
 
-![Screenshot of Ouija Online](assets/screenshot2.jpg)
+![Screenshot of Ouija Online](assets/screenshot2-transparent.png)
 
 #### Notable features:
 
