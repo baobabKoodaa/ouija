@@ -190,7 +190,7 @@ const generateOpenAIPrompt = function (currentQuestion, previousQuestion, previo
 
 const respondWithOpenAI = function (userQuestion, callback) {
     const prompt = generateOpenAIPrompt(userQuestion, previousInput, previousOutput)
-    fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+    fetch('https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
