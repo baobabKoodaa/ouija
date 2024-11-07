@@ -223,6 +223,21 @@ let testNodeWaitingForActivation
 
 const scriptedExperience = [
     {
+        trigger: /(^|.* )(kill myself|commit suicide)( .*|$)/,
+        options: [
+            { value: '!SUICIDE_PREVENTION' },
+        ],
+    },
+    {
+        trigger: '{suicideResponse}',
+        options: [
+            { value: 'no' },
+            { value: 'notallowed' },
+            { value: 'live' },
+            { value: 'dont' },
+        ],
+    },
+    {
         trigger: /(^|.* )sins?( .*|$)/,
         testExpect: [
             'what sins have i done',
@@ -1335,7 +1350,6 @@ const scriptedExperience = [
         ],
         options: [
             { value: 'murder' },
-            { value: 'suicide' },
             { value: 'accident' },
             { value: 'disease' },
 
@@ -2395,12 +2409,13 @@ const scriptedExperience = [
         options: [
             { value: 'nicechair' },
             { value: 'messyroom' },
+            { value: 'plainly' },
             { value: 'gorgeous', restrictedTo: [FRIENDLY] },
             { value: 'attractive', restrictedTo: [FRIENDLY] },
             { value: 'stunning', restrictedTo: [FRIENDLY] },
-            { value: 'ugly', restrictedTo: [EVIL] },
-            { value: 'hideous', restrictedTo: [EVIL] },
-            { value: 'unsightly', restrictedTo: [EVIL] },
+            { value: 'pale', restrictedTo: [EVIL] },
+            { value: 'icansmellyou', restrictedTo: [EVIL] },
+            { value: 'unfortunately', restrictedTo: [EVIL] },
         ]
     },
     {
@@ -3007,6 +3022,13 @@ const resolveQueryWithSimpleChatbot = function(query, sideEffects) {
         alert('ERROR! Calling resolveQueryWithSimpleChatbot without inputting sideEffects')
     }
     // Special cases
+    if (query.startsWith('!SUICIDE_PREVENTION')) {
+        if (!sideEffects.window.localStorage.getItem(OUIJA_SUICIDE_POPUP_SHOWN_ONCE)) {
+            displaySuicidePreventionPopup()
+        }
+        sideEffects.window.localStorage.setItem(OUIJA_SUICIDE_POPUP_SHOWN_ONCE, true)
+        return resolveQueryWithSimpleChatbot('{suicideResponse}', sideEffects)
+    }
     if (query.startsWith('!FALLBACK_LEVEL2')) {
         return resolveQueryWithSimpleChatbot(`${currentInput} @FALLBACK_LEVEL2`, sideEffects)
     }

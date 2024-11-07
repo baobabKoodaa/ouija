@@ -13,6 +13,8 @@ const TURN_SPIRIT = 'turnSpirit'
 const TURN_USER = 'turnUser'
 const OUIJA_USER_ID = 'ouija-user-id'
 const OUIJA_PLAYER_NAME = 'ouija-player-name'
+const OUIJA_SUICIDE_POPUP_SHOWN_ONCE  = 'ouija-suicide-popup-shown-once'
+const OUIJA_SUICIDE_PREVENTION_ACTIVATED = 'ouija-suicide-prevention-activated'
 
 // Achievements!
 const FALSE_PROPHETS_ACHIEVEMENT = 'achievementFalseProphets'
@@ -1137,6 +1139,30 @@ const stopSmokeAnimation = function () {
     }, 2000)
 }
 
+const displaySuicidePreventionPopup = function() {
+    document.getElementById(`suicide-prevention-popup`).style.bottom = '20px'
+    document.getElementById(`suicide-prevention-popup`).style.transition = 'bottom 2s cubic-bezier(.12, 1, .96, .97)'
+}
+const hideSuicidePreventionPopup = function() {
+    document.getElementById(`suicide-prevention-popup`).style.bottom = '-17vw'
+    document.getElementById(`suicide-prevention-popup`).style.transition = 'bottom 2s ease-out'
+}
+const showSuicidePreventionOverlay = function() {
+    gameOver = true
+    document.getElementById('suicidePreventionOverlay').style.display = 'block'
+    // Hide blinking cursor
+    document.getElementById('userMessagePre').classList = ['orangey-text']
+}
+document.getElementById('suicide-prevention-button-fine').addEventListener('click', hideSuicidePreventionPopup)
+document.getElementById('suicide-prevention-button-help').addEventListener('click', e => {
+    hideSuicidePreventionPopup()
+    showSuicidePreventionOverlay()
+    window.localStorage.setItem(OUIJA_SUICIDE_PREVENTION_ACTIVATED, true)
+})
+if (window.localStorage.getItem(OUIJA_SUICIDE_PREVENTION_ACTIVATED)) {
+    showSuicidePreventionOverlay()
+}
+
 const displayNotification = function(achievement) {
     document.getElementById(`${achievement}-notification`).style.bottom = '-3px'
     document.getElementById(`${achievement}-notification`).style.transition = 'bottom 2s cubic-bezier(.12, 1, .96, .97)'
@@ -1251,6 +1277,7 @@ document.body.addEventListener('mouseup', e => { stopDraggingPlanchette(e) })
 
 // Switches from fake cursor to normal cursor
 document.body.addEventListener('mouseleave', e => { switchToNormalCursor(e) })
+document.getElementById('suicide-prevention-popup').addEventListener('mousemove', e => { switchToNormalCursor(e) })
 document.getElementById('settingsGearHoverboard').addEventListener('mousemove', e => { switchToNormalCursor(e) })
 document.getElementById('achievement-hoverboard').addEventListener('mousemove', e => { switchToNormalCursor(e) })
 document.getElementById('textInputAPIKey').addEventListener('mousemove', e => { switchToNormalCursor(e) })
